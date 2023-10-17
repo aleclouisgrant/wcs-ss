@@ -1,0 +1,78 @@
+{
+    "Convention": {
+        "Id": Guid,
+        "Name": string,
+        "Date": ,
+        "Competitions" : [
+            {
+                "PrelimCompetitions": [
+                    "PrelimCompetition": {
+                        "Id": Guid,
+                        "Name": ,
+                        "Date": DATETIME,
+                        "Division": "",
+                        "Songs": [
+                            {
+                                "SongId": Guid
+                            }
+                        ]
+                    }
+
+                    }
+                ]
+            }
+        ]
+    }
+}
+
+
+Convention:
+    Id 
+    Name
+    Date
+
+Competitions:
+
+
+PrelimCompetition:
+    Id
+    Name
+    DateTime
+    Division
+    CompetitionType
+    Role
+    Round
+    Songs
+    PromotedCompetitors
+
+FinalCompetition:
+    Id
+    Name
+    DateTime
+    Division
+    CompetitionType
+    FinalType
+
+PrelimScore:
+    Id
+    Competitor
+    Judge
+    CallbackScore
+
+FinalScore:
+    Id
+    Leader
+    Follower
+    Judge
+    Placement
+
+Songs:
+    Id
+    Artist
+    Title
+    Year
+    BPM
+    Genre
+
+
+

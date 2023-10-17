@@ -1,0 +1,42 @@
+table {
+    display: table;
+    border-collapse: separate;
+    border-style: solid;
+    -webkit-border-horizontal-spacing: 2px;
+    -webkit-border-vertical-spacing: 2px;
+    border-top-color: gray;
+    border-right-color: gray;
+    border-bottom-color: gray;
+    border-left-color: gray;
+    text-indent: initial;
+    box-sizing: border-box;
+    border-top-width: 1px;
+    border-right-width: 1px;
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+    -webkit-border-horizontal-spacing: 1px;
+    -webkit-border-vertical-spacing: 1px;
+    margin-inline-start: auto;
+    margin-inline-end: auto;
+    width: 100%;
+}
+
+tr {
+    display: table-row;
+    vertical-align: inherit;
+    border-top-color: inherit;
+    border-right-color: inherit;
+    border-bottom-color: inherit;
+    border-left-color: inherit;
+    border-style: solid;
+    border-top-width: 1px;
+    border-right-width: 1px;
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+}
+
+td, th {
+    display: table-cell;
+    vertical-align: inherit;
+    border-style: solid;
+}
