@@ -1,4 +1,4 @@
-import { DanceEvent } from '../types/DanceEvent';
+import { DanceEvent } from '../classes/DanceEvent';
 import PrelimsScoresheet from '../component/prelim-competition-viewer';
 import PrelimCompetitionAdder from '@/component/prelim-competition-adder';
 import PrelimAdder from '@/component/prelim-adder';

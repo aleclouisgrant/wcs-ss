@@ -1,7 +1,7 @@
-import { PrelimCompetition } from '../types/Competition';
-import { Competitor, Judge } from '../types/IPerson';
-import { PrelimScore } from '../types/IScore';
-import { Util } from '../types/Util';
+import { PrelimCompetition } from '../classes/Competition';
+import { Competitor, Judge } from '../classes/IPerson';
+import { PrelimScore } from '../classes/IScore';
+import { Util } from '../classes/Util';
 
 import CallbackScoreViewer from './prelim-callback-score-viewer';
 

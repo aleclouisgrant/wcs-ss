@@ -1,6 +1,6 @@
 'use client';
 import { useState } from 'react';
-import { Competitor, Judge } from '@/types/IPerson';
+import { Competitor, Judge } from '@/classes/IPerson';
 
 export default function DatabaseAdder() {
     const [competitors, setCompetitors] = useState(new Array<Competitor>());

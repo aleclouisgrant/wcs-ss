@@ -1,7 +1,7 @@
-import { PrelimCompetition } from '../types/Competition';
-import { CallbackScore, Division, Role, Round } from '../types/Enums';
-import { Competitor, Judge } from '../types/IPerson';
-import { PrelimScore } from '../types/IScore';
+import { PrelimCompetition } from '../classes/Competition';
+import { CallbackScore, Division, Role, Round } from '../classes/Enums';
+import { Competitor, Judge } from '../classes/IPerson';
+import { PrelimScore } from '../classes/IScore';
 
 var leader1 = new Competitor("Brandon", "Rasmussen", 301);
 var leader2 = new Competitor("Stanislav", "Ivanov", 313);

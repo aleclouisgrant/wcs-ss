@@ -2,9 +2,9 @@
 
 import { useState } from 'react';
 
-import { PrelimCompetition } from '../types/Competition';
-import { CallbackScore, Division, Role, Round } from '../types/Enums';
-import { Judge } from '../types/IPerson';
+import { PrelimCompetition } from '../classes/Competition';
+import { CallbackScore, Division, Role, Round } from '../classes/Enums';
+import { Judge } from '../classes/IPerson';
 import CallbackScoreViewer from './prelim-callback-score-viewer';
 
 import { TestData } from '../test-data/test-data';

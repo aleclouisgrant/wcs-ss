@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
-import { CallbackScore, Role } from '../types/Enums';
-import { Competitor, Judge } from '@/types/IPerson';
+import { CallbackScore, Role } from '../classes/Enums';
+import { Competitor, Judge } from '@/classes/IPerson';
 
 import CallbackScoreViewer from '@/component/prelim-callback-score-viewer';
 
