@@ -1,5 +1,5 @@
-import { CallbackScore } from "../classes/Enums";
-import { Util } from "../classes/Util";
+import { CallbackScore } from "@/classes/Enums";
+import { Util } from "@/classes/Util";
 
 export default function CallbackScoreViewer(props: {callbackScore : CallbackScore}) {
     let col = 'red';

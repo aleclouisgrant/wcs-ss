@@ -1,9 +1,9 @@
-import { PrelimCompetition } from '../classes/Competition';
-import { Competitor, Judge } from '../classes/IPerson';
-import { PrelimScore } from '../classes/IScore';
-import { Util } from '../classes/Util';
+import { PrelimCompetition } from '@/classes/Competition';
+import { Competitor, Judge } from '@/classes/IPerson';
+import { PrelimScore } from '@/classes/IScore';
+import { Util } from '@/classes/Util';
 
-import CallbackScoreViewer from './prelim-callback-score-viewer';
+import CallbackScoreViewer from '@/component/prelim-callback-score-viewer';
 
 function IsPromoted(promoted : boolean) : string {
     if (promoted) {

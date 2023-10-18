@@ -1,11 +1,11 @@
 'use client';
 import { useState } from 'react';
-import { CallbackScore, Role } from '../classes/Enums';
+import { CallbackScore, Role } from '@/classes/Enums';
 import { Competitor, Judge } from '@/classes/IPerson';
 
 import CallbackScoreViewer from '@/component/prelim-callback-score-viewer';
 
-import { TestData } from '../test-data/test-data';
+import { TestData } from '@/test-data/test-data';
 
 let JudgeDb = TestData.TestJudgesDb();
 let CompetitorDb = TestData.TestCompetitorsDb();
