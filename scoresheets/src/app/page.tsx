@@ -14,6 +14,8 @@ export default function Home() {
   return (
     <div>
       <h1>{event.Name}</h1>
+      <PrelimAdder/>
+
       <PrelimsScoresheet competition={comp_leaders}/>
       <PrelimsScoresheet competition={comp_followers}/>
     </div>

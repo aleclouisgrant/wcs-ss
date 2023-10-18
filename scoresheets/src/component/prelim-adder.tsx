@@ -31,18 +31,16 @@ const CompetitorSelector = () => {
 export default function PrelimAdder() {
     const [competitorCount, setCompetitorCount] = useState(0);
     const [judgeCount, setJudgeCount] = useState(0);
-
+    
     const [competitors, setCompetitors] = useState(new Array<Competitor>());
     const [judges, setJudges] = useState(new Array<Judge>());
 
-    var count = 1;
-
     function AddCompetitor() {
-        setCompetitorCount(competitorCount + 1);
+        setCompetitorCount((prevCount) => prevCount + 1);
     }
 
     function AddJudge() {
-        setJudgeCount(judgeCount + 1);
+        setJudgeCount((prevCount) => prevCount + 1);
     }
 
     const JudgesHeaders = () => {
@@ -65,11 +63,10 @@ export default function PrelimAdder() {
 
     const CompetitorRows = () => {
         var competitorRows = [];
-
         for (let i = 0; i < competitorCount; i++) {
             competitorRows.push(
                 <tr>
-                    <td>{count++}</td>
+                    <td>{i + 1}</td>
                     <td><input type='text'/></td>
                     <td><CompetitorSelector/></td>
                     <JudgeScores/>

@@ -16,7 +16,44 @@ function IsPromoted(promoted : boolean) : string {
 
 export default async function PrelimsScoresheet(props: {competition : PrelimCompetition}) {
     var comp = props.competition;
-    var count = 1;
+
+    const CompetitorRows = () => {
+        var competitorRows = [];
+        
+        let count = 1;
+        let sameCount = 1;
+        for (let i = 0; i < comp.GetCompetitorCount(); i++) {
+            let competitor = comp.Competitors[i];
+            let sum = comp.GetCompetitorsSum(competitor);
+
+            if (i - 1 > 0) {
+                if (sum == comp.GetCompetitorsSum(comp.Competitors[i - 1]))
+                {
+                    sameCount++;
+                }
+                else
+                {
+                    count = count + sameCount + 1;
+                    sameCount = 0;
+                }
+            }
+
+            competitorRows.push(
+                <tr>
+                    <td>{count}</td>
+                    <td>{competitor.BibNumber}</td>
+                    <td>{competitor.FullName}</td>
+                    {comp.ScoresByCompetitor(competitor).map((score: PrelimScore) => (
+                        <td><CallbackScoreViewer callbackScore={score.CallbackScore}/></td>
+                        ))}
+                    <td>{sum}</td>
+                    <td>{IsPromoted(comp.IsCompetitorPromoted(competitor))}</td>
+                </tr>
+            )
+        }
+
+        return competitorRows;
+    }
 
     return (
         <div>
@@ -33,19 +70,7 @@ export default async function PrelimsScoresheet(props: {competition : PrelimComp
                         <th>Sum</th>
                         <th>Promoted</th>
                     </tr>
-
-                    {comp.Competitors.map((competitor: Competitor) => (
-                        <tr>
-                        <td>{count++}</td>
-                        <td>{competitor.BibNumber}</td>
-                        <td>{competitor.FullName}</td>
-                        {comp.ScoresByCompetitor(competitor).map((score: PrelimScore) => (
-                            <td><CallbackScoreViewer callbackScore={score.CallbackScore}/></td>
-                            ))}
-                        <td>{comp.GetCompetitorsSum(competitor)}</td>
-                        <td>{IsPromoted(comp.IsCompetitorPromoted(competitor))}</td>
-                    </tr>
-                    ))}
+                    <CompetitorRows/>
                 </tbody>
             </table>
         </div>
