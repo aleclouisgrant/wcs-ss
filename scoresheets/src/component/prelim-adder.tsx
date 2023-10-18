@@ -1,5 +1,6 @@
 'use client';
 import { useState } from 'react';
+
 import { CallbackScore, Role } from '@/classes/Enums';
 import { Competitor, Judge } from '@/classes/IPerson';
 
@@ -34,6 +35,8 @@ export default function PrelimAdder() {
     
     const [competitors, setCompetitors] = useState(new Array<Competitor>());
     const [judges, setJudges] = useState(new Array<Judge>());
+
+    var scoreArray : CallbackScore[][];
 
     function AddCompetitor() {
         setCompetitorCount((prevCount) => prevCount + 1);
