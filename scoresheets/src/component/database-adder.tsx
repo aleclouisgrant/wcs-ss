@@ -2,7 +2,6 @@
 import { useState } from 'react';
 import { Competitor, Judge } from '@/types/IPerson';
 
-
 export default function DatabaseAdder() {
     const [competitors, setCompetitors] = useState(new Array<Competitor>());
     const [judges, setJudges] = useState(new Array<Judge>());

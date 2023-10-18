@@ -1,10 +1,8 @@
 import { PrelimCompetition } from '../types/Competition';
-import { CallbackScore, Division, Round } from '../types/Enums';
 import { Competitor, Judge } from '../types/IPerson';
 import { PrelimScore } from '../types/IScore';
 import { Util } from '../types/Util';
 
-import { TestData } from '../test-data/test-data';
 import CallbackScoreViewer from './prelim-callback-score-viewer';
 
 function IsPromoted(promoted : boolean) : string {
