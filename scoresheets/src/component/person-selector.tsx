@@ -3,13 +3,12 @@ import React, { ChangeEvent, Component } from "react";
 
 type SelectorProps<T extends IPerson> = {
     personDb: Array<T>,
-    index: number,
-    selectedPerson: T,
-    setSelectedPerson: (person: T, index: number) => void
+    selectedPerson: T | undefined,
+    setSelectedPerson: (person: T | undefined) => void
 };
 
 type SelectorState<T extends IPerson> = {
-    value: T;
+    value: T | undefined;
 }
 
 export default class Selector<T extends IPerson> extends Component<SelectorProps<T>, SelectorState<T>> {
@@ -21,23 +20,36 @@ export default class Selector<T extends IPerson> extends Component<SelectorProps
 
     handleChange(e : ChangeEvent<HTMLSelectElement>) {
         var valueIndex = parseInt(e.target.value);
+
+        if (valueIndex == -1) {
+            this.setState({value: undefined});
+            this.props.setSelectedPerson(undefined);
+            return;
+        }
+
+        if (valueIndex - 1 > this.props.personDb.length){
+            return;
+        }
+
         var newSelectedPerson = this.props.personDb[valueIndex];
 
-        var newState : SelectorState<T> = { 
-            value: newSelectedPerson 
-        };
-
-        this.setState(newState);
-        this.props.setSelectedPerson(newSelectedPerson, this.props.index);
+        this.setState({value: newSelectedPerson});
+        this.props.setSelectedPerson(newSelectedPerson);
     }
 
     render() {
-        if (this.props.selectedPerson != null){
-            console.log(this.props.selectedPerson.FullName);
+        let personIndex = 0;
+
+        if (this.state.value != null) {
+            personIndex = this.props.personDb.findIndex((person) => person.FullName == this.state.value?.FullName);
+        } 
+        else {
+            personIndex = -1;
         }
-        
+
         return (
-        <select onChange={this.handleChange}>
+        <select value={personIndex} onChange={this.handleChange}>
+            <option key={-1} value={-1}></option>
             {this.props.personDb.map((person, index) => 
             <option key={index} value={index}>{person.FullName}</option>
             )}

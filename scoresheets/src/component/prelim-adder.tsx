@@ -25,7 +25,7 @@ export default function PrelimAdder() {
     const [competitorCount, setCompetitorCount] = useState(0);
     const [judgeCount, setJudgeCount] = useState(0);
     
-    const [competitors, setCompetitors] = useState(new Array<Competitor>());
+    const [competitors, setCompetitors] = useState(new Array<Competitor | undefined>());
     const [judges, setJudges] = useState(new Array<Judge>());
 
     var scoreArray : CallbackScore[][];
@@ -38,9 +38,7 @@ export default function PrelimAdder() {
         setJudgeCount((prevCount) => prevCount + 1);
     }
 
-    function SetCompetitor(competitor: Competitor, index: number) {
-        console.log("index: " + index + " competitor: " + competitor.FullName);
-
+    function SetCompetitor(competitor: Competitor | undefined, index: number) {
         var prevCompetitors = competitors;
         prevCompetitors[index] = competitor;
         setCompetitors(prevCompetitors);
@@ -71,7 +69,8 @@ export default function PrelimAdder() {
                 <tr key={i}>
                     <td>{i + 1}</td>
                     <td><input type='text'/></td>
-                    <td><Selector index={i} personDb={CompetitorDb} selectedPerson={competitors[i]} setSelectedPerson={SetCompetitor}/></td>
+                    <td><Selector personDb={CompetitorDb} selectedPerson={competitors[i]} 
+                            setSelectedPerson={(value : Competitor | undefined) => SetCompetitor(value, i)}/></td>
                     <JudgeScores/>
                     <td>sum</td>
                     <td>*</td>
