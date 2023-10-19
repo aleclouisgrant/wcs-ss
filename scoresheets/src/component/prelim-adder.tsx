@@ -8,6 +8,7 @@ import CallbackScoreViewer from '@/component/prelim-callback-score-viewer';
 import Selector from '@/component/person-selector';
 
 import { TestData } from '@/test-data/test-data';
+import { Util } from '@/classes/Util';
 
 let JudgeDb = TestData.TestJudgesDb();
 let CompetitorDb = TestData.TestCompetitorsDb();
@@ -19,13 +20,21 @@ export default function PrelimAdder() {
     const [competitors, setCompetitors] = useState(new Array<Competitor | undefined>());
     const [judges, setJudges] = useState(new Array<Judge | undefined>());
 
-    var scoreArray : CallbackScore[][];
+    const [scores, setScores] = useState(new Array<Array<CallbackScore>>);
 
     function AddCompetitor() {
+        let newScores = [...scores];
+        newScores.push(new Array<CallbackScore>(judgeCount).fill(CallbackScore.Unscored))
+        setScores(newScores);
         setCompetitorCount((prevCount) => prevCount + 1);
     }
 
     function AddJudge() {
+        let newScores = [...scores];
+        for (let competitorIndex = 0; competitorIndex < competitorCount; competitorIndex++) {
+            newScores[competitorIndex].push(CallbackScore.Unscored);
+        }
+        setScores(newScores);
         setJudgeCount((prevCount) => prevCount + 1);
     }
 
@@ -41,7 +50,13 @@ export default function PrelimAdder() {
         setJudges(newJudges);
     }
 
-    const JudgesHeaders = () => {
+    function UpdateScore(competitorIndex: number, judgeIndex: number, score: CallbackScore) {
+        let newScores = [...scores];
+        newScores[competitorIndex][judgeIndex] = score;
+        setScores(newScores);
+    }
+
+    function JudgesHeaders() {
         var judgeHeaders = [];
         for (let i = 0; i < judgeCount; i++ ) {
             judgeHeaders.push(
@@ -54,10 +69,15 @@ export default function PrelimAdder() {
         return judgeHeaders;
     }
 
-    const JudgeScores = () => {
+    function JudgeScores(props : {competitorIndex: number}) {
         var judgeScores = [];
-        for (let i = 0; i < judgeCount; i++ ) {
-            judgeScores.push(<td><CallbackScoreViewer callbackScore={CallbackScore.Yes}/></td>);
+        for (let judgeIndex = 0; judgeIndex < judgeCount; judgeIndex++ ) {
+            var callbackScore = CallbackScore.Unscored;
+            if (scores[props.competitorIndex][judgeIndex] != null) {
+                callbackScore = scores[props.competitorIndex][judgeIndex];
+            }
+
+            judgeScores.push(<td key={judgeIndex}><CallbackScoreViewer callbackScore={callbackScore}/></td>);
         }
 
         return judgeScores;
@@ -72,7 +92,7 @@ export default function PrelimAdder() {
                     <td><input type='text'/></td>
                     <td><Selector personDb={CompetitorDb} selectedPerson={competitors[i]} 
                             setSelectedPerson={(value : Competitor | undefined) => SetCompetitor(value, i)}/></td>
-                    <JudgeScores/>
+                    <JudgeScores competitorIndex={i}/>
                     <td>sum</td>
                     <td>*</td>
                 </tr>
@@ -82,8 +102,21 @@ export default function PrelimAdder() {
         return competitorRows;
     }
 
+    function PrintSheet() {
+        console.log("Scores: ");
+        for (let i = 0; i < scores.length; i++) {
+            var judgeScores = '';
+            for (let j = 0; j < scores[i].length; j++) {
+                judgeScores += Util.CallbackScoreShorthand(scores[i][j]) + " ";
+            }
+            console.log(judgeScores);
+        }
+    }
+
     return (
         <div>
+            <button type='button' onClick={PrintSheet}>Print scores</button>
+
             <label>Role:</label>
             <select>
                 <option value={Role.Leader}>Leader</option>
