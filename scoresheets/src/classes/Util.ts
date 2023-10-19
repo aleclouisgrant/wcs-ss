@@ -122,7 +122,7 @@ export module Util {
                 return 0;
             default:
             case CallbackScore.Unscored:
-                return -1;
+                return 0;
         }
     }
 

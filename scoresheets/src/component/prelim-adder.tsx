@@ -83,7 +83,17 @@ export default function PrelimAdder() {
         return judgeScores;
     }
 
-    const CompetitorRows = () => {
+    function CompetitorScoreSum(competitorIndex: number) : number {
+        var sum = 0;
+
+        for (let judgeIndex = 0; judgeIndex < judgeCount; judgeIndex++){
+            sum = sum + Util.GetCallbackScoreNumber(scores[competitorIndex][judgeIndex]);
+        }
+
+        return sum;
+    }
+
+    function CompetitorRows() {
         var competitorRows = [];
         for (let i = 0; i < competitorCount; i++) {
             competitorRows.push(
@@ -91,9 +101,9 @@ export default function PrelimAdder() {
                     <td>{i + 1}</td>
                     <td><input type='text'/></td>
                     <td><Selector personDb={CompetitorDb} selectedPerson={competitors[i]} 
-                            setSelectedPerson={(value : Competitor | undefined) => SetCompetitor(value, i)}/></td>
+                            setSelectedPerson={(value: Competitor | undefined) => SetCompetitor(value, i)}/></td>
                     <JudgeScores competitorIndex={i}/>
-                    <td>sum</td>
+                    <td>{CompetitorScoreSum(i)}</td>
                     <td>*</td>
                 </tr>
             )
