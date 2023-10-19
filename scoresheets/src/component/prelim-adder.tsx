@@ -22,10 +22,18 @@ export default function PrelimAdder() {
 
     const [scores, setScores] = useState(new Array<Array<CallbackScore>>);
 
+    const [promotedCompetitorIndexes, setPromotedCompetitorIndexes] = useState(new Array<number>());
+    const [bibNumbers, setBibNumbers] = useState(new Array<string>());
+
     function AddCompetitor() {
         let newScores = [...scores];
         newScores.push(new Array<CallbackScore>(judgeCount).fill(CallbackScore.Unscored))
         setScores(newScores);
+
+        let newBibNumbers = [...bibNumbers];
+        newBibNumbers.push("");
+        setBibNumbers(newBibNumbers)
+        
         setCompetitorCount((prevCount) => prevCount + 1);
     }
 
@@ -48,6 +56,40 @@ export default function PrelimAdder() {
         var newJudges = judges;
         newJudges[index] = judge;
         setJudges(newJudges);
+    }
+
+    function SetPromotedCompetitor(competitorIndex: number, value: boolean) {
+        if (value) {
+            AddPromotedCompetitor(competitorIndex);
+        }
+        else {
+            RemovePromotedCompetitor(competitorIndex);
+        }
+    }
+
+    function AddPromotedCompetitor(competitorIndex: number) {
+        var newPromotedCompetitorList = [...promotedCompetitorIndexes];
+        newPromotedCompetitorList.push(competitorIndex);
+        setPromotedCompetitorIndexes(newPromotedCompetitorList);
+    }
+
+    function RemovePromotedCompetitor(competitorIndex: number) {
+        var newPromotedCompetitorList = [...promotedCompetitorIndexes];
+        var index = newPromotedCompetitorList.findIndex((c) => c == competitorIndex, 0);
+        if (index > -1) {
+            newPromotedCompetitorList.splice(index, 1);
+            setPromotedCompetitorIndexes(newPromotedCompetitorList);
+        }
+    }
+
+    function IsCompetitorIndexPromoted(competitorIndex: number) : boolean {
+        return promotedCompetitorIndexes.findIndex((c) => c == competitorIndex) > -1;
+    }
+
+    function SetBibNumber(competitorIndex: number, bibNumber: string) {
+        let newBibNumbers = [...bibNumbers];
+        newBibNumbers[competitorIndex] = bibNumber;
+        setBibNumbers(newBibNumbers);
     }
 
     function UpdateScore(competitorIndex: number, judgeIndex: number, score: CallbackScore) {
@@ -99,12 +141,12 @@ export default function PrelimAdder() {
             competitorRows.push(
                 <tr key={i}>
                     <td>{i + 1}</td>
-                    <td><input type='text'/></td>
+                    <td><input type='text' onChange={(e) => SetBibNumber(i, e.target.value)} value={bibNumbers[i]}/></td>
                     <td><Selector personDb={CompetitorDb} selectedPerson={competitors[i]} 
                             setSelectedPerson={(value: Competitor | undefined) => SetCompetitor(value, i)}/></td>
                     <JudgeScores competitorIndex={i}/>
                     <td>{CompetitorScoreSum(i)}</td>
-                    <td>*</td>
+                    <td><input type='checkbox' onChange={(e) => SetPromotedCompetitor(i, e.target.checked)} defaultChecked={IsCompetitorIndexPromoted(i)}/></td>
                 </tr>
             )
         }
