@@ -5,6 +5,7 @@ import { CallbackScore, Role } from '@/classes/Enums';
 import { Competitor, Judge } from '@/classes/IPerson';
 
 import CallbackScoreViewer from '@/component/prelim-callback-score-viewer';
+import Selector from '@/component/person-selector';
 
 import { TestData } from '@/test-data/test-data';
 
@@ -16,15 +17,6 @@ const JudgeSelector = () => {
         <select>
             {JudgeDb.map((judge, index) =>
                 <option key={index}>{judge.FullName}</option>)}
-        </select>
-    )
-}
-
-const CompetitorSelector = () => {
-    return (
-        <select>
-            {CompetitorDb.map((competitor, index) =>
-                <option key={index}>{competitor.FullName}</option>)}
         </select>
     )
 }
@@ -44,6 +36,14 @@ export default function PrelimAdder() {
 
     function AddJudge() {
         setJudgeCount((prevCount) => prevCount + 1);
+    }
+
+    function SetCompetitor(competitor: Competitor, index: number) {
+        console.log("index: " + index + " competitor: " + competitor.FullName);
+
+        var prevCompetitors = competitors;
+        prevCompetitors[index] = competitor;
+        setCompetitors(prevCompetitors);
     }
 
     const JudgesHeaders = () => {
@@ -68,10 +68,10 @@ export default function PrelimAdder() {
         var competitorRows = [];
         for (let i = 0; i < competitorCount; i++) {
             competitorRows.push(
-                <tr>
+                <tr key={i}>
                     <td>{i + 1}</td>
                     <td><input type='text'/></td>
-                    <td><CompetitorSelector/></td>
+                    <td><Selector index={i} personDb={CompetitorDb} selectedPerson={competitors[i]} setSelectedPerson={SetCompetitor}/></td>
                     <JudgeScores/>
                     <td>sum</td>
                     <td>*</td>
