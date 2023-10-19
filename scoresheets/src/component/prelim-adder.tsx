@@ -12,21 +12,12 @@ import { TestData } from '@/test-data/test-data';
 let JudgeDb = TestData.TestJudgesDb();
 let CompetitorDb = TestData.TestCompetitorsDb();
 
-const JudgeSelector = () => {
-    return (
-        <select>
-            {JudgeDb.map((judge, index) =>
-                <option key={index}>{judge.FullName}</option>)}
-        </select>
-    )
-}
-
 export default function PrelimAdder() {
     const [competitorCount, setCompetitorCount] = useState(0);
     const [judgeCount, setJudgeCount] = useState(0);
     
     const [competitors, setCompetitors] = useState(new Array<Competitor | undefined>());
-    const [judges, setJudges] = useState(new Array<Judge>());
+    const [judges, setJudges] = useState(new Array<Judge | undefined>());
 
     var scoreArray : CallbackScore[][];
 
@@ -44,10 +35,20 @@ export default function PrelimAdder() {
         setCompetitors(prevCompetitors);
     }
 
+    function SetJudge(judge: Judge | undefined, index: number) {
+        var newJudges = judges;
+        newJudges[index] = judge;
+        setJudges(newJudges);
+    }
+
     const JudgesHeaders = () => {
         var judgeHeaders = [];
         for (let i = 0; i < judgeCount; i++ ) {
-            judgeHeaders.push(<th><JudgeSelector/></th>);
+            judgeHeaders.push(
+                <th key={i}>
+                    <Selector personDb={JudgeDb} selectedPerson={judges[i]}
+                        setSelectedPerson={(value : Judge | undefined) => SetJudge(value, i)}/>
+                </th>);
         }
 
         return judgeHeaders;
