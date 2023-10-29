@@ -1,3 +1,5 @@
+'use client';
+
 import { IPerson } from "@/classes/IPerson";
 import React, { ChangeEvent, Component } from "react";
 

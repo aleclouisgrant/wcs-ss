@@ -1,3 +1,5 @@
+'use client';
+
 import { CallbackScore } from "@/classes/Enums";
 import { Util } from "@/classes/Util";
 

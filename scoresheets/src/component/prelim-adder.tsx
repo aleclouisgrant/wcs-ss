@@ -1,7 +1,8 @@
 'use client';
+
 import { useState } from 'react';
 
-import { CallbackScore, Role } from '@/classes/Enums';
+import { CallbackScore, Division, Role, Round } from '@/classes/Enums';
 import { Competitor, Judge } from '@/classes/IPerson';
 
 import CallbackScoreViewer from '@/component/prelim-callback-score-viewer';
@@ -9,11 +10,13 @@ import Selector from '@/component/person-selector';
 
 import { TestData } from '@/test-data/test-data';
 import { Util } from '@/classes/Util';
+import { PrelimCompetition } from '@/classes/Competition';
+import { PrelimScore } from '@/classes/IScore';
 
 let JudgeDb = TestData.TestJudgesDb();
 let CompetitorDb = TestData.TestCompetitorsDb();
 
-export default function PrelimAdder() {
+export default function PrelimAdder(props : {handlePrelimCompetition: (prelimCompetition: PrelimCompetition) => void}) {
     const [competitorCount, setCompetitorCount] = useState(0);
     const [judgeCount, setJudgeCount] = useState(0);
     
@@ -22,8 +25,45 @@ export default function PrelimAdder() {
 
     const [scores, setScores] = useState(new Array<Array<CallbackScore>>);
 
+    const [role, setRole] = useState(Role.Leader);
     const [promotedCompetitorIndexes, setPromotedCompetitorIndexes] = useState(new Array<number>());
     const [bibNumbers, setBibNumbers] = useState(new Array<string>());
+
+    function UpdatePrelimCompetition() {
+        var competition = new PrelimCompetition(
+            "TEST NAME", 
+            Division.AllStar,
+            Round.Prelims,
+            role);
+
+        var prelimScores = new Array<PrelimScore>();
+
+        for (let competitorIndex = 0; competitorIndex < competitorCount; competitorIndex++) {
+            var competitor = competitors[competitorIndex];
+
+            if (competitor == null){
+                continue;
+            }
+
+            competitor.BibNumber = parseInt(bibNumbers[competitorIndex]);
+            for (let judgeIndex = 0; judgeIndex < judgeCount; judgeIndex++) {
+                var judge = judges[judgeIndex];
+                var score = new PrelimScore(competitor, judge, scores[competitorIndex][judgeIndex]);
+                prelimScores.push(score);
+            }
+        }
+
+        for (let i = 0; i < promotedCompetitorIndexes.length; i++) {
+            var competitor = competitors[promotedCompetitorIndexes[i]];
+            if (competitor != null) {
+                competition.AddPromotedCompetitor(competitor);
+            }
+        }
+
+        competition.AddScores(prelimScores);
+
+        props.handlePrelimCompetition(competition);
+    }
 
     function AddCompetitor() {
         let newScores = [...scores];
@@ -56,6 +96,10 @@ export default function PrelimAdder() {
         var newJudges = judges;
         newJudges[index] = judge;
         setJudges(newJudges);
+    }
+
+    function SetRole(role: Role) {
+        setRole(role);
     }
 
     function SetPromotedCompetitor(competitorIndex: number, value: boolean) {
@@ -154,29 +198,17 @@ export default function PrelimAdder() {
         return competitorRows;
     }
 
-    function PrintSheet() {
-        console.log("Scores: ");
-        for (let i = 0; i < scores.length; i++) {
-            var judgeScores = '';
-            for (let j = 0; j < scores[i].length; j++) {
-                judgeScores += Util.CallbackScoreShorthand(scores[i][j]) + " ";
-            }
-            console.log(judgeScores);
-        }
-    }
-
     return (
         <div>
-            <button type='button' onClick={PrintSheet}>Print scores</button>
-
             <label>Role:</label>
-            <select>
+            <select onChange={(e) => SetRole(Util.StringToRole(e.target.value))} value={role}>
                 <option value={Role.Leader}>Leader</option>
                 <option value={Role.Follower}>Follower</option>
             </select>
 
             <button type='button' onClick={AddCompetitor}>Add Competitor</button>
             <button type='button' onClick={AddJudge}>Add Judge</button>
+            <button type='button' onClick={UpdatePrelimCompetition}>Save</button>
 
             <table id='CompetitionTable'>
                 <tbody>

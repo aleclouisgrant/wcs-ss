@@ -1,5 +1,7 @@
+'use client';
+
 import { PrelimCompetition } from '@/classes/Competition';
-import { Competitor, Judge } from '@/classes/IPerson';
+import { Judge } from '@/classes/IPerson';
 import { PrelimScore } from '@/classes/IScore';
 import { Util } from '@/classes/Util';
 

@@ -1,4 +1,4 @@
-import { CallbackScore, Tier } from './Enums';
+import { CallbackScore, Role, Tier } from './Enums';
 
 export module Util {
     export function GetAwardedPoints(tier: Tier, placement: number) : number {
@@ -161,6 +161,15 @@ export module Util {
             default:
             case Tier.NoTier:
                 return 0;
+        }
+    }
+
+    export function StringToRole(str: string) {
+        if (str == "Follower") {
+            return Role.Follower;
+        }
+        else {
+            return Role.Leader;
         }
     }
 }

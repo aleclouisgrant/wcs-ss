@@ -37,6 +37,36 @@ export class PrelimCompetition {
         this.Promoted = new Array<Competitor>;
     }
 
+    public Print() {
+        console.log("Name: " + this.Name);
+        console.log("Date: " + this._dateTime);
+        console.log("Division: " + this.Division);
+        console.log("Role: " + this.Role);
+        console.log("Round: " + this.Round);
+
+        console.log("Judges: ");
+        var judges = "";
+        this.Judges.map((judge) => {
+            judges += judge.FullName + ", ";
+        })
+        console.log(judges);
+
+        console.log("Scores: ");
+        
+        this.Competitors.map((competitor) => {
+            var judgeScores = "";
+            if (this.IsCompetitorPromoted(competitor)){
+                judgeScores += "*";
+            }
+            judgeScores += competitor.FullName + ": ";
+
+            this.ScoresByCompetitor(competitor).map((score) => {
+                judgeScores += Util.CallbackScoreShorthand(score.CallbackScore) + " ";
+            })
+            console.log(judgeScores);
+        });
+    }
+
     public get Tier(): Tier {
         return Util.GetTier(this.Competitors.length);
     }
