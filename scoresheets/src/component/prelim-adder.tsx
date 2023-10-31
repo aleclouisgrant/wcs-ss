@@ -11,7 +11,7 @@ import Selector from '@/component/person-selector';
 import { TestData } from '@/test-data/test-data';
 import { Util } from '@/classes/Util';
 import { PrelimCompetition } from '@/classes/Competition';
-import { PrelimScore } from '@/classes/IScore';
+import { PrelimScore, Score } from '@/classes/IScore';
 
 let JudgeDb = TestData.TestJudgesDb();
 let CompetitorDb = TestData.TestCompetitorsDb();
@@ -28,6 +28,8 @@ export default function PrelimAdder(props : {handlePrelimCompetition: (prelimCom
     const [role, setRole] = useState(Role.Leader);
     const [promotedCompetitorIndexes, setPromotedCompetitorIndexes] = useState(new Array<number>());
     const [bibNumbers, setBibNumbers] = useState(new Array<string>());
+
+    const [currentCallbackScore, setCurrentCallbackScore] = useState(CallbackScore.Unscored);
 
     function UpdatePrelimCompetition() {
         var competition = new PrelimCompetition(
@@ -155,6 +157,21 @@ export default function PrelimAdder(props : {handlePrelimCompetition: (prelimCom
         return judgeHeaders;
     }
 
+    function ScoreButton(props: {score : CallbackScore, competitorIndex : number, judgeIndex : number}) {
+        const [callbackScore, setScore] = useState(props.score);
+
+        function SetScore() {
+            setScore(currentCallbackScore);
+            UpdateScore(props.competitorIndex, props.judgeIndex, currentCallbackScore)
+        }
+
+        return (
+            <button onClick={SetScore}>
+                <CallbackScoreViewer callbackScore={callbackScore}/>
+            </button>
+        )
+    }
+
     function JudgeScores(props : {competitorIndex: number}) {
         var judgeScores = [];
         for (let judgeIndex = 0; judgeIndex < judgeCount; judgeIndex++ ) {
@@ -163,7 +180,7 @@ export default function PrelimAdder(props : {handlePrelimCompetition: (prelimCom
                 callbackScore = scores[props.competitorIndex][judgeIndex];
             }
 
-            judgeScores.push(<td key={judgeIndex}><CallbackScoreViewer callbackScore={callbackScore}/></td>);
+            judgeScores.push(<td key={judgeIndex}><ScoreButton score={callbackScore} competitorIndex={props.competitorIndex} judgeIndex={judgeIndex}/></td>);
         }
 
         return judgeScores;
@@ -198,6 +215,31 @@ export default function PrelimAdder(props : {handlePrelimCompetition: (prelimCom
         return competitorRows;
     }
 
+    function ScoreSelector() {
+        return (
+            <div>
+                <button type="button" onClick={() => setCurrentCallbackScore(CallbackScore.Yes)} style={{backgroundColor: "#34A56F", width: 30, height: 30}}>
+                    {Util.CallbackScoreShorthand(CallbackScore.Yes)}
+                </button>
+                <button type="button" onClick={() => setCurrentCallbackScore(CallbackScore.Alternate1)} style={{backgroundColor: "#FFDF00", width: 30, height: 30}}>
+                    {Util.CallbackScoreShorthand(CallbackScore.Alternate1)}
+                </button>
+                <button type="button" onClick={() => setCurrentCallbackScore(CallbackScore.Alternate2)} style={{backgroundColor: "#FBE7A1", width: 30, height: 30}}>
+                    {Util.CallbackScoreShorthand(CallbackScore.Alternate2)}
+                </button>
+                <button type="button" onClick={() => setCurrentCallbackScore(CallbackScore.Alternate3)} style={{backgroundColor: "#FFFFC2", width: 30, height: 30}}>
+                    {Util.CallbackScoreShorthand(CallbackScore.Alternate3)}
+                </button>
+                <button type="button" onClick={() => setCurrentCallbackScore(CallbackScore.No)} style={{backgroundColor: "#98AFC7", width: 30, height: 30}}>
+                    {Util.CallbackScoreShorthand(CallbackScore.No)}
+                </button>
+                <button type="button" onClick={() => setCurrentCallbackScore(CallbackScore.Unscored)} style={{backgroundColor: "red", width: 30, height: 30}}>
+                    {Util.CallbackScoreShorthand(CallbackScore.Unscored)}
+                </button>
+            </div>
+        )
+    }
+
     return (
         <div>
             <label>Role:</label>
@@ -209,6 +251,8 @@ export default function PrelimAdder(props : {handlePrelimCompetition: (prelimCom
             <button type='button' onClick={AddCompetitor}>Add Competitor</button>
             <button type='button' onClick={AddJudge}>Add Judge</button>
             <button type='button' onClick={UpdatePrelimCompetition}>Save</button>
+
+            <ScoreSelector/>
 
             <table id='CompetitionTable'>
                 <tbody>
