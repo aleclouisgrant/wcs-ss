@@ -38,20 +38,22 @@ export class PrelimCompetition {
     }
 
     public Print() {
-        console.log("Name: " + this.Name);
-        console.log("Date: " + this._dateTime);
-        console.log("Division: " + this.Division);
-        console.log("Role: " + this.Role);
-        console.log("Round: " + this.Round);
+        var print = "";
 
-        console.log("Judges: ");
+        print += "Name: " + this.Name + '\n';
+        print += "Date: " + this._dateTime + '\n';
+        print += "Division: " + this.Division + '\n';
+        print += "Role: " + this.Role + '\n';
+        print += "Round: " + this.Round + '\n';
+
+        print += "Judges: ";
         var judges = "";
         this.Judges.map((judge) => {
             judges += judge.FullName + ", ";
         })
-        console.log(judges);
+        print += judges + '\n';
 
-        console.log("Scores: ");
+        print += "Scores: " + '\n';
         
         this.Competitors.map((competitor) => {
             var judgeScores = "";
@@ -63,8 +65,10 @@ export class PrelimCompetition {
             this.ScoresByCompetitor(competitor).map((score) => {
                 judgeScores += Util.CallbackScoreShorthand(score.CallbackScore) + " ";
             })
-            console.log(judgeScores);
+            print += judgeScores + '\n';
         });
+        
+        console.log(print);
     }
 
     public get Tier(): Tier {
