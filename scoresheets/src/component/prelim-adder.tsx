@@ -38,7 +38,7 @@ export default function PrelimAdder(props : {handlePrelimCompetition: (prelimCom
 
     function UpdatePrelimCompetition() {
         var competition = new PrelimCompetition(compName, date, division, round, role);
-        
+
         var prelimScores = new Array<PrelimScore>();
 
         for (let competitorIndex = 0; competitorIndex < competitorCount; competitorIndex++) {
@@ -63,6 +63,22 @@ export default function PrelimAdder(props : {handlePrelimCompetition: (prelimCom
             }
         }
 
+        var judgeList = new Array<Judge>();
+        judges.map((judge) => {
+            if (judge != null) {
+                judgeList.push(judge);
+            }
+        });
+        competition.Judges = judgeList;
+        
+        var competitorList = new Array<Competitor>();
+        competitors.map((competitor) => {
+            if (competitor != null) {
+                competitorList.push(competitor);
+            }
+        });
+        competition.Competitors = competitorList;
+        
         competition.AddScores(prelimScores);
 
         props.handlePrelimCompetition(competition);
@@ -247,6 +263,21 @@ export default function PrelimAdder(props : {handlePrelimCompetition: (prelimCom
         )
     }
 
+    function Clear() {
+        setCompetitorCount(0);
+        setJudgeCount(0);
+        setCompetitors(new Array<Competitor | undefined>());
+        setJudges(new Array<Judge | undefined>());
+        setScores(new Array<Array<CallbackScore>>);
+        setCompName("");
+        setRole(Role.Leader);
+        setDivision(Division.AllStar);
+        setRound(Round.Prelims);
+        setDate(new Date());
+        setPromotedCompetitorIndexes(new Array<number>());
+        setBibNumbers(new Array<string>());
+    }
+
     return (
         <div>
             <label>Name:</label>
@@ -264,6 +295,7 @@ export default function PrelimAdder(props : {handlePrelimCompetition: (prelimCom
             <button type='button' onClick={AddCompetitor}>Add Competitor</button>
             <button type='button' onClick={AddJudge}>Add Judge</button>
             <button type='button' onClick={UpdatePrelimCompetition}>Save</button>
+            <button type='button' onClick={Clear}>Clear</button>
 
             <ScoreSelector/>
 
