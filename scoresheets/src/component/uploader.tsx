@@ -29,7 +29,6 @@ export default function Uploader() {
         <div>
             <h1>{event.Name}</h1>
             <PrelimAdder handlePrelimCompetition={HandlePrelimCompetition} />
-            <PrelimsScoresheet competition={competition} />
         </div>
     )
 }

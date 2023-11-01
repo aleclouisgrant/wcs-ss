@@ -11,7 +11,7 @@ import Selector from '@/component/person-selector';
 import { TestData } from '@/test-data/test-data';
 import { Util } from '@/classes/Util';
 import { PrelimCompetition } from '@/classes/Competition';
-import { PrelimScore, Score } from '@/classes/IScore';
+import { PrelimScore } from '@/classes/IScore';
 
 let JudgeDb = TestData.TestJudgesDb();
 let CompetitorDb = TestData.TestCompetitorsDb();
@@ -26,6 +26,8 @@ export default function PrelimAdder(props : {handlePrelimCompetition: (prelimCom
     const [scores, setScores] = useState(new Array<Array<CallbackScore>>);
 
     const [role, setRole] = useState(Role.Leader);
+    const [compName, setCompName] = useState("");
+
     const [promotedCompetitorIndexes, setPromotedCompetitorIndexes] = useState(new Array<number>());
     const [bibNumbers, setBibNumbers] = useState(new Array<string>());
 
@@ -33,7 +35,7 @@ export default function PrelimAdder(props : {handlePrelimCompetition: (prelimCom
 
     function UpdatePrelimCompetition() {
         var competition = new PrelimCompetition(
-            "TEST NAME", 
+            compName, 
             Division.AllStar,
             Round.Prelims,
             role);
@@ -242,6 +244,9 @@ export default function PrelimAdder(props : {handlePrelimCompetition: (prelimCom
 
     return (
         <div>
+            <label>Name:</label>
+            <input inputMode='text' onChange={(e) => setCompName(e.target.value)} value={compName}/>
+
             <label>Role:</label>
             <select onChange={(e) => SetRole(Util.StringToRole(e.target.value))} value={role}>
                 <option value={Role.Leader}>Leader</option>
