@@ -59,6 +59,7 @@ export class PrelimCompetition {
             if (this.IsCompetitorPromoted(competitor)){
                 judgeScores += "*";
             }
+            judgeScores += competitor.BibNumber.toString() + " ";
             judgeScores += competitor.FullName + ": ";
 
             this.ScoresByCompetitor(competitor).map((score) => {

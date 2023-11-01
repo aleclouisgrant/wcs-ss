@@ -16,6 +16,16 @@ import { PrelimScore } from '@/classes/IScore';
 let JudgeDb = TestData.TestJudgesDb();
 let CompetitorDb = TestData.TestCompetitorsDb();
 
+function BibNumberInput(props: { competitorIndex : number, input : string, handleBibNumber : (competitorIndex: number, bibNumber: string) => void}) {
+    return (
+        <input 
+            type='text' 
+            value={props.input}
+            onChange={(e) => props.handleBibNumber(props.competitorIndex, e.target.value)} 
+            name='bibNumberInput'/>
+    )
+}
+
 export default function PrelimAdder(props: { handlePrelimCompetition: (prelimCompetition: PrelimCompetition) => void }) {
     const [competitorCount, setCompetitorCount] = useState(0);
     const [judgeCount, setJudgeCount] = useState(0);
@@ -49,6 +59,7 @@ export default function PrelimAdder(props: { handlePrelimCompetition: (prelimCom
             }
 
             competitor.BibNumber = parseInt(bibNumbers[competitorIndex]);
+
             for (let judgeIndex = 0; judgeIndex < judgeCount; judgeIndex++) {
                 var judge = judges[judgeIndex];
                 var score = new PrelimScore(competitor, judge, scores[competitorIndex][judgeIndex]);
@@ -151,10 +162,14 @@ export default function PrelimAdder(props: { handlePrelimCompetition: (prelimCom
         return promotedCompetitorIndexes.findIndex((c) => c == competitorIndex) > -1;
     }
 
-    function SetBibNumber(competitorIndex: number, bibNumber: string) {
-        let newBibNumbers = [...bibNumbers];
-        newBibNumbers[competitorIndex] = bibNumber;
-        setBibNumbers(newBibNumbers);
+    function CompetitorScoreSum(competitorIndex: number): number {
+        var sum = 0;
+
+        for (let judgeIndex = 0; judgeIndex < judgeCount; judgeIndex++) {
+            sum = sum + Util.GetCallbackScoreNumber(scores[competitorIndex][judgeIndex]);
+        }
+
+        return sum;
     }
 
     function UpdateScore(competitorIndex: number, judgeIndex: number, score: CallbackScore) {
@@ -205,23 +220,19 @@ export default function PrelimAdder(props: { handlePrelimCompetition: (prelimCom
         return judgeScores;
     }
 
-    function CompetitorScoreSum(competitorIndex: number): number {
-        var sum = 0;
-
-        for (let judgeIndex = 0; judgeIndex < judgeCount; judgeIndex++) {
-            sum = sum + Util.GetCallbackScoreNumber(scores[competitorIndex][judgeIndex]);
+    function CompetitorRows() {
+        function SetBibNumber(competitorIndex: number, bibNumber: string) {
+            let newBibNumbers = [...bibNumbers];
+            newBibNumbers[competitorIndex] = bibNumber;
+            setBibNumbers(newBibNumbers);
         }
 
-        return sum;
-    }
-
-    function CompetitorRows() {
         var competitorRows = [];
         for (let i = 0; i < competitorCount; i++) {
             competitorRows.push(
                 <tr key={i}>
                     <td>{i + 1}</td>
-                    <td><input type='text' onChange={(e) => SetBibNumber(i, e.target.value)} value={bibNumbers[i]} /></td>
+                    <td><BibNumberInput input={bibNumbers[i]} competitorIndex={i} handleBibNumber={SetBibNumber}/></td>
                     <td><Selector personDb={CompetitorDb} selectedPerson={competitors[i]}
                         setSelectedPerson={(value: Competitor | undefined) => SetCompetitor(value, i)} /></td>
                     <JudgeScores competitorIndex={i} />
@@ -232,31 +243,6 @@ export default function PrelimAdder(props: { handlePrelimCompetition: (prelimCom
         }
 
         return competitorRows;
-    }
-
-    function ScoreSelector() {
-        return (
-            <div>
-                <button type="button" onClick={() => setCurrentCallbackScore(CallbackScore.Yes)} style={{ backgroundColor: "#34A56F", width: 30, height: 30 }}>
-                    {Util.CallbackScoreShorthand(CallbackScore.Yes)}
-                </button>
-                <button type="button" onClick={() => setCurrentCallbackScore(CallbackScore.Alternate1)} style={{ backgroundColor: "#FFDF00", width: 30, height: 30 }}>
-                    {Util.CallbackScoreShorthand(CallbackScore.Alternate1)}
-                </button>
-                <button type="button" onClick={() => setCurrentCallbackScore(CallbackScore.Alternate2)} style={{ backgroundColor: "#FBE7A1", width: 30, height: 30 }}>
-                    {Util.CallbackScoreShorthand(CallbackScore.Alternate2)}
-                </button>
-                <button type="button" onClick={() => setCurrentCallbackScore(CallbackScore.Alternate3)} style={{ backgroundColor: "#FFFFC2", width: 30, height: 30 }}>
-                    {Util.CallbackScoreShorthand(CallbackScore.Alternate3)}
-                </button>
-                <button type="button" onClick={() => setCurrentCallbackScore(CallbackScore.No)} style={{ backgroundColor: "#98AFC7", width: 30, height: 30 }}>
-                    {Util.CallbackScoreShorthand(CallbackScore.No)}
-                </button>
-                <button type="button" onClick={() => setCurrentCallbackScore(CallbackScore.Unscored)} style={{ backgroundColor: "red", width: 30, height: 30 }}>
-                    {Util.CallbackScoreShorthand(CallbackScore.Unscored)}
-                </button>
-            </div>
-        )
     }
 
     function Clear() {
@@ -326,7 +312,26 @@ export default function PrelimAdder(props: { handlePrelimCompetition: (prelimCom
                 <button type='button' onClick={Clear}>Clear</button>
             </div>
 
-            <ScoreSelector />
+            <div>
+                <button type="button" onClick={() => setCurrentCallbackScore(CallbackScore.Yes)} style={{ backgroundColor: "#34A56F", width: 30, height: 30 }}>
+                    {Util.CallbackScoreShorthand(CallbackScore.Yes)}
+                </button>
+                <button type="button" onClick={() => setCurrentCallbackScore(CallbackScore.Alternate1)} style={{ backgroundColor: "#FFDF00", width: 30, height: 30 }}>
+                    {Util.CallbackScoreShorthand(CallbackScore.Alternate1)}
+                </button>
+                <button type="button" onClick={() => setCurrentCallbackScore(CallbackScore.Alternate2)} style={{ backgroundColor: "#FBE7A1", width: 30, height: 30 }}>
+                    {Util.CallbackScoreShorthand(CallbackScore.Alternate2)}
+                </button>
+                <button type="button" onClick={() => setCurrentCallbackScore(CallbackScore.Alternate3)} style={{ backgroundColor: "#FFFFC2", width: 30, height: 30 }}>
+                    {Util.CallbackScoreShorthand(CallbackScore.Alternate3)}
+                </button>
+                <button type="button" onClick={() => setCurrentCallbackScore(CallbackScore.No)} style={{ backgroundColor: "#98AFC7", width: 30, height: 30 }}>
+                    {Util.CallbackScoreShorthand(CallbackScore.No)}
+                </button>
+                <button type="button" onClick={() => setCurrentCallbackScore(CallbackScore.Unscored)} style={{ backgroundColor: "red", width: 30, height: 30 }}>
+                    {Util.CallbackScoreShorthand(CallbackScore.Unscored)}
+                </button>
+            </div>
 
             <table id='CompetitionTable'>
                 <tbody>
@@ -338,7 +343,7 @@ export default function PrelimAdder(props: { handlePrelimCompetition: (prelimCom
                         <th>Sum</th>
                         <th>Promoted</th>
                     </tr>
-                    <CompetitorRows />
+                    {CompetitorRows()}
                 </tbody>
             </table>
         </div>

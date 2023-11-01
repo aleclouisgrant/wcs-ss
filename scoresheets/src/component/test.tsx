@@ -1,24 +1,47 @@
-'use client';
+"use client";
 
-import { useState } from "react";
-import Selector from "./person-selector";
-import { TestData } from "@/test-data/test-data";
-import { Competitor, Person } from "@/classes/IPerson";
+import React, { useState } from "react";
 
-export default function Uploader() {
-    const [person, setPerson] = useState(new Competitor("Test", "Testy", 300));
+function Input(index: number, input: string, setInput: (value: string, index: number) => void) {
+  return (
+    <div>
+      <input
+        type="text"
+        value={input}
+        onChange={(e) => setInput(e.target.value, index)}/>
+    </div>
+  );
+}
 
-    function HandlePerson(competitor: Competitor | undefined) {
-        if (competitor != null) {
-            setPerson(competitor);
-        }
+export default function Test(){
+    const [inputs, setInputs] = useState(new Array<string>());
+    
+    function Inputs() {
+      function handleAdd() {
+        const tempInputs = [...inputs];
+        tempInputs.push("");
+        setInputs(tempInputs);
+      }
+      function handleChange(value: string, index: number) {
+        const tempInputs = [...inputs];
+        tempInputs[index] = value;
+        setInputs(tempInputs);
+      }
+    
+      return (
+        <div>
+          <button onClick={handleAdd}>Add</button>
+          <ul>
+            {inputs.map((input, index) => Input(index, input, handleChange))}
+          </ul>
+        </div>
+      );
     }
 
     return (
         <div>
-            <Selector personDb={TestData.TestCompetitorsDb()} selectedPerson={person} setSelectedPerson={HandlePerson}></Selector>
-            <h2>{person.FullName}</h2>
+            <Inputs/>
         </div>
     )
-}
 
+}
