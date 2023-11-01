@@ -117,10 +117,6 @@ export default function PrelimAdder(props : {handlePrelimCompetition: (prelimCom
         setJudges(newJudges);
     }
 
-    function SetRole(role: Role) {
-        setRole(role);
-    }
-
     function StringFromDate(str: Date) : string {
         return new Date(date.getTime() - (date.getTimezoneOffset() * 60000 ))
                     .toISOString()
@@ -288,7 +284,7 @@ export default function PrelimAdder(props : {handlePrelimCompetition: (prelimCom
                 <input type='date' onChange={(e) => setDate(new Date(e.target.value))} value={StringFromDate(date)}/>
 
                 <label>Role:</label>
-                <select onChange={(e) => SetRole(Role[e.target.value as keyof typeof Role])} value={role}>
+                <select onChange={(e) => setRole(Role[e.target.value as keyof typeof Role])} value={role}>
                     <option value={Role.Leader}>{Role.Leader}</option>
                     <option value={Role.Follower}>{Role.Follower}</option>
                 </select>
