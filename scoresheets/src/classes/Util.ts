@@ -1,4 +1,4 @@
-import { CallbackScore, Role, Tier } from './Enums';
+import { CallbackScore, Division, Role, Tier } from './Enums';
 
 export module Util {
     export function GetAwardedPoints(tier: Tier, placement: number) : number {

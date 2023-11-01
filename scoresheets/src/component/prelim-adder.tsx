@@ -280,22 +280,45 @@ export default function PrelimAdder(props : {handlePrelimCompetition: (prelimCom
 
     return (
         <div>
-            <label>Name:</label>
-            <input inputMode='text' onChange={(e) => setCompName(e.target.value)} value={compName}/>
+            <div>
+                <label>Name:</label>
+                <input inputMode='text' onChange={(e) => setCompName(e.target.value)} value={compName}/>
 
-            <label>Date:</label>
-            <input type='date' onChange={(e) => setDate(new Date(e.target.value))} value={StringFromDate(date)}/>
+                <label>Date:</label>
+                <input type='date' onChange={(e) => setDate(new Date(e.target.value))} value={StringFromDate(date)}/>
 
-            <label>Role:</label>
-            <select onChange={(e) => SetRole(Util.StringToRole(e.target.value))} value={role}>
-                <option value={Role.Leader}>Leader</option>
-                <option value={Role.Follower}>Follower</option>
-            </select>
+                <label>Role:</label>
+                <select onChange={(e) => SetRole(Role[e.target.value as keyof typeof Role])} value={role}>
+                    <option value={Role.Leader}>{Role.Leader}</option>
+                    <option value={Role.Follower}>{Role.Follower}</option>
+                </select>
 
-            <button type='button' onClick={AddCompetitor}>Add Competitor</button>
-            <button type='button' onClick={AddJudge}>Add Judge</button>
-            <button type='button' onClick={UpdatePrelimCompetition}>Save</button>
-            <button type='button' onClick={Clear}>Clear</button>
+                <label>Division:</label>
+                <select onChange={(e) => setDivision(Division[e.target.value as keyof typeof Division])} value={division}>
+                    <option value={Division.Newcomer}>{Division.Newcomer}</option>
+                    <option value={Division.Novice}>{Division.Novice}</option>
+                    <option value={Division.Intermediate}>{Division.Intermediate}</option>
+                    <option value={Division.Advanced}>{Division.Advanced}</option>
+                    <option value={Division.AllStar}>{Division.AllStar}</option>
+                    <option value={Division.Champion}>{Division.Champion}</option>
+                    <option value={Division.Open}>{Division.Open}</option>
+                </select>
+
+                <label>Round:</label>
+                <select onChange={(e) => setRound(Round[e.target.value as keyof typeof Round])} value={round}>
+                    <option value={Round.Prelims}>{Round.Prelims}</option>
+                    <option value={Round.Quarters}>{Round.Quarters}</option>
+                    <option value={Round.Semis}>{Round.Semis}</option>
+                    <option value={Round.Finals}>{Round.Finals}</option>
+                </select>
+            </div>
+
+            <div>
+                <button type='button' onClick={AddCompetitor}>Add Competitor</button>
+                <button type='button' onClick={AddJudge}>Add Judge</button>
+                <button type='button' onClick={UpdatePrelimCompetition}>Save</button>
+                <button type='button' onClick={Clear}>Clear</button>
+            </div>
 
             <ScoreSelector/>
 
