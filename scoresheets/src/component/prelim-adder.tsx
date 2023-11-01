@@ -16,10 +16,10 @@ import { PrelimScore } from '@/classes/IScore';
 let JudgeDb = TestData.TestJudgesDb();
 let CompetitorDb = TestData.TestCompetitorsDb();
 
-export default function PrelimAdder(props : {handlePrelimCompetition: (prelimCompetition: PrelimCompetition) => void}) {
+export default function PrelimAdder(props: { handlePrelimCompetition: (prelimCompetition: PrelimCompetition) => void }) {
     const [competitorCount, setCompetitorCount] = useState(0);
     const [judgeCount, setJudgeCount] = useState(0);
-    
+
     const [competitors, setCompetitors] = useState(new Array<Competitor | undefined>());
     const [judges, setJudges] = useState(new Array<Judge | undefined>());
 
@@ -44,7 +44,7 @@ export default function PrelimAdder(props : {handlePrelimCompetition: (prelimCom
         for (let competitorIndex = 0; competitorIndex < competitorCount; competitorIndex++) {
             var competitor = competitors[competitorIndex];
 
-            if (competitor == null){
+            if (competitor == null) {
                 continue;
             }
 
@@ -70,7 +70,7 @@ export default function PrelimAdder(props : {handlePrelimCompetition: (prelimCom
             }
         });
         competition.Judges = judgeList;
-        
+
         var competitorList = new Array<Competitor>();
         competitors.map((competitor) => {
             if (competitor != null) {
@@ -78,7 +78,7 @@ export default function PrelimAdder(props : {handlePrelimCompetition: (prelimCom
             }
         });
         competition.Competitors = competitorList;
-        
+
         competition.AddScores(prelimScores);
 
         props.handlePrelimCompetition(competition);
@@ -92,7 +92,7 @@ export default function PrelimAdder(props : {handlePrelimCompetition: (prelimCom
         let newBibNumbers = [...bibNumbers];
         newBibNumbers.push("");
         setBibNumbers(newBibNumbers)
-        
+
         setCompetitorCount((prevCount) => prevCount + 1);
     }
 
@@ -117,10 +117,10 @@ export default function PrelimAdder(props : {handlePrelimCompetition: (prelimCom
         setJudges(newJudges);
     }
 
-    function StringFromDate(str: Date) : string {
-        return new Date(date.getTime() - (date.getTimezoneOffset() * 60000 ))
-                    .toISOString()
-                    .split("T")[0];
+    function StringFromDate(str: Date): string {
+        return new Date(date.getTime() - (date.getTimezoneOffset() * 60000))
+            .toISOString()
+            .split("T")[0];
     }
 
     function SetPromotedCompetitor(competitorIndex: number, value: boolean) {
@@ -147,7 +147,7 @@ export default function PrelimAdder(props : {handlePrelimCompetition: (prelimCom
         }
     }
 
-    function IsCompetitorIndexPromoted(competitorIndex: number) : boolean {
+    function IsCompetitorIndexPromoted(competitorIndex: number): boolean {
         return promotedCompetitorIndexes.findIndex((c) => c == competitorIndex) > -1;
     }
 
@@ -165,18 +165,18 @@ export default function PrelimAdder(props : {handlePrelimCompetition: (prelimCom
 
     function JudgesHeaders() {
         var judgeHeaders = [];
-        for (let i = 0; i < judgeCount; i++ ) {
+        for (let i = 0; i < judgeCount; i++) {
             judgeHeaders.push(
                 <th key={i}>
                     <Selector personDb={JudgeDb} selectedPerson={judges[i]}
-                        setSelectedPerson={(value : Judge | undefined) => SetJudge(value, i)}/>
+                        setSelectedPerson={(value: Judge | undefined) => SetJudge(value, i)} />
                 </th>);
         }
 
         return judgeHeaders;
     }
 
-    function ScoreButton(props: {score : CallbackScore, competitorIndex : number, judgeIndex : number}) {
+    function ScoreButton(props: { score: CallbackScore, competitorIndex: number, judgeIndex: number }) {
         const [callbackScore, setScore] = useState(props.score);
 
         function SetScore() {
@@ -186,29 +186,29 @@ export default function PrelimAdder(props : {handlePrelimCompetition: (prelimCom
 
         return (
             <button onClick={SetScore}>
-                <CallbackScoreViewer callbackScore={callbackScore}/>
+                <CallbackScoreViewer callbackScore={callbackScore} />
             </button>
         )
     }
 
-    function JudgeScores(props : {competitorIndex: number}) {
+    function JudgeScores(props: { competitorIndex: number }) {
         var judgeScores = [];
-        for (let judgeIndex = 0; judgeIndex < judgeCount; judgeIndex++ ) {
+        for (let judgeIndex = 0; judgeIndex < judgeCount; judgeIndex++) {
             var callbackScore = CallbackScore.Unscored;
             if (scores[props.competitorIndex][judgeIndex] != null) {
                 callbackScore = scores[props.competitorIndex][judgeIndex];
             }
 
-            judgeScores.push(<td key={judgeIndex}><ScoreButton score={callbackScore} competitorIndex={props.competitorIndex} judgeIndex={judgeIndex}/></td>);
+            judgeScores.push(<td key={judgeIndex}><ScoreButton score={callbackScore} competitorIndex={props.competitorIndex} judgeIndex={judgeIndex} /></td>);
         }
 
         return judgeScores;
     }
 
-    function CompetitorScoreSum(competitorIndex: number) : number {
+    function CompetitorScoreSum(competitorIndex: number): number {
         var sum = 0;
 
-        for (let judgeIndex = 0; judgeIndex < judgeCount; judgeIndex++){
+        for (let judgeIndex = 0; judgeIndex < judgeCount; judgeIndex++) {
             sum = sum + Util.GetCallbackScoreNumber(scores[competitorIndex][judgeIndex]);
         }
 
@@ -221,12 +221,12 @@ export default function PrelimAdder(props : {handlePrelimCompetition: (prelimCom
             competitorRows.push(
                 <tr key={i}>
                     <td>{i + 1}</td>
-                    <td><input type='text' onChange={(e) => SetBibNumber(i, e.target.value)} value={bibNumbers[i]}/></td>
-                    <td><Selector personDb={CompetitorDb} selectedPerson={competitors[i]} 
-                            setSelectedPerson={(value: Competitor | undefined) => SetCompetitor(value, i)}/></td>
-                    <JudgeScores competitorIndex={i}/>
+                    <td><input type='text' onChange={(e) => SetBibNumber(i, e.target.value)} value={bibNumbers[i]} /></td>
+                    <td><Selector personDb={CompetitorDb} selectedPerson={competitors[i]}
+                        setSelectedPerson={(value: Competitor | undefined) => SetCompetitor(value, i)} /></td>
+                    <JudgeScores competitorIndex={i} />
                     <td>{CompetitorScoreSum(i)}</td>
-                    <td><input type='checkbox' onChange={(e) => SetPromotedCompetitor(i, e.target.checked)} defaultChecked={IsCompetitorIndexPromoted(i)}/></td>
+                    <td><input type='checkbox' onChange={(e) => SetPromotedCompetitor(i, e.target.checked)} defaultChecked={IsCompetitorIndexPromoted(i)} /></td>
                 </tr>
             )
         }
@@ -237,22 +237,22 @@ export default function PrelimAdder(props : {handlePrelimCompetition: (prelimCom
     function ScoreSelector() {
         return (
             <div>
-                <button type="button" onClick={() => setCurrentCallbackScore(CallbackScore.Yes)} style={{backgroundColor: "#34A56F", width: 30, height: 30}}>
+                <button type="button" onClick={() => setCurrentCallbackScore(CallbackScore.Yes)} style={{ backgroundColor: "#34A56F", width: 30, height: 30 }}>
                     {Util.CallbackScoreShorthand(CallbackScore.Yes)}
                 </button>
-                <button type="button" onClick={() => setCurrentCallbackScore(CallbackScore.Alternate1)} style={{backgroundColor: "#FFDF00", width: 30, height: 30}}>
+                <button type="button" onClick={() => setCurrentCallbackScore(CallbackScore.Alternate1)} style={{ backgroundColor: "#FFDF00", width: 30, height: 30 }}>
                     {Util.CallbackScoreShorthand(CallbackScore.Alternate1)}
                 </button>
-                <button type="button" onClick={() => setCurrentCallbackScore(CallbackScore.Alternate2)} style={{backgroundColor: "#FBE7A1", width: 30, height: 30}}>
+                <button type="button" onClick={() => setCurrentCallbackScore(CallbackScore.Alternate2)} style={{ backgroundColor: "#FBE7A1", width: 30, height: 30 }}>
                     {Util.CallbackScoreShorthand(CallbackScore.Alternate2)}
                 </button>
-                <button type="button" onClick={() => setCurrentCallbackScore(CallbackScore.Alternate3)} style={{backgroundColor: "#FFFFC2", width: 30, height: 30}}>
+                <button type="button" onClick={() => setCurrentCallbackScore(CallbackScore.Alternate3)} style={{ backgroundColor: "#FFFFC2", width: 30, height: 30 }}>
                     {Util.CallbackScoreShorthand(CallbackScore.Alternate3)}
                 </button>
-                <button type="button" onClick={() => setCurrentCallbackScore(CallbackScore.No)} style={{backgroundColor: "#98AFC7", width: 30, height: 30}}>
+                <button type="button" onClick={() => setCurrentCallbackScore(CallbackScore.No)} style={{ backgroundColor: "#98AFC7", width: 30, height: 30 }}>
                     {Util.CallbackScoreShorthand(CallbackScore.No)}
                 </button>
-                <button type="button" onClick={() => setCurrentCallbackScore(CallbackScore.Unscored)} style={{backgroundColor: "red", width: 30, height: 30}}>
+                <button type="button" onClick={() => setCurrentCallbackScore(CallbackScore.Unscored)} style={{ backgroundColor: "red", width: 30, height: 30 }}>
                     {Util.CallbackScoreShorthand(CallbackScore.Unscored)}
                 </button>
             </div>
@@ -277,36 +277,46 @@ export default function PrelimAdder(props : {handlePrelimCompetition: (prelimCom
     return (
         <div>
             <div>
-                <label>Name:</label>
-                <input inputMode='text' onChange={(e) => setCompName(e.target.value)} value={compName}/>
+                <label>
+                    Name:
+                    <input name='nameInput' inputMode='text' onChange={(e) => setCompName(e.target.value)} value={compName} />
+                </label>
 
-                <label>Date:</label>
-                <input type='date' onChange={(e) => setDate(new Date(e.target.value))} value={StringFromDate(date)}/>
+                <label>
+                    Date:
+                    <input name='dateInput' type='date' onChange={(e) => setDate(new Date(e.target.value))} value={StringFromDate(date)} />
+                </label>
 
-                <label>Role:</label>
-                <select onChange={(e) => setRole(Role[e.target.value as keyof typeof Role])} value={role}>
-                    <option value={Role.Leader}>{Role.Leader}</option>
-                    <option value={Role.Follower}>{Role.Follower}</option>
-                </select>
+                <label>
+                    Role:
+                    <select name='roleInput' onChange={(e) => setRole(Role[e.target.value as keyof typeof Role])} value={role}>
+                        <option value={Role.Leader}>{Role.Leader}</option>
+                        <option value={Role.Follower}>{Role.Follower}</option>
+                    </select>
+                </label>
 
-                <label>Division:</label>
-                <select onChange={(e) => setDivision(Division[e.target.value as keyof typeof Division])} value={division}>
-                    <option value={Division.Newcomer}>{Division.Newcomer}</option>
-                    <option value={Division.Novice}>{Division.Novice}</option>
-                    <option value={Division.Intermediate}>{Division.Intermediate}</option>
-                    <option value={Division.Advanced}>{Division.Advanced}</option>
-                    <option value={Division.AllStar}>{Division.AllStar}</option>
-                    <option value={Division.Champion}>{Division.Champion}</option>
-                    <option value={Division.Open}>{Division.Open}</option>
-                </select>
+                <label>
+                    Division:
+                    <select name='divisionInput' onChange={(e) => setDivision(Division[e.target.value as keyof typeof Division])} value={division}>
+                        <option value={Division.Newcomer}>{Division.Newcomer}</option>
+                        <option value={Division.Novice}>{Division.Novice}</option>
+                        <option value={Division.Intermediate}>{Division.Intermediate}</option>
+                        <option value={Division.Advanced}>{Division.Advanced}</option>
+                        <option value={Division.AllStar}>{Division.AllStar}</option>
+                        <option value={Division.Champion}>{Division.Champion}</option>
+                        <option value={Division.Open}>{Division.Open}</option>
+                    </select>
+                </label>
 
-                <label>Round:</label>
-                <select onChange={(e) => setRound(Round[e.target.value as keyof typeof Round])} value={round}>
-                    <option value={Round.Prelims}>{Round.Prelims}</option>
-                    <option value={Round.Quarters}>{Round.Quarters}</option>
-                    <option value={Round.Semis}>{Round.Semis}</option>
-                    <option value={Round.Finals}>{Round.Finals}</option>
-                </select>
+                <label>
+                    Round:
+                    <select name='roundInput' onChange={(e) => setRound(Round[e.target.value as keyof typeof Round])} value={round}>
+                        <option value={Round.Prelims}>{Round.Prelims}</option>
+                        <option value={Round.Quarters}>{Round.Quarters}</option>
+                        <option value={Round.Semis}>{Round.Semis}</option>
+                        <option value={Round.Finals}>{Round.Finals}</option>
+                    </select>
+                </label>
             </div>
 
             <div>
@@ -316,7 +326,7 @@ export default function PrelimAdder(props : {handlePrelimCompetition: (prelimCom
                 <button type='button' onClick={Clear}>Clear</button>
             </div>
 
-            <ScoreSelector/>
+            <ScoreSelector />
 
             <table id='CompetitionTable'>
                 <tbody>
@@ -324,11 +334,11 @@ export default function PrelimAdder(props : {handlePrelimCompetition: (prelimCom
                         <th>Count</th>
                         <th>Bib</th>
                         <th>Competitor</th>
-                        <JudgesHeaders/>
+                        <JudgesHeaders />
                         <th>Sum</th>
                         <th>Promoted</th>
                     </tr>
-                    <CompetitorRows/>
+                    <CompetitorRows />
                 </tbody>
             </table>
         </div>
