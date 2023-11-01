@@ -16,15 +16,13 @@ export enum Division {
     Advanced = "Advanced",
     AllStar = "All Star",
     Champion = "Champion",
-    Open = "Open",
-    Sophisticated = "Sophsticated",
-    Masters = "Masters",
+    Open = "Open"
 }
 
 export enum Round {
     Prelims = "Prelims",
-    Quarters = "Quarterfinals",
-    Semis = "Semifinals",
+    Quarterfinals = "Quarterfinals",
+    Semifinals = "Semifinals",
     Finals = "Finals"
 }
 

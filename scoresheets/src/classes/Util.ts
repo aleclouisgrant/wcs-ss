@@ -164,12 +164,34 @@ export module Util {
         }
     }
 
-    export function StringToRole(str: string) {
+    export function StringToRole(str: string) : Role {
         if (str == "Follower") {
             return Role.Follower;
         }
         else {
             return Role.Leader;
+        }
+    }
+
+    export function StringToDivision(str: string) : Division {
+        switch (str) {
+            case "Newcomer":
+                return Division.Newcomer;
+            case "Novice":
+                return Division.Novice;
+            case "Intermediate":
+                return Division.Intermediate;
+            case "Advanced":
+                return Division.Advanced;
+            case "All Star":
+            case "All-Star":
+            case "AllStar":
+                return Division.AllStar;
+            case "Champion":
+                return Division.Champion;
+            default:
+            case "Open":
+                return Division.Open;
         }
     }
 }

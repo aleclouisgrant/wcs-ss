@@ -283,7 +283,7 @@ export default function PrelimAdder(props: { handlePrelimCompetition: (prelimCom
 
                 <label>
                     Division:
-                    <select name='divisionInput' onChange={(e) => setDivision(Division[e.target.value as keyof typeof Division])} value={division}>
+                    <select name='divisionInput' onChange={(e) => setDivision(Util.StringToDivision(e.target.value))} value={division}>
                         <option value={Division.Newcomer}>{Division.Newcomer}</option>
                         <option value={Division.Novice}>{Division.Novice}</option>
                         <option value={Division.Intermediate}>{Division.Intermediate}</option>
@@ -298,8 +298,8 @@ export default function PrelimAdder(props: { handlePrelimCompetition: (prelimCom
                     Round:
                     <select name='roundInput' onChange={(e) => setRound(Round[e.target.value as keyof typeof Round])} value={round}>
                         <option value={Round.Prelims}>{Round.Prelims}</option>
-                        <option value={Round.Quarters}>{Round.Quarters}</option>
-                        <option value={Round.Semis}>{Round.Semis}</option>
+                        <option value={Round.Quarterfinals}>{Round.Quarterfinals}</option>
+                        <option value={Round.Semifinals}>{Round.Semifinals}</option>
                         <option value={Round.Finals}>{Round.Finals}</option>
                     </select>
                 </label>
