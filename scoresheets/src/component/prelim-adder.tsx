@@ -25,8 +25,11 @@ export default function PrelimAdder(props : {handlePrelimCompetition: (prelimCom
 
     const [scores, setScores] = useState(new Array<Array<CallbackScore>>);
 
-    const [role, setRole] = useState(Role.Leader);
     const [compName, setCompName] = useState("");
+    const [role, setRole] = useState(Role.Leader);
+    const [division, setDivision] = useState(Division.AllStar);
+    const [round, setRound] = useState(Round.Prelims);
+    const [date, setDate] = useState(new Date());
 
     const [promotedCompetitorIndexes, setPromotedCompetitorIndexes] = useState(new Array<number>());
     const [bibNumbers, setBibNumbers] = useState(new Array<string>());
@@ -34,12 +37,8 @@ export default function PrelimAdder(props : {handlePrelimCompetition: (prelimCom
     const [currentCallbackScore, setCurrentCallbackScore] = useState(CallbackScore.Unscored);
 
     function UpdatePrelimCompetition() {
-        var competition = new PrelimCompetition(
-            compName, 
-            Division.AllStar,
-            Round.Prelims,
-            role);
-
+        var competition = new PrelimCompetition(compName, date, division, round, role);
+        
         var prelimScores = new Array<PrelimScore>();
 
         for (let competitorIndex = 0; competitorIndex < competitorCount; competitorIndex++) {
@@ -104,6 +103,12 @@ export default function PrelimAdder(props : {handlePrelimCompetition: (prelimCom
 
     function SetRole(role: Role) {
         setRole(role);
+    }
+
+    function StringFromDate(str: Date) : string {
+        return new Date(date.getTime() - (date.getTimezoneOffset() * 60000 ))
+                    .toISOString()
+                    .split("T")[0];
     }
 
     function SetPromotedCompetitor(competitorIndex: number, value: boolean) {
@@ -246,6 +251,9 @@ export default function PrelimAdder(props : {handlePrelimCompetition: (prelimCom
         <div>
             <label>Name:</label>
             <input inputMode='text' onChange={(e) => setCompName(e.target.value)} value={compName}/>
+
+            <label>Date:</label>
+            <input type='date' onChange={(e) => setDate(new Date(e.target.value))} value={StringFromDate(date)}/>
 
             <label>Role:</label>
             <select onChange={(e) => SetRole(Util.StringToRole(e.target.value))} value={role}>

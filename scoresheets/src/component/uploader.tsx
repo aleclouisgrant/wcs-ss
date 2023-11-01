@@ -16,7 +16,7 @@ export default function Uploader() {
     var comp_leaders = TestData.TestPrelimCompetitionLeaders();
     var comp_followers = TestData.TestPrelimCompetitionFollowers();
 
-    const [competition, setCompetition] = useState(new PrelimCompetition("test", Division.AllStar, Round.Prelims, Role.Follower));
+    const [competition, setCompetition] = useState(new PrelimCompetition());
 
     function HandlePrelimCompetition(prelimCompetition: PrelimCompetition | undefined) {
         if (prelimCompetition != null) {
