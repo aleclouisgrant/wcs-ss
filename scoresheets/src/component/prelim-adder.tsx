@@ -182,10 +182,15 @@ export default function PrelimAdder(props: { handlePrelimCompetition: (prelimCom
         function RemoveJudge(judgeIndex: number) {
             let newScores = [...scores];
             for (let competitorIndex = 0; competitorIndex < competitorCount; competitorIndex++) {
-                newScores[competitorIndex].push(CallbackScore.Unscored);
+                newScores[competitorIndex].splice(judgeIndex, 1);
             }
             setScores(newScores);
-            setJudgeCount((prevCount) => prevCount + 1);
+
+            let newJudges = [...judges];
+            newJudges.splice(judgeIndex, 1);
+
+            setJudgeCount((prevCount) => prevCount - 1);
+            setJudges(newJudges);
         }
 
         var judgeHeaders = [];
