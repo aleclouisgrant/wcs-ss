@@ -179,12 +179,22 @@ export default function PrelimAdder(props: { handlePrelimCompetition: (prelimCom
     }
 
     function JudgesHeaders() {
+        function RemoveJudge(judgeIndex: number) {
+            let newScores = [...scores];
+            for (let competitorIndex = 0; competitorIndex < competitorCount; competitorIndex++) {
+                newScores[competitorIndex].push(CallbackScore.Unscored);
+            }
+            setScores(newScores);
+            setJudgeCount((prevCount) => prevCount + 1);
+        }
+
         var judgeHeaders = [];
         for (let i = 0; i < judgeCount; i++) {
             judgeHeaders.push(
                 <th key={i}>
                     <Selector personDb={JudgeDb} selectedPerson={judges[i]}
                         setSelectedPerson={(value: Judge | undefined) => SetJudge(value, i)} />
+                    <button type='button' onClick={() => RemoveJudge(i)}>d</button>
                 </th>);
         }
 
@@ -225,6 +235,10 @@ export default function PrelimAdder(props: { handlePrelimCompetition: (prelimCom
             let newBibNumbers = [...bibNumbers];
             newBibNumbers[competitorIndex] = bibNumber;
             setBibNumbers(newBibNumbers);
+        }
+
+        function RemoveCompetitor() {
+
         }
 
         var competitorRows = [];
