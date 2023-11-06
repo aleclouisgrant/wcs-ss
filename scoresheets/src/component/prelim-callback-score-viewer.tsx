@@ -1,3 +1,5 @@
+'use client';
+
 import { CallbackScore } from "@/classes/Enums";
 import { Util } from "@/classes/Util";
 
@@ -27,8 +29,8 @@ export default function CallbackScoreViewer(props: {callbackScore : CallbackScor
     }
 
     return (
-        <button type="button" style={{backgroundColor: col}}>
+        <div style={{backgroundColor: col, width: 22, height: 22, fontSize: 10, borderStyle: "solid", borderColor: "black", border: "2"}}>
             {Util.CallbackScoreShorthand(props.callbackScore)}
-        </button>
+        </div>
     )
 }

@@ -6,7 +6,7 @@ import { PrelimScore } from './IScore';
 
 export class PrelimCompetition {
     private _id: Guid;
-    private _dateTime: Date;
+    private _date: Date;
 
     private _scores: Array<PrelimScore>;
 
@@ -20,21 +20,55 @@ export class PrelimCompetition {
 
     public Promoted: Array<Competitor>;
 
-    constructor(name?: string, division?: Division, round?: Round, role?: Role) {
+    constructor(name?: string, date? : Date, division?: Division, round?: Round, role?: Role) {
         this._id = Guid.MakeNew();
 
-        this._dateTime = new Date();
-
-        this.Name = name != null ? name : "";
-        this.Division = division != null ? division : Division.Open;
-        this.Round = round != null ? round : Round.Prelims;
-        this.Role = role != null ? role : Role.Leader;
+        this.Name = name ?? "";
+        this._date = date ?? new Date();
+        this.Division = division ?? Division.Open;
+        this.Round = round ?? Round.Prelims;
+        this.Role = role ?? Role.Leader;
 
         this._scores = new Array<PrelimScore>;
 
         this.Competitors = new Array<Competitor>();
         this.Judges = new Array<Judge>();
         this.Promoted = new Array<Competitor>;
+    }
+
+    public Print() {
+        var print = "";
+
+        print += "Name: " + this.Name + '\n';
+        print += "Date: " + this._date + '\n';
+        print += "Division: " + this.Division + '\n';
+        print += "Role: " + this.Role + '\n';
+        print += "Round: " + this.Round + '\n';
+
+        print += "Judges: ";
+        var judges = "";
+        this.Judges.map((judge) => {
+            judges += judge.FullName + ", ";
+        })
+        print += judges + '\n';
+
+        print += "Scores: " + '\n';
+        
+        this.Competitors.map((competitor) => {
+            var judgeScores = "";
+            if (this.IsCompetitorPromoted(competitor)){
+                judgeScores += "*";
+            }
+            judgeScores += competitor.BibNumber.toString() + " ";
+            judgeScores += competitor.FullName + ": ";
+
+            this.ScoresByCompetitor(competitor).map((score) => {
+                judgeScores += Util.CallbackScoreShorthand(score.CallbackScore) + " ";
+            })
+            print += judgeScores + '\n';
+        });
+        
+        console.log(print);
     }
 
     public get Tier(): Tier {
@@ -117,7 +151,7 @@ export class PrelimCompetition {
 
 export class FinalCompetition {
     private _id: Guid;
-    private _dateTime: Date;
+    private _date: Date;
     private _leaders: Array<Competitor>;
     private _followers: Array<Competitor>;
     private _leaderTier: Tier;
@@ -133,7 +167,7 @@ export class FinalCompetition {
         this._leaderTier = Tier.NoTier;
         this._followerTier = Tier.NoTier;
 
-        this._dateTime = new Date();
+        this._date = new Date();
         this._leaders = new Array<Competitor>();
         this._followers = new Array<Competitor>();
 

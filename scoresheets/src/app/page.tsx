@@ -1,23 +1,12 @@
-import { DanceEvent } from '@/classes/DanceEvent';
-import PrelimsScoresheet from '@/component/prelim-competition-viewer';
-import PrelimCompetitionAdder from '@/component/prelim-competition-adder';
-import PrelimAdder from '@/component/prelim-adder';
+import Uploader from "@/component/uploader";
+import Test from '@/component/test';
 
-import { TestData } from '../test-data/test-data';
-
-export default function Home() {
-  var event = new DanceEvent("Swungalow Bungalow");
-
-  var comp_leaders = TestData.TestPrelimCompetitionLeaders();
-  var comp_followers = TestData.TestPrelimCompetitionFollowers();
-
+function Home() {
   return (
     <div>
-      <h1>{event.Name}</h1>
-      <PrelimAdder/>
-
-      <PrelimsScoresheet competition={comp_leaders}/>
-      <PrelimsScoresheet competition={comp_followers}/>
+      <Uploader/>
     </div>
   )
 }
+
+export default Home;
