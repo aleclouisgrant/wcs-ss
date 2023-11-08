@@ -16,16 +16,6 @@ import { PrelimScore } from '@/classes/IScore';
 let JudgeDb = TestData.TestJudgesDb();
 let CompetitorDb = TestData.TestCompetitorsDb();
 
-function BibNumberInput(props: { competitorIndex : number, input : string, handleBibNumber : (competitorIndex: number, bibNumber: string) => void}) {
-    return (
-        <input 
-            type='text' 
-            value={props.input}
-            onChange={(e) => props.handleBibNumber(props.competitorIndex, e.target.value)} 
-            name='bibNumberInput'/>
-    )
-}
-
 export default function PrelimAdder(props: { handlePrelimCompetition: (prelimCompetition: PrelimCompetition) => void }) {
     const [competitorCount, setCompetitorCount] = useState(0);
     const [judgeCount, setJudgeCount] = useState(0);
@@ -49,16 +39,19 @@ export default function PrelimAdder(props: { handlePrelimCompetition: (prelimCom
     function UpdatePrelimCompetition() {
         var competition = new PrelimCompetition(compName, date, division, round, role);
 
+        var competitorList = new Array<Competitor>();
+        var judgeList = new Array<Judge>();
         var prelimScores = new Array<PrelimScore>();
 
         for (let competitorIndex = 0; competitorIndex < competitorCount; competitorIndex++) {
             var competitor = competitors[competitorIndex];
 
             if (competitor == null) {
-                continue;
+                competitor = new Competitor("", "", 0);
             }
 
             competitor.BibNumber = parseInt(bibNumbers[competitorIndex]);
+            competitorList.push(competitor);
 
             for (let judgeIndex = 0; judgeIndex < judgeCount; judgeIndex++) {
                 var judge = judges[judgeIndex];
@@ -68,29 +61,21 @@ export default function PrelimAdder(props: { handlePrelimCompetition: (prelimCom
         }
 
         for (let i = 0; i < promotedCompetitorIndexes.length; i++) {
-            var competitor = competitors[promotedCompetitorIndexes[i]];
-            if (competitor != null) {
-                competition.AddPromotedCompetitor(competitor);
+            var promotedCompetitor = competitorList[promotedCompetitorIndexes[i]];
+            if (promotedCompetitor != null) {
+                competition.AddPromotedCompetitor(promotedCompetitor);
             }
         }
 
-        var judgeList = new Array<Judge>();
         judges.map((judge) => {
             if (judge != null) {
                 judgeList.push(judge);
             }
         });
+
         competition.Judges = judgeList;
-
-        var competitorList = new Array<Competitor>();
-        competitors.map((competitor) => {
-            if (competitor != null) {
-                competitorList.push(competitor);
-            }
-        });
         competition.Competitors = competitorList;
-
-        competition.AddScores(prelimScores);
+        competition.Scores = prelimScores;
 
         props.handlePrelimCompetition(competition);
     }
@@ -103,6 +88,10 @@ export default function PrelimAdder(props: { handlePrelimCompetition: (prelimCom
         let newBibNumbers = [...bibNumbers];
         newBibNumbers.push("");
         setBibNumbers(newBibNumbers)
+
+        let newCompetitors = [...competitors];
+        newCompetitors.push(undefined);
+        setCompetitors(newCompetitors);
 
         setCompetitorCount((prevCount) => prevCount + 1);
     }
@@ -178,6 +167,72 @@ export default function PrelimAdder(props: { handlePrelimCompetition: (prelimCom
         setScores(newScores);
     }
 
+    function SetBibNumber(competitorIndex: number, bibNumber: string) {
+        let newBibNumbers = [...bibNumbers];
+        newBibNumbers[competitorIndex] = bibNumber;
+        setBibNumbers(newBibNumbers);
+    }
+    
+    function RemoveCompetitor(competitorIndex: number) {
+        let newScores = [...scores];
+        newScores.splice(competitorIndex, 1);
+        
+        let newCompetitors = [...competitors];
+        newCompetitors.splice(competitorIndex, 1);
+        
+        let newBibNumbers = [...bibNumbers];
+        newBibNumbers.splice(competitorIndex, 1);
+        
+        if (promotedCompetitorIndexes.includes(competitorIndex)){
+            let newPromotedCompetitorList = [...promotedCompetitorIndexes];
+            newPromotedCompetitorList = newPromotedCompetitorList.filter(obj => obj != competitorIndex);
+            setPromotedCompetitorIndexes(newPromotedCompetitorList);
+        }
+
+        setScores(newScores);
+        setBibNumbers(newBibNumbers);
+        setCompetitorCount((prevCount) => prevCount - 1);
+        setCompetitors(newCompetitors);
+    }
+
+    function CompetitorRows() {
+        var competitorRows = [];
+        for (let i = 0; i < competitorCount; i++) {
+            let key = "";
+            var name = competitors[i]?.FullName ?? "";
+
+            if (competitors[i]?.FullName){
+                key += name;
+            } 
+            else {
+                key += i.toString();
+            }
+
+            competitorRows.push(
+                <tr key={key}>
+                    <td>{i + 1}</td>
+                    <td><input type='text' 
+                            value={bibNumbers[i]} 
+                            onChange={(e) => SetBibNumber(i, e.target.value)}/></td>
+                    <td>
+                        <Selector 
+                            personDb={CompetitorDb} 
+                            selectedPerson={competitors[i]}
+                            setSelectedPerson={(value: Competitor | undefined) => SetCompetitor(value, i)}/>
+                        <button type='button' onClick={() => RemoveCompetitor(i)}>d</button>
+                    </td>
+                    <JudgeScores competitorIndex={i}/>
+                    <td>{CompetitorScoreSum(i)}</td>
+                    <td><input type='checkbox' 
+                            onChange={(e) => SetPromotedCompetitor(i, e.target.checked)} 
+                            defaultChecked={IsCompetitorIndexPromoted(i)}/></td>
+                </tr>
+            )
+        }
+
+        return competitorRows;
+    }
+
     function JudgesHeaders() {
         function RemoveJudge(judgeIndex: number) {
             let newScores = [...scores];
@@ -233,56 +288,6 @@ export default function PrelimAdder(props: { handlePrelimCompetition: (prelimCom
         }
 
         return judgeScores;
-    }
-
-    function CompetitorRows() {
-        function SetBibNumber(competitorIndex: number, bibNumber: string) {
-            let newBibNumbers = [...bibNumbers];
-            newBibNumbers[competitorIndex] = bibNumber;
-            setBibNumbers(newBibNumbers);
-        }
-
-        function RemoveCompetitor(competitorIndex: number) {
-            let newScores = [...scores];
-            newScores.splice(competitorIndex, 1);
-            
-            let newCompetitors = [...competitors];
-            newCompetitors.splice(competitorIndex, 1);
-            
-            let newBibNumbers = [...bibNumbers];
-            newBibNumbers.splice(competitorIndex, 1);
-            
-            if (promotedCompetitorIndexes.includes(competitorIndex)){
-                let newPromotedCompetitorList = [...promotedCompetitorIndexes];
-                newPromotedCompetitorList = newPromotedCompetitorList.filter(obj => obj != competitorIndex);
-                setPromotedCompetitorIndexes(newPromotedCompetitorList);
-            }
-
-            setScores(newScores);
-            setBibNumbers(newBibNumbers);
-            setCompetitorCount((prevCount) => prevCount - 1);
-            setCompetitors(newCompetitors);
-        }
-
-        var competitorRows = [];
-        for (let i = 0; i < competitorCount; i++) {
-            competitorRows.push(
-                <tr key={i}>
-                    <td>{i + 1}</td>
-                    <td><BibNumberInput input={bibNumbers[i]} competitorIndex={i} handleBibNumber={SetBibNumber}/></td>
-                    <td>
-                        <Selector personDb={CompetitorDb} selectedPerson={competitors[i]}
-                        setSelectedPerson={(value: Competitor | undefined) => SetCompetitor(value, i)}/>
-                        <button type='button' onClick={() => RemoveCompetitor(i)}>d</button>
-                    </td>
-                    <JudgeScores competitorIndex={i} />
-                    <td>{CompetitorScoreSum(i)}</td>
-                    <td><input type='checkbox' onChange={(e) => SetPromotedCompetitor(i, e.target.checked)} defaultChecked={IsCompetitorIndexPromoted(i)} /></td>
-                </tr>
-            )
-        }
-
-        return competitorRows;
     }
 
     function Clear() {
@@ -383,7 +388,7 @@ export default function PrelimAdder(props: { handlePrelimCompetition: (prelimCom
                         <th>Sum</th>
                         <th>Promoted</th>
                     </tr>
-                    <CompetitorRows/>
+                    {CompetitorRows()}
                 </tbody>
             </table>
         </div>
