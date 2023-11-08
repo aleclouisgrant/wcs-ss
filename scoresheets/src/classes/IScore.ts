@@ -33,8 +33,16 @@ export class PrelimScore extends Score {
     }
 }
 
-export class FinalScore extends Score {
-    constructor(competitor? : Competitor, judge? : Judge) {
-        super(competitor, judge);
+export class FinalScore {
+    public Leader : Competitor;
+    public Follower: Competitor;
+    public Judge: Judge;
+    public Score: number;
+
+    constructor (leader : Competitor, follower : Competitor, judge : Judge, score : number) {
+        this.Leader = leader;
+        this.Follower = follower;
+        this.Judge = judge;
+        this.Score = score;
     }
 }

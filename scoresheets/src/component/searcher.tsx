@@ -1,9 +1,16 @@
 "use client";
 
 import { Competitor, IPerson } from "@/classes/IPerson";
+import { PrelimCompetition } from "@/classes/Competition";
 import { useState } from "react";
 
 import { TestData } from '@/test-data/test-data';
+import { DanceEvent } from "@/classes/DanceEvent";
+
+
+function CompetitorScoreViewer(props: {competitor : Competitor, danceEvent : DanceEvent}) {
+
+}
 
 export default function Searcher() {
   const people = TestData.TestCompetitorsDb();
@@ -16,6 +23,10 @@ export default function Searcher() {
     setPerson(searchedPerson);
   }
 
+  const CompetitionScores = () => {
+
+  }
+
   return (
     <div>
       <label>Search</label>
@@ -23,8 +34,11 @@ export default function Searcher() {
       <button type="button" onClick={SearchText}>Search</button>
 
       <h1>{person?.FullName}</h1>
-      <h3>Current Rating: </h3>
-      
+      <h3>Rating: </h3>
+
+
+
+
     </div>
   )
 }

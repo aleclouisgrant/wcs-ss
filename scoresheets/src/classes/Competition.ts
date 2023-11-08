@@ -2,7 +2,7 @@ import { Guid } from './Guid';
 import { Competitor, Judge } from './IPerson';
 import { Round, Tier, Division, Role } from './Enums';
 import { Util } from './Util';
-import { PrelimScore } from './IScore';
+import { FinalScore, PrelimScore } from './IScore';
 
 export class PrelimCompetition {
     public Id: Guid;
@@ -147,8 +147,11 @@ export class PrelimCompetition {
 export class FinalCompetition {
     private _id: Guid;
     private _date: Date;
+
     private _leaders: Array<Competitor>;
     private _followers: Array<Competitor>;
+    private _judges: Array<Judge>;
+
     private _leaderTier: Tier;
     private _followerTier: Tier;
 
@@ -156,19 +159,26 @@ export class FinalCompetition {
     public Division: Division;
     public Round: Round;
 
-    constructor(name: string, division?: Division, round?: Round) {
+    public Scores: Array<FinalScore>;
+    public Placements: Array<{leader: Competitor, follower: Competitor}>;
+
+    constructor(name: string, date?: Date, division?: Division) {
         this._id = Guid.MakeNew();
+        this.Round = Round.Finals;
 
         this._leaderTier = Tier.NoTier;
         this._followerTier = Tier.NoTier;
 
-        this._date = new Date();
         this._leaders = new Array<Competitor>();
         this._followers = new Array<Competitor>();
+        this._judges = new Array<Judge>();
+        
+        this.Scores = new Array<FinalScore>();
+        this.Placements = new Array<{leader: Competitor, follower: Competitor}>();
 
-        this.Name = name != null ? name : "";
-        this.Division = division != null ? division : Division.Open;
-        this.Round = round != null ? round : Round.Finals;
+        this._date = date ?? new Date();
+        this.Name = name ?? "";
+        this.Division = division ?? Division.Open;
     }
 
     public get LeaderTier() {
@@ -177,6 +187,30 @@ export class FinalCompetition {
 
     public get FollowerTier() {
         return Util.GetTier(this._followers.length);
+    }
+
+    public AddScores(scores: Array<FinalScore>) {
+        this.Scores = scores;
+
+        this.Scores.forEach((value) => {
+            if (value.Leader != null) {
+                if (!this._leaders.includes(value.Leader)) {
+                    this._leaders.push(value.Leader);
+                }
+            }
+            
+            if (value.Follower != null) {
+                if (!this._followers.includes(value.Follower)) {
+                    this._followers.push(value.Follower);
+                }
+            }
+
+            if (value.Judge != null) {
+                if (!this._judges.includes(value.Judge)) {
+                    this._judges.push(value.Judge);
+                }
+            }
+        });
     }
 
     public AddLeader(competitor: Competitor) {
