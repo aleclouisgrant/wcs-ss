@@ -120,7 +120,6 @@ export class PrelimCompetition {
             var value = Util.GetCallbackScoreNumber(score.CallbackScore);
             if (value == -1) {
                 // unscored score
-                // TOOD: do we need to throw awareness?
             }
             else {
                 sum = sum + value;

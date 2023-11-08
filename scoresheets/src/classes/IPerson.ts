@@ -1,17 +1,21 @@
 import { Guid } from './Guid';
-import { Score } from './IScore';
 
 export interface IPerson {
     FullName : string;
+    Id : Guid;
 }
 
 export abstract class Person implements IPerson {
     private _firstName: string;
     private _lastName: string;
 
+    public Id: Guid;
+
     constructor(firstName: string, lastName: string) {
         this._firstName = firstName;
         this._lastName = lastName;
+
+        this.Id = Guid.MakeNew();
     }
 
     get FullName() : string {
@@ -25,13 +29,10 @@ export abstract class Person implements IPerson {
 }
 
 export class Competitor extends Person {
-    public Id: Guid;
     public BibNumber: number;
 
     constructor(firstName: string, lastName: string, bibNumber?: number) {
         super(firstName, lastName);
-
-        this.Id = Guid.MakeNew();
 
         this.BibNumber = bibNumber != null ? bibNumber : 0;
     }
