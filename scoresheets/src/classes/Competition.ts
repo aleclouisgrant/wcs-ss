@@ -5,10 +5,10 @@ import { Util } from './Util';
 import { PrelimScore } from './IScore';
 
 export class PrelimCompetition {
-    private _id: Guid;
+    public Id: Guid;
     private _date: Date;
 
-    private _scores: Array<PrelimScore>;
+    public Scores: Array<PrelimScore>;
 
     public Name: string;
     public Division: Division;
@@ -21,7 +21,7 @@ export class PrelimCompetition {
     public Promoted: Array<Competitor>;
 
     constructor(name?: string, date? : Date, division?: Division, round?: Round, role?: Role) {
-        this._id = Guid.MakeNew();
+        this.Id = Guid.MakeNew();
 
         this.Name = name ?? "";
         this._date = date ?? new Date();
@@ -29,7 +29,7 @@ export class PrelimCompetition {
         this.Round = round ?? Round.Prelims;
         this.Role = role ?? Role.Leader;
 
-        this._scores = new Array<PrelimScore>;
+        this.Scores = new Array<PrelimScore>;
 
         this.Competitors = new Array<Competitor>();
         this.Judges = new Array<Judge>();
@@ -54,8 +54,8 @@ export class PrelimCompetition {
 
         print += "Scores: " + '\n';
         
-        this.Competitors.map((competitor) => {
-            var judgeScores = "";
+        this.Competitors.map((competitor, index) => {
+            var judgeScores = (index + 1).toString() + ": ";
             if (this.IsCompetitorPromoted(competitor)){
                 judgeScores += "*";
             }
@@ -80,9 +80,9 @@ export class PrelimCompetition {
     }
 
     public AddScores(scores: Array<PrelimScore>) {
-        this._scores = scores;
+        this.Scores = scores;
 
-        this._scores.forEach((value) => {
+        this.Scores.forEach((value) => {
             if (value.Competitor != null) {
                 if (!this.Competitors.includes(value.Competitor)) {
                     this.Competitors.push(value.Competitor);
@@ -96,19 +96,15 @@ export class PrelimCompetition {
         });
     }
 
-    public get Scores(): Array<PrelimScore> {
-        return this._scores;
-    }
-
     public ScoresByCompetitor(competitor: Competitor): Array<PrelimScore> {
         var scores = new Array<PrelimScore>;
 
-        this._scores.forEach((value) => {
+        this.Scores.forEach((value) => {
             if (value.Competitor == null) {
                 return;
             }
 
-            if (value.Competitor.FullName == competitor.FullName) {
+            if (value.Competitor.Id == competitor.Id) {
                 scores.push(value);
             }
         });

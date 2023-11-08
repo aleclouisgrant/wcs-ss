@@ -39,16 +39,19 @@ export default function PrelimAdder(props: { handlePrelimCompetition: (prelimCom
     function UpdatePrelimCompetition() {
         var competition = new PrelimCompetition(compName, date, division, round, role);
 
+        var competitorList = new Array<Competitor>();
+        var judgeList = new Array<Judge>();
         var prelimScores = new Array<PrelimScore>();
 
         for (let competitorIndex = 0; competitorIndex < competitorCount; competitorIndex++) {
             var competitor = competitors[competitorIndex];
 
             if (competitor == null) {
-                continue;
+                competitor = new Competitor("", "", 0);
             }
 
             competitor.BibNumber = parseInt(bibNumbers[competitorIndex]);
+            competitorList.push(competitor);
 
             for (let judgeIndex = 0; judgeIndex < judgeCount; judgeIndex++) {
                 var judge = judges[judgeIndex];
@@ -58,29 +61,21 @@ export default function PrelimAdder(props: { handlePrelimCompetition: (prelimCom
         }
 
         for (let i = 0; i < promotedCompetitorIndexes.length; i++) {
-            var competitor = competitors[promotedCompetitorIndexes[i]];
-            if (competitor != null) {
-                competition.AddPromotedCompetitor(competitor);
+            var promotedCompetitor = competitorList[promotedCompetitorIndexes[i]];
+            if (promotedCompetitor != null) {
+                competition.AddPromotedCompetitor(promotedCompetitor);
             }
         }
 
-        var judgeList = new Array<Judge>();
         judges.map((judge) => {
             if (judge != null) {
                 judgeList.push(judge);
             }
         });
+
         competition.Judges = judgeList;
-
-        var competitorList = new Array<Competitor>();
-        competitors.map((competitor) => {
-            if (competitor != null) {
-                competitorList.push(competitor);
-            }
-        });
         competition.Competitors = competitorList;
-
-        competition.AddScores(prelimScores);
+        competition.Scores = prelimScores;
 
         props.handlePrelimCompetition(competition);
     }
@@ -93,6 +88,10 @@ export default function PrelimAdder(props: { handlePrelimCompetition: (prelimCom
         let newBibNumbers = [...bibNumbers];
         newBibNumbers.push("");
         setBibNumbers(newBibNumbers)
+
+        let newCompetitors = [...competitors];
+        newCompetitors.push(undefined);
+        setCompetitors(newCompetitors);
 
         setCompetitorCount((prevCount) => prevCount + 1);
     }
@@ -199,8 +198,15 @@ export default function PrelimAdder(props: { handlePrelimCompetition: (prelimCom
     function CompetitorRows() {
         var competitorRows = [];
         for (let i = 0; i < competitorCount; i++) {
+            let key = "";
             var name = competitors[i]?.FullName ?? "";
-            var key = name + i;
+
+            if (competitors[i]?.FullName){
+                key += name;
+            } 
+            else {
+                key += i.toString();
+            }
 
             competitorRows.push(
                 <tr key={key}>

@@ -25,13 +25,13 @@ export abstract class Person implements IPerson {
 }
 
 export class Competitor extends Person {
-    private _id: Guid;
+    public Id: Guid;
     public BibNumber: number;
 
     constructor(firstName: string, lastName: string, bibNumber?: number) {
         super(firstName, lastName);
 
-        this._id = Guid.MakeNew();
+        this.Id = Guid.MakeNew();
 
         this.BibNumber = bibNumber != null ? bibNumber : 0;
     }
