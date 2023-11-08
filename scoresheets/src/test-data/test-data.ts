@@ -235,21 +235,12 @@ var finalScore29 = new FinalScore(jung, jen, markus, 5);
 var finalScore30 = new FinalScore(jung, jen, tren, 3);
 
 var finalScores = [
-    finalScore1, finalScore2, finalScore3, finalScore4, finalScore5,
-    finalScore6, finalScore7, finalScore8, finalScore9, finalScore10,
-    finalScore11, finalScore12, finalScore13, finalScore14, finalScore15,
-    finalScore16, finalScore17, finalScore18, finalScore19, finalScore20,
-    finalScore21, finalScore22, finalScore23, finalScore24, finalScore25,
-    finalScore26, finalScore27, finalScore28, finalScore29, finalScore30
-];
-
-var finalPlacements = [
-    {leader: stan, follower: lara},
-    {leader: glen, follower: margie},
-    {leader: kaiano, follower: kristen_shaw},
-    {leader: edem, follower: kristen},
-    {leader: brandon, follower: alyssa},
-    {leader: jung, follower: jen}
+    [finalScore1, finalScore2, finalScore3, finalScore4, finalScore5],
+    [finalScore6, finalScore7, finalScore8, finalScore9, finalScore10],
+    [finalScore11, finalScore12, finalScore13, finalScore14, finalScore15],
+    [finalScore16, finalScore17, finalScore18, finalScore19, finalScore20],
+    [finalScore21, finalScore22, finalScore23, finalScore24, finalScore25],
+    [finalScore26, finalScore27, finalScore28, finalScore29, finalScore30]
 ];
 
 export class TestData {
@@ -287,8 +278,7 @@ export class TestData {
             new Date(),
             Division.AllStar
         );
-        comp.AddScores(finalScores);
-        comp.Placements = finalPlacements;
+        comp.SetScores(finalScores);
         
         return comp;
     }

@@ -1,5 +1,3 @@
-'use client';
-
 import { PrelimCompetition } from '@/classes/Competition';
 import { Judge } from '@/classes/IPerson';
 import { PrelimScore } from '@/classes/IScore';
@@ -16,7 +14,7 @@ function IsPromoted(promoted : boolean) : string {
     }
 }
 
-export default async function PrelimsScoresheet(props: {competition : PrelimCompetition}) {
+export default function PrelimsScoresheet(props: {competition : PrelimCompetition}) {
     var comp = props.competition;
 
     const CompetitorRows = () => {
@@ -72,7 +70,7 @@ export default async function PrelimsScoresheet(props: {competition : PrelimComp
                         <th>Sum</th>
                         <th>Promoted</th>
                     </tr>
-                    <CompetitorRows/>
+                    {CompetitorRows()}
                 </tbody>
             </table>
         </div>

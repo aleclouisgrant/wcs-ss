@@ -152,80 +152,92 @@ export class FinalCompetition {
     private _followers: Array<Competitor>;
     private _judges: Array<Judge>;
 
-    private _leaderTier: Tier;
-    private _followerTier: Tier;
-
     public Name: string;
     public Division: Division;
     public Round: Round;
 
-    public Scores: Array<FinalScore>;
-    public Placements: Array<{leader: Competitor, follower: Competitor}>;
+    public Scores: Array<Array<FinalScore>>;
 
     constructor(name: string, date?: Date, division?: Division) {
         this._id = Guid.MakeNew();
         this.Round = Round.Finals;
 
-        this._leaderTier = Tier.NoTier;
-        this._followerTier = Tier.NoTier;
-
         this._leaders = new Array<Competitor>();
         this._followers = new Array<Competitor>();
         this._judges = new Array<Judge>();
         
-        this.Scores = new Array<FinalScore>();
-        this.Placements = new Array<{leader: Competitor, follower: Competitor}>();
+        this.Scores = new Array<Array<FinalScore>>();
 
         this._date = date ?? new Date();
         this.Name = name ?? "";
         this.Division = division ?? Division.Open;
     }
 
-    public get LeaderTier() {
-        return Util.GetTier(this._leaders.length);
+    public Print() {
+        var print = "";
+
+        print += "Name: " + this.Name + '\n';
+        print += "Date: " + this._date + '\n';
+        print += "Division: " + this.Division + '\n';
+        print += "Round: " + this.Round + '\n';
+
+        print += "Judges: ";
+        var judges = "";
+        this._judges.map((judge) => {
+            judges += judge.FullName + ", ";
+        })
+        print += judges + '\n';
+
+        print += "Scores: " + '\n';
+        
+        this.Scores.map((coupleScores, place) => {
+            var leader = coupleScores[0]?.Leader;
+            var follower = coupleScores[0]?.Follower;
+            print += place + " ";
+            print += leader?.FullName + "(" + leader?.BibNumber + ")";
+            print += follower?.FullName + "(" + follower?.BibNumber + ")";
+
+            coupleScores.map((value) => {
+                print += value.Score + " ";
+            });
+
+            print += '\n';
+        });
+        
+        console.log(print);
     }
 
-    public get FollowerTier() {
-        return Util.GetTier(this._followers.length);
-    }
-
-    public AddScores(scores: Array<FinalScore>) {
+    public SetScores(scores: Array<Array<FinalScore>>) {
         this.Scores = scores;
 
-        this.Scores.forEach((value) => {
-            if (value.Leader != null) {
-                if (!this._leaders.includes(value.Leader)) {
-                    this._leaders.push(value.Leader);
+        this.Scores.forEach((coupleScores, place) => {
+            coupleScores.forEach((value) => {
+                if (value.Leader != null) {
+                    if (!this._leaders.includes(value.Leader)) {
+                        this._leaders.push(value.Leader);
+                    }
                 }
-            }
-            
-            if (value.Follower != null) {
-                if (!this._followers.includes(value.Follower)) {
-                    this._followers.push(value.Follower);
+                
+                if (value.Follower != null) {
+                    if (!this._followers.includes(value.Follower)) {
+                        this._followers.push(value.Follower);
+                    }
                 }
-            }
 
-            if (value.Judge != null) {
-                if (!this._judges.includes(value.Judge)) {
-                    this._judges.push(value.Judge);
+                if (value.Judge != null) {
+                    if (!this._judges.includes(value.Judge)) {
+                        this._judges.push(value.Judge);
+                    }
                 }
-            }
+            });
         });
     }
 
-    public AddLeader(competitor: Competitor) {
-        this._leaders.push(competitor);
+    public get CoupleCount() : number {
+        return this.Scores.length;
     }
 
-    public AddFollower(competitor: Competitor) {
-        this._followers.push(competitor);
-    }
-
-    public GetLeaderCount(): number {
-        return this._leaders.length;
-    }
-
-    public GetFollowerCount(): number {
-        return this._followers.length;
+    public get Judges() : Array<Judge> {
+        return this._judges;
     }
 }
