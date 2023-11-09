@@ -183,21 +183,21 @@ export class FinalCompetition {
 
         print += "Judges: ";
         var judges = "";
-        this._judges.map((judge) => {
+        this._judges.forEach((judge) => {
             judges += judge.FullName + ", ";
         })
         print += judges + '\n';
 
         print += "Scores: " + '\n';
         
-        this.Scores.map((coupleScores, place) => {
+        this.Scores.forEach((coupleScores, place) => {
             var leader = coupleScores[0]?.Leader;
             var follower = coupleScores[0]?.Follower;
             print += place + " ";
             print += leader?.FullName + "(" + leader?.BibNumber + ")";
             print += follower?.FullName + "(" + follower?.BibNumber + ")";
 
-            coupleScores.map((value) => {
+            coupleScores.forEach((value) => {
                 print += value.Score + " ";
             });
 
@@ -205,6 +205,18 @@ export class FinalCompetition {
         });
         
         console.log(print);
+    }
+
+    public GetPlacement(competitor: Competitor) : number {
+        var placement = 0;
+
+        this.Scores.forEach((coupleScores, index) => {
+            if (coupleScores[0].Leader.FullName == competitor.FullName || coupleScores[0].Follower.FullName == competitor.FullName) {
+                placement = index + 1;
+            }
+        });
+
+        return placement;
     }
 
     public SetScores(scores: Array<Array<FinalScore>>) {
