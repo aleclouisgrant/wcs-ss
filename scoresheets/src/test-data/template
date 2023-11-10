@@ -26,24 +26,26 @@
 }
 
 
-Convention:
-    Id 
-    Name
-    Date
+Convention(
+    Id UUID,
+    Name VARCHAR(255),
+    Date DATE
+)
 
 Competitions:
 
 
-PrelimCompetition:
-    Id
-    Name
-    DateTime
-    Division
+PrelimCompetition(
+    Id UUID,
+    Date,
+    Name text,
+    Division 
     CompetitionType
     Role
     Round
-    Songs
     PromotedCompetitors
+    Songs
+)
 
 FinalCompetition:
     Id
