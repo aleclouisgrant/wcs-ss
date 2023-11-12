@@ -27,13 +27,13 @@ export const appRouter = router({
         }),
     addCompetitor: publicProcedure
         .input(z.custom<Competitor>()).mutation(async (opts) => {
-            await db.competitor.create({
+            var ret = await db.competitor.create({
                 data: {
                     firstName: opts.input.FirstName,
                     lastName: opts.input.LastName
                 }
             })
-            return true;
+            return {success: true, id: ret.id};
         }),
 });
 

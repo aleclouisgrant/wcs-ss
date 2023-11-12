@@ -28,12 +28,6 @@ export default function CompetitorAnalytics(props: {competitor: Competitor | und
 
     if (prelimCompetitions != null) {
       prelimCompetitions.forEach((prelimCompetition, index) => {
-        console.log(prelimCompetition.ScoresByCompetitor(person)?.length);
-
-        prelimCompetition.ScoresByCompetitor(person).forEach((score) => {
-          console.log("(" + score.Competitor?.FullName + ", " + score.Judge?.FullName + ": " + score.CallbackScore + ")");
-        })
-
         var prelimProps : PrelimScoreViewerProps = {
           round: prelimCompetition.Round,
           callbackScore:  prelimCompetition.IsCompetitorPromoted(person) ? CallbackScore.Yes : CallbackScore.No,

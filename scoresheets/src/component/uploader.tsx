@@ -5,7 +5,6 @@ import { ReactNode, useContext, useEffect, useState } from "react";
 import { trpc } from "@/app/_trpc/client";
 import { Competitor } from "@/classes/IPerson";
 import { PrelimCompetition } from "@/classes/Competition";
-
 import PrelimAdder from "./prelim-adder";
 import { CompetitorsContext } from "@/context/CompetitorsContext";
 import { Guid } from "@/classes/Guid";
@@ -25,32 +24,30 @@ export default function Uploader() {
         }
     },[data]);
 
-    function Competitors(props: { competitors: Array<Competitor> }) {
-        let nodes = Array<ReactNode>();
-        props.competitors.forEach((competitor) => {
-            nodes.push(<div key={competitor.Id.toString()}>{competitor.FullName} ({competitor.Id.toString()})</div>)
-        })
-
-        return (
-            <div>
-                {nodes}
-            </div>
-        )
-    }
-
     function AddCompetitor() {
-        var comp = new Competitor(firstNameText, lastNameText);
-        addCompetitor.mutate(comp);
-
-        var newCompetitors = [...competitors];
-        newCompetitors.push(comp);
-        setCompetitors(newCompetitors);
+        addCompetitor.mutate(new Competitor(firstNameText, lastNameText), {onSuccess(data) {
+            var comp = new Competitor(firstNameText, lastNameText, undefined, new Guid(data.id));
+            var newCompetitors = [...competitors];
+            newCompetitors.push(comp);
+            setCompetitors(newCompetitors);
+        }});
     }
 
     function HandlePrelimCompetition(prelimCompetition: PrelimCompetition | undefined) {
         if (prelimCompetition != null) {
             prelimCompetition.Print();
         }
+    }
+
+    function Competitors(props: {competitors: Array<Competitor>}) {
+        var nodes = Array<ReactNode>();
+        props.competitors.forEach((competitor) => {
+            nodes.push(<div key={competitor.Id.toString()}>{competitor.FullName} {competitor.Id.toString()}</div>)
+        })
+
+        return (
+            <div>{nodes}</div>
+        );
     }
 
     return (
@@ -61,12 +58,12 @@ export default function Uploader() {
                 <button onClick={AddCompetitor}>Add</button>
             </div>
 
-            <br />
+            <br/>
             <Competitors competitors={competitors}/>
-            <br />
+            <br/>
 
             <div>
-                <PrelimAdder handlePrelimCompetition={HandlePrelimCompetition} />
+                <PrelimAdder handlePrelimCompetition={HandlePrelimCompetition}/>
             </div>
         </div>
     )
