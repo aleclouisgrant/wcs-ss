@@ -1,11 +1,14 @@
-import Uploader from "@/component/uploader";
+"use client"
 
-function Home() {
+import Uploader from "@/component/uploader";
+import { CompetitorsContextProvider } from "@/context/CompetitorsContext";
+
+export default async function Page() {  
   return (
     <div>
-      <Uploader/>
+      <CompetitorsContextProvider>
+        <Uploader/>
+      </CompetitorsContextProvider>
     </div>
   )
 }
-
-export default Home;

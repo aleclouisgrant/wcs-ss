@@ -1,38 +1,34 @@
 import { Guid } from './Guid';
 
 export interface IPerson {
-    FullName : string;
     Id : Guid;
+    FirstName: string;
+    LastName: string;
+    FullName : string;
 }
 
 export abstract class Person implements IPerson {
-    private _firstName: string;
-    private _lastName: string;
-
     public Id: Guid;
+    public FirstName: string;
+    public LastName: string;
 
-    constructor(firstName: string, lastName: string) {
-        this._firstName = firstName;
-        this._lastName = lastName;
+    constructor(firstName: string, lastName: string, id?: Guid, ) {
+        this.FirstName = firstName;
+        this.LastName = lastName;
 
-        this.Id = Guid.MakeNew();
+        this.Id = id ?? Guid.MakeNew();
     }
 
     get FullName() : string {
-        return this._firstName + " " + this._lastName;
-    }
-
-    public SetName(firstName: string, lastName: string) {
-        this._firstName = firstName;
-        this._lastName = lastName;
+        return this.FirstName + " " + this.LastName;
     }
 }
 
 export class Competitor extends Person {
     public BibNumber: number;
 
-    constructor(firstName: string, lastName: string, bibNumber?: number) {
-        super(firstName, lastName);
+    constructor(firstName: string, lastName: string, bibNumber?: number, id?: Guid) {
+        super(firstName, lastName, id);
 
         this.BibNumber = bibNumber != null ? bibNumber : 0;
     }

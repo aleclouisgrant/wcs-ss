@@ -1,29 +1,24 @@
 "use client";
 
 import { Competitor } from "@/classes/IPerson";
-import { JSX, useState } from "react";
+import { JSX } from "react";
 
 import { TestData } from '@/test-data/test-data';
 import { DanceEvent } from "@/classes/DanceEvent";
 import { CallbackScore, Role } from "@/classes/Enums";
 import { CompetitorFinalScoreViewer, CompetitorPrelimScoreViewer, FinalScoreViewerProps, PrelimScoreViewerProps } from "./competitor-score-viewer";
 
-const people = TestData.TestCompetitorsDb();
 const danceEvent = TestData.TestDanceEvent();
 
-export default function Searcher() {
-  const [searchText, setSearchText] = useState("");
-  const [person, setPerson] = useState<Competitor>();
-
-  function SearchText() {
-    var searchedPerson = people.find((p) => p.FullName == searchText);
-    setPerson(searchedPerson);
+export default function CompetitorAnalytics(props: {competitor: Competitor | undefined}) {
+  var person = props.competitor;
+  if (person == null) {
+    return (
+      <div></div>
+    );
   }
 
-  const CompetitionScores = (danceEvent : DanceEvent, role : Role) => {
-    if (person == null) {
-      return;
-    }
+  const CompetitionScores = (person: Competitor, danceEvent : DanceEvent, role : Role) => {
 
     var prelimCompetitions = danceEvent.PrelimCompetitions;
     var finalCompetition = danceEvent.FinalCompetitions[0];
@@ -83,14 +78,10 @@ export default function Searcher() {
 
   return (
     <div>
-      <label>Search</label>
-      <input type="text" value={searchText} onChange={(e) => setSearchText(e.target.value)}/>
-      <button type="button" onClick={SearchText}>Search</button>
-
       <h1>{person?.FullName}</h1>
       <h3>Rating: </h3>
 
-      {CompetitionScores(danceEvent, Role.Leader)}
+      {CompetitionScores(person, danceEvent, Role.Leader)}
     </div>
   )
 }

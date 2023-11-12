@@ -8,7 +8,8 @@
     "eslint-config-next": "^14.0.1",
     "next": "^14.0.1",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "zod": "^3.22.4"
   },
   "devDependencies": {
     "prisma": "^5.5.2"

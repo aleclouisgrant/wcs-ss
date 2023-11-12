@@ -5,7 +5,7 @@ export class Guid {
 
     private _guid: string;
 
-    public ToString(): string {
+    public toString(): string {
         return this.guid;
     }
 
