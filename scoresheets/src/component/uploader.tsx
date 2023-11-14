@@ -7,28 +7,39 @@ import { Competitor } from "@/classes/IPerson";
 import { PrelimCompetition } from "@/classes/Competition";
 import PrelimAdder from "./prelim-adder";
 import { CompetitorsContext } from "@/context/CompetitorsContext";
-import { Guid } from "@/classes/Guid";
+import { Uuid } from "@/classes/Uuid";
 
 export default function Uploader() {
     const [firstNameText, setFirstNameText] = useState<string>("")
     const [lastNameText, setLastNameText] = useState<string>("")
+    const [wsdcIdText, setWsdcIdText] = useState<string>("")
 
     const { value: competitors, setValue: setCompetitors } = useContext(CompetitorsContext);
 
-    const addCompetitor = trpc.addCompetitor.useMutation();
-    const { data } = trpc.getCompetitors.useQuery();
+    const { data } = trpc.getUsers.useQuery();
+    const addCompetitor = trpc.addUser.useMutation();
 
     useEffect(() => {
         if (data) {
-            setCompetitors(data.map((competitor) => new Competitor(competitor.firstName, competitor.lastName, undefined, new Guid(competitor.id))));
+            setCompetitors(data.map((competitorData) => {
+                var competitor = new Competitor(
+                    competitorData.FirstName, 
+                    competitorData.LastName,
+                    undefined,
+                    undefined);
+                competitor.Id = new Uuid(competitorData.Id);
+
+                return competitor;
+            }));
         }
     },[data]);
 
     function AddCompetitor() {
-        addCompetitor.mutate(new Competitor(firstNameText, lastNameText), {onSuccess(data) {
-            var comp = new Competitor(firstNameText, lastNameText, undefined, new Guid(data.id));
+        var newCompetitor = new Competitor(firstNameText, lastNameText, 0, +wsdcIdText);
+
+        addCompetitor.mutate(newCompetitor, {onSuccess() {
             var newCompetitors = [...competitors];
-            newCompetitors.push(comp);
+            newCompetitors.push(newCompetitor);
             setCompetitors(newCompetitors);
         }});
     }
@@ -53,8 +64,24 @@ export default function Uploader() {
     return (
         <div>
             <div>
-                <input type="text" value={firstNameText} onChange={(e) => setFirstNameText(e.target.value)} />
-                <input type="text" value={lastNameText} onChange={(e) => setLastNameText(e.target.value)} />
+                <div>
+                    <label>
+                        First Name:
+                        <input type="text" value={firstNameText} onChange={(e) => setFirstNameText(e.target.value)} />
+                    </label>
+                </div>
+                <div>
+                    <label>
+                        Last Name:
+                        <input type="text" value={lastNameText} onChange={(e) => setLastNameText(e.target.value)} />
+                    </label>
+                </div>
+                <div>
+                    <label>
+                        WSDC Id:
+                        <input type="text" value={wsdcIdText} onChange={(e) => setWsdcIdText(e.target.value)} />
+                    </label>
+                </div>
                 <button onClick={AddCompetitor}>Add</button>
             </div>
 

@@ -1,8 +1,8 @@
 import { Division } from "./Enums";
-import { Guid } from "./Guid";
+import { Uuid } from "./Uuid";
 
 export interface ICompetitorProfile {
-    Id: Guid;
+    Id: Uuid;
     FullName: string;
     Division: Division;
     LeaderRating: number;

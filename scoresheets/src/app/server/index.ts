@@ -2,38 +2,60 @@ import { publicProcedure, router } from "./trpc";
 import { z } from "zod";
 import { db } from "../../db";
 import { Competitor } from "@/classes/IPerson";
+import { UserDbModel } from "@/db/schema";
+import { Uuid } from "@/classes/Uuid";
 
 export const appRouter = router({
-    getCompetitors: publicProcedure
+    getUsers: publicProcedure
         .query(async() => {
-            var competitors = await db.competitor.findMany();
-            return competitors;
-        }),
-    getUser: publicProcedure
-        .input((value: unknown) => {
-            if (typeof value === 'string'){
-                return value;
-            }
-            throw new Error();
-        })
-        .query(async (opts) => {
-            const { input } = opts;
+            var raw = await db`
+                SELECT * FROM users
+                `;
 
-            var user = await db.competitor.findFirst({
-                where: {firstName: input}
+            var users = new Array<UserDbModel>();
+
+            raw.map((row) => {
+                var user = {
+                    Id: row["id"],
+                    FirstName: row["first_name"],
+                    LastName: row["last_name"],
+                    WsdcId: row["wsdc_id"],
+                } as UserDbModel;
+
+                users.push(user);
             });
 
-            return {success: true, user: user};
+            return users;
         }),
-    addCompetitor: publicProcedure
+    getUser: publicProcedure
+        .input(z.string()).query(async (opts) => {
+            const { input } = opts;        
+            const raw = await db`
+                SELECT * FROM users 
+                WHERE first_name = ${input};`;
+                
+            if (raw.count == 1) {
+                const row = raw[0];
+    
+                var user = {
+                    Id: new Uuid(row["id"]),
+                    FirstName: row["first_name"],
+                    LastName: row["last_name"],
+                    WsdcId: row["wsdc_id"],
+                };
+    
+                return {success: true, user: user};
+            }
+            return;
+        }),
+    addUser: publicProcedure
         .input(z.custom<Competitor>()).mutation(async (opts) => {
-            var ret = await db.competitor.create({
-                data: {
-                    firstName: opts.input.FirstName,
-                    lastName: opts.input.LastName
-                }
-            })
-            return {success: true, id: ret.id};
+            const { input } = opts;
+
+            await db`
+                INSERT INTO users (id, first_name, last_name, wsdc_id)
+                VALUES (${input.Id, input.FirstName, input.LastName, input.WsdcId});`;
+            return {success: true};
         }),
 });
 

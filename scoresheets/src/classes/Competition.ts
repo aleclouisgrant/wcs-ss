@@ -1,11 +1,11 @@
-import { Guid } from './Guid';
+import { Uuid } from './Uuid';
 import { Competitor, Judge } from './IPerson';
 import { Round, Tier, Division, Role } from './Enums';
 import { Util } from './Util';
 import { FinalScore, PrelimScore } from './IScore';
 
 export class PrelimCompetition {
-    public Id: Guid;
+    public Id: Uuid;
     private _date: Date;
 
     public Scores: Array<PrelimScore>;
@@ -21,7 +21,7 @@ export class PrelimCompetition {
     public Promoted: Array<Competitor>;
 
     constructor(name?: string, date? : Date, division?: Division, round?: Round, role?: Role) {
-        this.Id = Guid.MakeNew();
+        this.Id = Uuid.MakeNew();
 
         this.Name = name ?? "";
         this._date = date ?? new Date();
@@ -145,7 +145,7 @@ export class PrelimCompetition {
 }
 
 export class FinalCompetition {
-    private _id: Guid;
+    private _id: Uuid;
     private _date: Date;
 
     private _leaders: Array<Competitor>;
@@ -159,7 +159,7 @@ export class FinalCompetition {
     public Scores: Array<Array<FinalScore>>;
 
     constructor(name: string, date?: Date, division?: Division) {
-        this._id = Guid.MakeNew();
+        this._id = Uuid.MakeNew();
         this.Round = Round.Finals;
 
         this._leaders = new Array<Competitor>();

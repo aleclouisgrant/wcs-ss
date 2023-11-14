@@ -1,22 +1,22 @@
-import { Guid } from './Guid';
+import { Uuid } from './Uuid';
 
 export interface IPerson {
-    Id : Guid;
+    Id : Uuid;
     FirstName: string;
     LastName: string;
     FullName : string;
 }
 
 export abstract class Person implements IPerson {
-    public Id: Guid;
+    public Id: Uuid;
     public FirstName: string;
     public LastName: string;
 
-    constructor(firstName: string, lastName: string, id?: Guid, ) {
+    constructor(firstName: string, lastName: string) {
         this.FirstName = firstName;
         this.LastName = lastName;
 
-        this.Id = id ?? Guid.MakeNew();
+        this.Id = Uuid.MakeNew();
     }
 
     get FullName() : string {
@@ -26,11 +26,13 @@ export abstract class Person implements IPerson {
 
 export class Competitor extends Person {
     public BibNumber: number;
+    public WsdcId: number;
 
-    constructor(firstName: string, lastName: string, bibNumber?: number, id?: Guid) {
-        super(firstName, lastName, id);
+    constructor(firstName: string, lastName: string, bibNumber?: number, wsdcId?: number) {
+        super(firstName, lastName);
 
-        this.BibNumber = bibNumber != null ? bibNumber : 0;
+        this.WsdcId = wsdcId ?? 0;
+        this.BibNumber = bibNumber ?? 0;
     }
 }
 
