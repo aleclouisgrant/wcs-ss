@@ -26,24 +26,26 @@
 }
 
 
-Convention:
-    Id 
-    Name
-    Date
+Convention(
+    Id UUID,
+    Name VARCHAR(255),
+    Date DATE
+)
 
 Competitions:
 
 
-PrelimCompetition:
-    Id
-    Name
-    DateTime
-    Division
+PrelimCompetition(
+    Id UUID,
+    Date,
+    Name text,
+    Division 
     CompetitionType
     Role
     Round
-    Songs
     PromotedCompetitors
+    Songs
+)
 
 FinalCompetition:
     Id
@@ -75,4 +77,197 @@ Songs:
     Genre
 
 
+model Competition {
+  id                String        @id @db.Uuid
+  danceConventionId String        @map("dance_convention_id") @db.Uuid
+  division          division_type @map("division")
+  leaderTier        tier_type?    @map("leader_tier")
+  followerTier      tier_type?    @map("follower_tier")
 
+  danceConvention DanceConvention @relation(fields: [danceConventionId], references: [id])
+
+  prelimCompetitions  PrelimCompetition[]
+  finalCompetition  FinalCompetition?
+
+  @@map("competitions")
+}
+
+model CompetitorProfile {
+  id                           String         @id @db.Uuid
+  userId                      String         @unique @db.Uuid @map("user_id")
+  leaderDivision              division_type @map("leader_division")
+  leaderAllowedDivision      division_type? @map("leader_allowed_division")
+  leaderNewcomerPoints       Int?           @default(0) @db.SmallInt @map("leader_newcomer_points")
+  leaderNovicePoints         Int?           @default(0) @db.SmallInt @map("leader_novice_points")
+  leaderIntermediatePoints   Int?           @default(0) @db.SmallInt @map("leader_intermediate_points")
+  leaderAdvancedPoints       Int?           @default(0) @db.SmallInt @map("leader_advanced_points")
+  leaderAllstarPoints        Int?           @default(0) @db.SmallInt @map("leader_allstar_points")
+  leaderChampionPoints       Int?           @default(0) @db.SmallInt @map("leader_champion_points")
+  followerDivision            division_type @map("follower_division")
+  followerAllowedDivision    division_type? @map("follower_allowed_division")
+  followerNewcomerPoints     Int?           @default(0) @db.SmallInt @map("follower_newcomer_points")
+  followerNovicePoints       Int?           @default(0) @db.SmallInt @map("follower_novice_points")
+  followerIntermediatePoints Int?           @default(0) @db.SmallInt @map("follower_intermediate_points")
+  followerAdvancedPoints     Int?           @default(0) @db.SmallInt @map("follower_advanced_points")
+  followerAllstarPoints      Int?           @default(0) @db.SmallInt @map("follower_allstar_points")
+  followerChampionPoints     Int?           @default(0) @db.SmallInt @map("follower_champion_points")
+
+  user  User  @relation(fields: [userId], references: [id])
+
+  competitorRecords CompetitorRecord[] @relation(name: "competitorProfile")
+
+  @@map("competitor_profiles")
+}
+
+model CompetitorRecord {
+  id                String @id @db.Uuid
+  competitorProfileId            String @map("competitor_profile_id") @db.Uuid
+  danceConventionId String @map("dance_convention_id") @db.Uuid
+  bibNumber        Int    @db.SmallInt @map("bib_number")
+
+  competitorProfile            CompetitorProfile            @relation(name: "competitorProfile", fields: [competitorProfileId], references: [id])
+  danceConvention DanceConvention @relation(fields: [danceConventionId], references: [id])
+  
+  prelimScores PrelimScore[]
+
+  leaderFinalScores  FinalScore[] @relation(name: "leaderFinalScores")
+  followerFinalScores FinalScore[] @relation(name: "followerFinalScores")
+
+  @@map("competitor_records")
+}
+
+model DanceConvention {
+  id               String                   @id @db.Uuid
+  name             String
+  date             Unsupported("daterange")
+  timezone_id      Int?                     @db.SmallInt
+  
+  competitions      Competition[]
+  competitorRecords CompetitorRecord[]
+
+  @@map("dance_conventions")
+}
+
+model FinalCompetition {
+  id             String    @id @db.Uuid
+  competitionId String    @db.Uuid @map("competition_id") @unique
+  datetime       DateTime? @db.Timestamp(6)
+  placements     Json[]    @db.Json
+
+  competition   Competition @relation(fields: [competitionId], references: [id])
+
+  finalScores FinalScore[] @relation(name: "finalScores")
+
+  @@map("final_competitions")
+}
+
+model FinalScore {
+  id                   String @id @db.Uuid
+  finalCompetitionId String @db.Uuid @map("final_competition_id")
+  judgeId             String @db.Uuid @map("judge_id")
+  leaderId            String @db.Uuid @map("leader_id")
+  followerId          String @db.Uuid @map("follower_id")
+  score                Int    @db.SmallInt
+
+  finalCompetition   FinalCompetition @relation(name: "finalCompetition", fields: [finalCompetitionId], references: [id], map: "finalCompetition_fkey")
+  judge   JudgeProfile @relation(fields: [judgeId], references: [id])
+  leader  CompetitorRecord @relation(name: "leaderFinalScores", fields: [leaderId], references: [id])
+  follower CompetitorRecord @relation(name: "followerFinalScores", fields: [followerId], references: [id])
+
+  @@map("final_scores")
+}
+
+model JudgeProfile {
+  id      String @id @db.Uuid
+  userId String @db.Uuid @map("user_id") @unique
+
+  user  User  @relation(fields: [userId], references: [id])
+
+  prelimScores  PrelimScore[]
+  finalScores FinalScore[]
+
+  @@map("judge_profiles")
+}
+
+model PrelimCompetition {
+  id                      String     @id @db.Uuid
+  competitionId          String     @db.Uuid @map("competition_id")
+  datetime                DateTime?  @db.Timestamp(6)
+  role                    role_type
+  round                   round_type
+  promotedCompetitorIds String[]   @db.Uuid @map("promoted_competitor_ids")
+  competitorsRanking     String[]   @db.Uuid @map("competitors_ranking")
+
+  competition Competition?  @relation(fields: [competitionId], references: [id])
+  
+  prelimScores  PrelimScore[]
+
+  @@map("prelim_competitions")
+}
+
+model PrelimScore {
+  id                    String             @id @db.Uuid
+  prelimCompetitionId String             @db.Uuid @map("prelim_competition_id")
+  judgeId              String             @db.Uuid @map("judge_id")
+  competitorId         String             @db.Uuid @map("competitor_id")
+  callbackscore         callbackscore_type
+
+  prelimCompetition PrelimCompetition @relation(fields: [prelimCompetitionId], references: [id])
+  judge JudgeProfile  @relation(fields: [judgeId], references: [id])
+  competitor  CompetitorRecord  @relation(fields: [competitorId], references: [id])
+
+  @@map("prelim_scores")
+}
+
+model User {
+  id         String @id @db.Uuid
+  first_name String
+  last_name  String
+  wsdc_id    Int?
+
+  competitorProfile CompetitorProfile?
+  judgeProfile  JudgeProfile
+
+  @@map("users")
+}
+
+enum role_type {
+  Leader
+  Follower
+}
+
+enum callbackscore_type {
+  Unscored
+  Yes
+  No
+  Alternate1
+  Alternate2
+  Alternate3
+}
+
+enum division_type {
+  Newcomer
+  Novice
+  Intermediate
+  Advanced
+  AllStar
+  Champion
+  Open
+}
+
+enum round_type {
+  Prelims
+  Quarterfinals
+  Semifinals
+  Finals
+}
+
+enum tier_type {
+  Tier1
+  Tier2
+  Tier3
+  Tier4
+  Tier5
+  Tier6
+  NoTier
+}

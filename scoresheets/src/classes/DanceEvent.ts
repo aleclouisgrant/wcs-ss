@@ -1,9 +1,8 @@
 import { FinalCompetition, PrelimCompetition } from './Competition';
-import { Guid } from './Guid';
-import { Util } from './Util';
+import { Uuid } from './Uuid';
 
 export class DanceEvent {
-    private _id: Guid;
+    private _id: Uuid;
 
     public Name: string;
     public Date: Date;
@@ -12,10 +11,10 @@ export class DanceEvent {
     public FinalCompetitions: Array<FinalCompetition>;
 
     constructor(name?: string, date?: Date) {
-        this._id = Guid.MakeNew();
+        this._id = Uuid.MakeNew();
 
-        this.Date = date != null ? date : new Date();
-        this.Name = name != null ? name : "";
+        this.Name = name ?? "";
+        this.Date = date ?? new Date();
 
         this.PrelimCompetitions = new Array<PrelimCompetition>();
         this.FinalCompetitions = new Array<FinalCompetition>();

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 
 import { CallbackScore, Division, Role, Round } from '@/classes/Enums';
 import { Competitor, Judge } from '@/classes/IPerson';
@@ -12,11 +12,13 @@ import { TestData } from '@/test-data/test-data';
 import { Util } from '@/classes/Util';
 import { PrelimCompetition } from '@/classes/Competition';
 import { PrelimScore } from '@/classes/IScore';
+import { CompetitorsContext } from '@/context/CompetitorsContext';
 
 let JudgeDb = TestData.TestJudgesDb();
-let CompetitorDb = TestData.TestCompetitorsDb();
 
 export default function PrelimAdder(props: { handlePrelimCompetition: (prelimCompetition: PrelimCompetition) => void }) {
+    const {value: competitorDb } = useContext(CompetitorsContext);
+
     const [competitorCount, setCompetitorCount] = useState(0);
     const [judgeCount, setJudgeCount] = useState(0);
 
@@ -216,7 +218,7 @@ export default function PrelimAdder(props: { handlePrelimCompetition: (prelimCom
                             onChange={(e) => SetBibNumber(i, e.target.value)}/></td>
                     <td>
                         <Selector 
-                            personDb={CompetitorDb} 
+                            personDb={competitorDb} 
                             selectedPerson={competitors[i]}
                             setSelectedPerson={(value: Competitor | undefined) => SetCompetitor(value, i)}/>
                         <button type='button' onClick={() => RemoveCompetitor(i)}>d</button>

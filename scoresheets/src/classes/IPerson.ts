@@ -1,40 +1,38 @@
-import { Guid } from './Guid';
+import { Uuid } from './Uuid';
 
 export interface IPerson {
+    Id : Uuid;
+    FirstName: string;
+    LastName: string;
     FullName : string;
-    Id : Guid;
 }
 
 export abstract class Person implements IPerson {
-    private _firstName: string;
-    private _lastName: string;
-
-    public Id: Guid;
+    public Id: Uuid;
+    public FirstName: string;
+    public LastName: string;
 
     constructor(firstName: string, lastName: string) {
-        this._firstName = firstName;
-        this._lastName = lastName;
+        this.FirstName = firstName;
+        this.LastName = lastName;
 
-        this.Id = Guid.MakeNew();
+        this.Id = Uuid.MakeNew();
     }
 
     get FullName() : string {
-        return this._firstName + " " + this._lastName;
-    }
-
-    public SetName(firstName: string, lastName: string) {
-        this._firstName = firstName;
-        this._lastName = lastName;
+        return this.FirstName + " " + this.LastName;
     }
 }
 
 export class Competitor extends Person {
     public BibNumber: number;
+    public WsdcId: number;
 
-    constructor(firstName: string, lastName: string, bibNumber?: number) {
+    constructor(firstName: string, lastName: string, bibNumber?: number, wsdcId?: number) {
         super(firstName, lastName);
 
-        this.BibNumber = bibNumber != null ? bibNumber : 0;
+        this.WsdcId = wsdcId ?? 0;
+        this.BibNumber = bibNumber ?? 0;
     }
 }
 

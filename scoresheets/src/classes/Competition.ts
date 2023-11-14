@@ -1,11 +1,11 @@
-import { Guid } from './Guid';
+import { Uuid } from './Uuid';
 import { Competitor, Judge } from './IPerson';
 import { Round, Tier, Division, Role } from './Enums';
 import { Util } from './Util';
-import { PrelimScore } from './IScore';
+import { FinalScore, PrelimScore } from './IScore';
 
 export class PrelimCompetition {
-    public Id: Guid;
+    public Id: Uuid;
     private _date: Date;
 
     public Scores: Array<PrelimScore>;
@@ -21,7 +21,7 @@ export class PrelimCompetition {
     public Promoted: Array<Competitor>;
 
     constructor(name?: string, date? : Date, division?: Division, round?: Round, role?: Role) {
-        this.Id = Guid.MakeNew();
+        this.Id = Uuid.MakeNew();
 
         this.Name = name ?? "";
         this._date = date ?? new Date();
@@ -145,53 +145,111 @@ export class PrelimCompetition {
 }
 
 export class FinalCompetition {
-    private _id: Guid;
+    private _id: Uuid;
     private _date: Date;
+
     private _leaders: Array<Competitor>;
     private _followers: Array<Competitor>;
-    private _leaderTier: Tier;
-    private _followerTier: Tier;
+    private _judges: Array<Judge>;
 
     public Name: string;
     public Division: Division;
     public Round: Round;
 
-    constructor(name: string, division?: Division, round?: Round) {
-        this._id = Guid.MakeNew();
+    public Scores: Array<Array<FinalScore>>;
 
-        this._leaderTier = Tier.NoTier;
-        this._followerTier = Tier.NoTier;
+    constructor(name: string, date?: Date, division?: Division) {
+        this._id = Uuid.MakeNew();
+        this.Round = Round.Finals;
 
-        this._date = new Date();
         this._leaders = new Array<Competitor>();
         this._followers = new Array<Competitor>();
+        this._judges = new Array<Judge>();
+        
+        this.Scores = new Array<Array<FinalScore>>();
 
-        this.Name = name != null ? name : "";
-        this.Division = division != null ? division : Division.Open;
-        this.Round = round != null ? round : Round.Finals;
+        this._date = date ?? new Date();
+        this.Name = name ?? "";
+        this.Division = division ?? Division.Open;
     }
 
-    public get LeaderTier() {
-        return Util.GetTier(this._leaders.length);
+    public Print() {
+        var print = "";
+
+        print += "Name: " + this.Name + '\n';
+        print += "Date: " + this._date + '\n';
+        print += "Division: " + this.Division + '\n';
+        print += "Round: " + this.Round + '\n';
+
+        print += "Judges: ";
+        var judges = "";
+        this._judges.forEach((judge) => {
+            judges += judge.FullName + ", ";
+        })
+        print += judges + '\n';
+
+        print += "Scores: " + '\n';
+        
+        this.Scores.forEach((coupleScores, place) => {
+            var leader = coupleScores[0]?.Leader;
+            var follower = coupleScores[0]?.Follower;
+            print += place + " ";
+            print += leader?.FullName + "(" + leader?.BibNumber + ")";
+            print += follower?.FullName + "(" + follower?.BibNumber + ")";
+
+            coupleScores.forEach((value) => {
+                print += value.Score + " ";
+            });
+
+            print += '\n';
+        });
+        
+        console.log(print);
     }
 
-    public get FollowerTier() {
-        return Util.GetTier(this._followers.length);
+    public GetPlacement(competitor: Competitor) : number {
+        var placement = 0;
+
+        this.Scores.forEach((coupleScores, index) => {
+            if (coupleScores[0].Leader.FullName == competitor.FullName || coupleScores[0].Follower.FullName == competitor.FullName) {
+                placement = index + 1;
+            }
+        });
+
+        return placement;
     }
 
-    public AddLeader(competitor: Competitor) {
-        this._leaders.push(competitor);
+    public SetScores(scores: Array<Array<FinalScore>>) {
+        this.Scores = scores;
+
+        this.Scores.forEach((coupleScores, place) => {
+            coupleScores.forEach((value) => {
+                if (value.Leader != null) {
+                    if (!this._leaders.includes(value.Leader)) {
+                        this._leaders.push(value.Leader);
+                    }
+                }
+                
+                if (value.Follower != null) {
+                    if (!this._followers.includes(value.Follower)) {
+                        this._followers.push(value.Follower);
+                    }
+                }
+
+                if (value.Judge != null) {
+                    if (!this._judges.includes(value.Judge)) {
+                        this._judges.push(value.Judge);
+                    }
+                }
+            });
+        });
     }
 
-    public AddFollower(competitor: Competitor) {
-        this._followers.push(competitor);
+    public get CoupleCount() : number {
+        return this.Scores.length;
     }
 
-    public GetLeaderCount(): number {
-        return this._leaders.length;
-    }
-
-    public GetFollowerCount(): number {
-        return this._followers.length;
+    public get Judges() : Array<Judge> {
+        return this._judges;
     }
 }

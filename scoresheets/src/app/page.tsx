@@ -1,10 +1,11 @@
-import Uploader from "@/component/uploader";
-import Test from '@/component/test';
+import FinalsScoresheet from "@/component/finals-competition-viewer";
+
+import { TestData } from "@/test-data/test-data";
 
 function Home() {
   return (
     <div>
-      <Uploader/>
+      <FinalsScoresheet competition={TestData.TestFinalCompetition()}/>
     </div>
   )
 }
