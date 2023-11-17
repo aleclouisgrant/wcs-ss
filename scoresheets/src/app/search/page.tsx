@@ -4,7 +4,7 @@ import { trpc } from "../_trpc/client";
 import { useEffect, useState } from "react";
 import { Competitor } from "@/classes/IPerson";
 
-import CompetitorAnalytics from "@/component/CompetitorAnalytics"
+import CompetitorAnalytics from "@/components/CompetitorAnalytics"
 import { Uuid } from "@/classes/Uuid";
 
 export default function Page() {

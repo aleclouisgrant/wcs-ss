@@ -5,8 +5,8 @@ import { useContext, useState } from 'react';
 import { CallbackScore, Division, Role, Round } from '@/classes/Enums';
 import { Competitor, Judge } from '@/classes/IPerson';
 
-import CallbackScoreViewer from '@/component/prelim-callback-score-viewer';
-import Selector from '@/component/person-selector';
+import CallbackScoreViewer from '@/components/prelim-callback-score-viewer';
+import Selector from '@/components/person-selector';
 
 import { TestData } from '@/test-data/test-data';
 import { Util } from '@/classes/Util';

@@ -3,7 +3,7 @@ import { Judge } from '@/classes/IPerson';
 import { PrelimScore } from '@/classes/IScore';
 import { Util } from '@/classes/Util';
 
-import CallbackScoreViewer from '@/component/prelim-callback-score-viewer';
+import CallbackScoreViewer from '@/components/prelim-callback-score-viewer';
 
 function IsPromoted(promoted : boolean) : string {
     if (promoted) {

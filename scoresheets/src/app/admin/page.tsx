@@ -1,6 +1,6 @@
 "use client"
 
-import Uploader from "@/component/uploader";
+import Uploader from "@/components/uploader";
 import { CompetitorsContextProvider } from "@/context/CompetitorsContext";
 
 export default async function Page() {  

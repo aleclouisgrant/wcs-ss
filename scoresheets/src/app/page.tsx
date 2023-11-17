@@ -1,4 +1,4 @@
-import FinalsScoresheet from "@/component/finals-competition-viewer";
+import FinalsScoresheet from "@/components/finals-competition-viewer";
 
 import { TestData } from "@/test-data/test-data";
 
