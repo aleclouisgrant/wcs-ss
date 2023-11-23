@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { ReactNode, useContext, useEffect, useState } from "react";
+import { FormEvent, ReactNode, useContext, useEffect, useState } from "react";
 
 import { trpc } from "@/app/_trpc/client";
 import { Competitor } from "@/classes/IPerson";
@@ -34,13 +34,19 @@ export default function Uploader() {
         }
     },[data]);
 
-    function AddCompetitor() {
+    function AddCompetitor(e: FormEvent) {
+        e.preventDefault();
         var newCompetitor = new Competitor(firstNameText, lastNameText, 0, +wsdcIdText);
 
-        addCompetitor.mutate(newCompetitor, {onSuccess() {
+        addCompetitor.mutate(newCompetitor, {onSuccess(data) {
+            newCompetitor.Id = data.id;
             var newCompetitors = [...competitors];
             newCompetitors.push(newCompetitor);
             setCompetitors(newCompetitors);
+
+            setFirstNameText("");
+            setLastNameText("");
+            setWsdcIdText("");
         }});
     }
 
@@ -67,7 +73,7 @@ export default function Uploader() {
 
     return (
         <div>
-            <div className="m-8">
+            <form onSubmit={(e) => AddCompetitor(e)} className="m-8">
                 <div>
                     <label htmlFor="firstNameInput" className="block mb-2 text-sm font-medium text-black">First Name</label>
                     <input id="firstNameInput" type="text" value={firstNameText} onChange={(e) => setFirstNameText(e.target.value)}
@@ -84,12 +90,12 @@ export default function Uploader() {
                         className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-full focus:ring-blue-500 focus:border-blue-500 inline-block p-1 px-2"/>
                     <button className="btn-primary m-1 inline-block" onClick={SearchForWsdcId}>?</button>
                 </div>
-                    <button className="btn-primary m-2" onClick={AddCompetitor}>Add</button>
-            </div>
+                    <button type="submit" className="btn-primary m-2">Add</button>
+            </form>
 
-            <br/>
-            <Competitors competitors={competitors}/>
-            <br/>
+            <div className="m-4">
+                <Competitors competitors={competitors}/>
+            </div>
 
             <div>
                 <PrelimAdder handlePrelimCompetition={HandlePrelimCompetition}/>

@@ -1,5 +1,5 @@
 import { publicProcedure, router } from "./trpc";
-import { z } from "zod";
+import { number, z } from "zod";
 import { db } from "../../db";
 import { Competitor } from "@/classes/IPerson";
 import { UserDbModel } from "@/db/schema";
@@ -52,10 +52,12 @@ export const appRouter = router({
         .input(z.custom<Competitor>()).mutation(async (opts) => {
             const { input } = opts;
 
-            await db`
+            var response = await db`
                 INSERT INTO users(first_name, last_name, wsdc_id)
-                VALUES (${input.FirstName}, ${input.LastName}, ${input.WsdcId});`;
-            return {success: true};
+                VALUES (${input.FirstName}, ${input.LastName}, ${input.WsdcId})
+                RETURNING id;`;
+
+            return {success: true, id: response[0]["id"]};
         }),
 });
 
