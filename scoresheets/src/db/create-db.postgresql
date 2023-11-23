@@ -1,0 +1,40 @@
+CREATE TYPE role_type AS ENUM (
+    'leader',
+    'follower'
+)
+
+CREATE TYPE callbackscore_type AS ENUM (
+    'unscored',
+    'yes',
+    'alternate_one',
+    'alternate_two',
+    'alternate_three',
+    'no'
+)
+
+CREATE TYPE division_type AS ENUM (
+    'open',
+    'newcomer',
+    'novice',
+    'intermediate',
+    'advanced',
+    'allstar',
+    'champion'
+)
+
+CREATE TYPE round_type AS ENUM (
+    'prelims',
+    'quarterfinals',
+    'semifinals',
+    'finals'
+)
+
+CREATE TYPE tier_type AS ENUM (
+    'no_tier',
+    'tier_one',
+    'tier_two',
+    'tier_three',
+    'tier_four',
+    'tier_five',
+    'tier_six'
+)

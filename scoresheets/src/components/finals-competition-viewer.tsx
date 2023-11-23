@@ -14,11 +14,11 @@ export default async function FinalsScoresheet(props: {competition : FinalCompet
             let follower = coupleScores[0]?.Follower;
 
             competitorRows.push(
-                <tr>
-                    <td>{i + 1}</td>
-                    <td>{leader?.FullName + " & " + follower?.FullName}</td>
+                <tr key={i} className="">
+                    <td className='p-2'>{i + 1}</td>
+                    <td className='p-2'>{leader?.FullName + " & " + follower?.FullName}</td>
                     {coupleScores.map((score: FinalScore) => (
-                        <td>{score.Score}</td>
+                        <td key={score.Judge.FullName} className='p-2'>{score.Score}</td>
                         ))}
                 </tr>
             )
@@ -29,13 +29,13 @@ export default async function FinalsScoresheet(props: {competition : FinalCompet
 
     return (
         <div>
-            <table>
-                <tbody>
-                    <tr>
-                        <th>Place</th>
-                        <th>Competitors</th>
+            <table className="table-auto m-4">
+                <tbody className="divide-y divide-gray-200 p-4">
+                    <tr className="bg-gray-500 p-4 px-12" >
+                        <th className='p-2 rounded-l-full'>PLACE</th>
+                        <th className='p-2'>COMPETITORS</th>
                         {comp.Judges.map((judge: Judge) => (
-                            <th>{judge.FullName}</th>
+                            <th className='p-2'>{judge.Initials}</th>
                             ))}
                     </tr>
                     {CompetitorRows()}

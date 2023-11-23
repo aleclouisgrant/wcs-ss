@@ -58,8 +58,8 @@ export default function PrelimsScoresheet(props: {competition : PrelimCompetitio
     return (
         <div>
             <h3>{comp.Role}s (Tier {Util.TierNumberFromTier(comp.Tier)}: {comp.GetCompetitorCount()} competitors):</h3>
-            <table>
-                <tbody>
+            <table className="table-auto">
+                <tbody className="even:bg-gray-500 odd:bg-white">
                     <tr>
                         <th>Count</th>
                         <th>Bib</th>

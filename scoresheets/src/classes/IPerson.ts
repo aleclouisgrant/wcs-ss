@@ -37,5 +37,7 @@ export class Competitor extends Person {
 }
 
 export class Judge extends Person {
-
+    get Initials() : string {
+        return this.FirstName.charAt(0) + this.LastName.charAt(0);
+    }
 }

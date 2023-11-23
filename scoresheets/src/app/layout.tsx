@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 
 import Provider from "@/components/Providers"
+import { cn } from '@/classes/utils'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -18,10 +19,14 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
-        <Provider>
-          {children}
-        </Provider>  
+      <body className={cn('relative h-full font-sans antialiased', inter.className)}>
+        <main className='relative flex flex-col min-h-screen'>
+          <div className='flex-grow flex-1'>
+            <Provider>
+              {children}
+            </Provider>
+          </div>
+        </main>
       </body>
     </html>
   )
