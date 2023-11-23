@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { useContext, useState } from 'react';
 
@@ -215,13 +215,14 @@ export default function PrelimAdder(props: { handlePrelimCompetition: (prelimCom
                     <td>{i + 1}</td>
                     <td><input type='text' 
                             value={bibNumbers[i]} 
-                            onChange={(e) => SetBibNumber(i, e.target.value)}/></td>
+                            onChange={(e) => SetBibNumber(i, e.target.value)}
+                            className='input-primary'/></td>
                     <td>
                         <Selector 
                             personDb={competitorDb} 
                             selectedPerson={competitors[i]}
                             setSelectedPerson={(value: Competitor | undefined) => SetCompetitor(value, i)}/>
-                        <button type='button' onClick={() => RemoveCompetitor(i)}>d</button>
+                        <button type='button' className='m-2 rounded-full bg-red-600 font-sans text-white text-xs w-4 h-4' onClick={() => RemoveCompetitor(i)}>x</button>
                     </td>
                     <JudgeScores competitorIndex={i}/>
                     <td>{CompetitorScoreSum(i)}</td>
@@ -256,7 +257,7 @@ export default function PrelimAdder(props: { handlePrelimCompetition: (prelimCom
                 <th key={i}>
                     <Selector personDb={JudgeDb} selectedPerson={judges[i]}
                         setSelectedPerson={(value: Judge | undefined) => SetJudge(value, i)} />
-                    <button type='button' onClick={() => RemoveJudge(i)}>d</button>
+                    <button type='button' className='rounded-full bg-red-600 font-sans text-white text-xs w-4 h-4' onClick={() => RemoveJudge(i)}>x</button>
                 </th>);
         }
 
@@ -309,55 +310,41 @@ export default function PrelimAdder(props: { handlePrelimCompetition: (prelimCom
 
     return (
         <div>
-            <div className='m-4'>
-                <label htmlFor='nameInput' className='mr-4'>Name</label>
-                <input id='nameInput' inputMode='text' onChange={(e) => setCompName(e.target.value)} value={compName}/>
+            <div className='m-2'>
+                <label htmlFor='nameInput' className='mr-2'>Name</label>
+                <input id='nameInput' inputMode='text' onChange={(e) => setCompName(e.target.value)} value={compName}
+                    className='input-primary'/>
 
-                <label className='mx-4'>
-                    Date:
-                    <input id='dateInput' type='date' onChange={(e) => setDate(new Date(e.target.value))} value={StringFromDate(date)} />
-                </label>
+                <label className='mx-2'>Date:</label>
+                <input id='dateInput' className='input-primary' type='date' onChange={(e) => setDate(new Date(e.target.value))} value={StringFromDate(date)} />
 
-                <label className='mx-4'>
-                    Role:
-                    <select id='roleInput' onChange={(e) => setRole(Role[e.target.value as keyof typeof Role])} value={role}>
-                        <option value={Role.Leader}>{Role.Leader}</option>
-                        <option value={Role.Follower}>{Role.Follower}</option>
-                    </select>
-                </label>
+                <label className='mx-2'>Role:</label>
+                <select id='roleInput' className='select-primary' onChange={(e) => setRole(Role[e.target.value as keyof typeof Role])} value={role}>
+                    <option value={Role.Leader}>{Role.Leader}</option>
+                    <option value={Role.Follower}>{Role.Follower}</option>
+                </select>
 
-                <label className='mx-4'>
-                    Division:
-                    <select name='divisionInput' onChange={(e) => setDivision(Util.StringToDivision(e.target.value))} value={division}>
-                        <option value={Division.Newcomer}>{Division.Newcomer}</option>
-                        <option value={Division.Novice}>{Division.Novice}</option>
-                        <option value={Division.Intermediate}>{Division.Intermediate}</option>
-                        <option value={Division.Advanced}>{Division.Advanced}</option>
-                        <option value={Division.AllStar}>{Division.AllStar}</option>
-                        <option value={Division.Champion}>{Division.Champion}</option>
-                        <option value={Division.Open}>{Division.Open}</option>
-                    </select>
-                </label>
+                <label className='mx-2'>Division:</label>
+                <select name='divisionInput' className='select-primary' onChange={(e) => setDivision(Util.StringToDivision(e.target.value))} value={division}>
+                    <option value={Division.Newcomer}>{Division.Newcomer}</option>
+                    <option value={Division.Novice}>{Division.Novice}</option>
+                    <option value={Division.Intermediate}>{Division.Intermediate}</option>
+                    <option value={Division.Advanced}>{Division.Advanced}</option>
+                    <option value={Division.AllStar}>{Division.AllStar}</option>
+                    <option value={Division.Champion}>{Division.Champion}</option>
+                    <option value={Division.Open}>{Division.Open}</option>
+                </select>
 
-                <label className='mx-4'>
-                    Round:
-                    <select name='roundInput' onChange={(e) => setRound(Round[e.target.value as keyof typeof Round])} value={round}>
-                        <option value={Round.Prelims}>{Round.Prelims}</option>
-                        <option value={Round.Quarterfinals}>{Round.Quarterfinals}</option>
-                        <option value={Round.Semifinals}>{Round.Semifinals}</option>
-                        <option value={Round.Finals}>{Round.Finals}</option>
-                    </select>
-                </label>
+                <label className='mx-2'>Round:</label>
+                <select name='roundInput' className='select-primary' onChange={(e) => setRound(Round[e.target.value as keyof typeof Round])} value={round}>
+                    <option value={Round.Prelims}>{Round.Prelims}</option>
+                    <option value={Round.Quarterfinals}>{Round.Quarterfinals}</option>
+                    <option value={Round.Semifinals}>{Round.Semifinals}</option>
+                    <option value={Round.Finals}>{Round.Finals}</option>
+                </select>
             </div>
 
-            <div className='mx-4'>
-                <button type='button' className='btn-primary mx-2' onClick={AddCompetitor}>Add Competitor</button>
-                <button type='button' className='btn-primary mx-2' onClick={AddJudge}>Add Judge</button>
-                <button type='button' className='btn-primary mx-2' onClick={UpdatePrelimCompetition}>Save</button>
-                <button type='button' className='btn-primary mx-2' onClick={Clear}>Clear</button>
-            </div>
-
-            <div>
+            <div className='mx-2 inline-block'>
                 <button type="button" onClick={() => setCurrentCallbackScore(CallbackScore.Yes)} style={{ backgroundColor: "#34A56F", width: 30, height: 30 }}>
                     {Util.CallbackScoreShorthand(CallbackScore.Yes)}
                 </button>
@@ -376,6 +363,13 @@ export default function PrelimAdder(props: { handlePrelimCompetition: (prelimCom
                 <button type="button" onClick={() => setCurrentCallbackScore(CallbackScore.Unscored)} style={{ backgroundColor: "red", width: 30, height: 30 }}>
                     {Util.CallbackScoreShorthand(CallbackScore.Unscored)}
                 </button>
+            </div>
+
+            <div className='inline-block'>
+                <button type='button' className='btn-primary mx-2' onClick={AddCompetitor}>Add Competitor</button>
+                <button type='button' className='btn-primary mx-2' onClick={AddJudge}>Add Judge</button>
+                <button type='button' className='btn-primary mx-2' onClick={UpdatePrelimCompetition}>Save</button>
+                <button type='button' className='btn-primary mx-2' onClick={Clear}>Clear</button>
             </div>
 
             <table id='CompetitionTable'>

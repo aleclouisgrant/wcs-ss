@@ -17,7 +17,7 @@ export default function Uploader() {
     const { value: competitors, setValue: setCompetitors } = useContext(CompetitorsContext);
 
     const { data } = trpc.getUsers.useQuery();
-    const addCompetitor = trpc.addUser.useMutation();
+    const addCompetitor = trpc.addCompetitor.useMutation();
 
     useEffect(() => {
         if (data) {
@@ -77,27 +77,23 @@ export default function Uploader() {
                 <div>
                     <label htmlFor="firstNameInput" className="block mb-2 text-sm font-medium text-black">First Name</label>
                     <input id="firstNameInput" type="text" value={firstNameText} onChange={(e) => setFirstNameText(e.target.value)}
-                        className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-full focus:ring-blue-500 focus:border-blue-500 block p-1 px-2"/>
+                        className="input-primary"/>
                 </div>
                 <div>
                     <label htmlFor="lastNameInput" className="block mb-2 text-sm font-medium text-black">Last Name</label>
                     <input id="lastNameInput" type="text" value={lastNameText} onChange={(e) => setLastNameText(e.target.value)}
-                        className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-full focus:ring-blue-500 focus:border-blue-500 block p-1 px-2"/>
+                        className="input-primary"/>
                 </div>
                 <div>
                     <label className="block mb-2 text-sm font-medium text-black">WSDC Id</label>
                     <input type="text"  value={wsdcIdText} onChange={(e) => setWsdcIdText(e.target.value)}
-                        className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-full focus:ring-blue-500 focus:border-blue-500 inline-block p-1 px-2"/>
+                        className="input-primary"/>
                     <button className="btn-primary m-1 inline-block" onClick={SearchForWsdcId}>?</button>
                 </div>
                     <button type="submit" className="btn-primary m-2">Add</button>
             </form>
 
             <div className="m-4">
-                <Competitors competitors={competitors}/>
-            </div>
-
-            <div>
                 <PrelimAdder handlePrelimCompetition={HandlePrelimCompetition}/>
             </div>
         </div>
