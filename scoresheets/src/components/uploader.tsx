@@ -61,28 +61,30 @@ export default function Uploader() {
         );
     }
 
+    function SearchForWsdcId(){
+
+    }
+
     return (
         <div>
-            <div>
+            <div className="m-8">
                 <div>
-                    <label>
-                        First Name:
-                        <input type="text" value={firstNameText} onChange={(e) => setFirstNameText(e.target.value)} />
-                    </label>
+                    <label htmlFor="firstNameInput" className="block mb-2 text-sm font-medium text-black">First Name</label>
+                    <input id="firstNameInput" type="text" value={firstNameText} onChange={(e) => setFirstNameText(e.target.value)}
+                        className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-full focus:ring-blue-500 focus:border-blue-500 block p-1 px-2"/>
                 </div>
                 <div>
-                    <label>
-                        Last Name:
-                        <input type="text" value={lastNameText} onChange={(e) => setLastNameText(e.target.value)} />
-                    </label>
+                    <label htmlFor="lastNameInput" className="block mb-2 text-sm font-medium text-black">Last Name</label>
+                    <input id="lastNameInput" type="text" value={lastNameText} onChange={(e) => setLastNameText(e.target.value)}
+                        className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-full focus:ring-blue-500 focus:border-blue-500 block p-1 px-2"/>
                 </div>
                 <div>
-                    <label>
-                        WSDC Id:
-                        <input type="text" value={wsdcIdText} onChange={(e) => setWsdcIdText(e.target.value)} />
-                    </label>
+                    <label className="block mb-2 text-sm font-medium text-black">WSDC Id</label>
+                    <input type="text"  value={wsdcIdText} onChange={(e) => setWsdcIdText(e.target.value)}
+                        className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-full focus:ring-blue-500 focus:border-blue-500 inline-block p-1 px-2"/>
+                    <button className="btn-primary m-1 inline-block" onClick={SearchForWsdcId}>?</button>
                 </div>
-                <button onClick={AddCompetitor}>Add</button>
+                    <button className="btn-primary m-2" onClick={AddCompetitor}>Add</button>
             </div>
 
             <br/>

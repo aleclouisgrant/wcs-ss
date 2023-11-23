@@ -309,26 +309,24 @@ export default function PrelimAdder(props: { handlePrelimCompetition: (prelimCom
 
     return (
         <div>
-            <div>
-                <label>
-                    Name:
-                    <input name='nameInput' inputMode='text' onChange={(e) => setCompName(e.target.value)} value={compName} />
-                </label>
+            <div className='m-4'>
+                <label htmlFor='nameInput' className='mr-4'>Name</label>
+                <input id='nameInput' inputMode='text' onChange={(e) => setCompName(e.target.value)} value={compName}/>
 
-                <label>
+                <label className='mx-4'>
                     Date:
-                    <input name='dateInput' type='date' onChange={(e) => setDate(new Date(e.target.value))} value={StringFromDate(date)} />
+                    <input id='dateInput' type='date' onChange={(e) => setDate(new Date(e.target.value))} value={StringFromDate(date)} />
                 </label>
 
-                <label>
+                <label className='mx-4'>
                     Role:
-                    <select name='roleInput' onChange={(e) => setRole(Role[e.target.value as keyof typeof Role])} value={role}>
+                    <select id='roleInput' onChange={(e) => setRole(Role[e.target.value as keyof typeof Role])} value={role}>
                         <option value={Role.Leader}>{Role.Leader}</option>
                         <option value={Role.Follower}>{Role.Follower}</option>
                     </select>
                 </label>
 
-                <label>
+                <label className='mx-4'>
                     Division:
                     <select name='divisionInput' onChange={(e) => setDivision(Util.StringToDivision(e.target.value))} value={division}>
                         <option value={Division.Newcomer}>{Division.Newcomer}</option>
@@ -341,7 +339,7 @@ export default function PrelimAdder(props: { handlePrelimCompetition: (prelimCom
                     </select>
                 </label>
 
-                <label>
+                <label className='mx-4'>
                     Round:
                     <select name='roundInput' onChange={(e) => setRound(Round[e.target.value as keyof typeof Round])} value={round}>
                         <option value={Round.Prelims}>{Round.Prelims}</option>
@@ -352,11 +350,11 @@ export default function PrelimAdder(props: { handlePrelimCompetition: (prelimCom
                 </label>
             </div>
 
-            <div>
-                <button type='button' onClick={AddCompetitor}>Add Competitor</button>
-                <button type='button' onClick={AddJudge}>Add Judge</button>
-                <button type='button' onClick={UpdatePrelimCompetition}>Save</button>
-                <button type='button' onClick={Clear}>Clear</button>
+            <div className='mx-4'>
+                <button type='button' className='btn-primary mx-2' onClick={AddCompetitor}>Add Competitor</button>
+                <button type='button' className='btn-primary mx-2' onClick={AddJudge}>Add Judge</button>
+                <button type='button' className='btn-primary mx-2' onClick={UpdatePrelimCompetition}>Save</button>
+                <button type='button' className='btn-primary mx-2' onClick={Clear}>Clear</button>
             </div>
 
             <div>

@@ -27,7 +27,7 @@ export const appRouter = router({
 
             return users;
         }),
-    getUser: publicProcedure
+    getUserByName: publicProcedure
         .input(z.string()).query(async (opts) => {
             const { input } = opts;        
             const raw = await db`
@@ -53,8 +53,8 @@ export const appRouter = router({
             const { input } = opts;
 
             await db`
-                INSERT INTO users (id, first_name, last_name, wsdc_id)
-                VALUES (${input.Id, input.FirstName, input.LastName, input.WsdcId});`;
+                INSERT INTO users(first_name, last_name, wsdc_id)
+                VALUES (${input.FirstName}, ${input.LastName}, ${input.WsdcId});`;
             return {success: true};
         }),
 });
