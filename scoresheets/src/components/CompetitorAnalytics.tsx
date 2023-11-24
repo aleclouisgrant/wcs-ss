@@ -4,7 +4,7 @@ import { Competitor } from "@/classes/IPerson";
 import { JSX } from "react";
 
 import { TestData } from '@/test-data/test-data';
-import { DanceEvent } from "@/classes/DanceEvent";
+import { DanceConvention } from "@/classes/DanceConvention";
 import { CallbackScore, Role } from "@/classes/Enums";
 import { CompetitorFinalScoreViewer, CompetitorPrelimScoreViewer, FinalScoreViewerProps, PrelimScoreViewerProps } from "./competitor-score-viewer";
 
@@ -18,7 +18,7 @@ export default function CompetitorAnalytics(props: {competitor: Competitor | und
     );
   }
 
-  const CompetitionScores = (person: Competitor, danceEvent : DanceEvent, role : Role) => {
+  const CompetitionScores = (person: Competitor, danceEvent : DanceConvention, role : Role) => {
 
     var prelimCompetitions = danceEvent.PrelimCompetitions;
     var finalCompetition = danceEvent.FinalCompetitions[0];

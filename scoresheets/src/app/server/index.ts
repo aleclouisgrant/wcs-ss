@@ -6,6 +6,7 @@ import { PrelimCompetition, FinalCompetition } from "@/classes/Competition";
 import { UserDbModel } from "@/db/schema";
 import { Uuid } from "@/classes/Uuid";
 import { Role, Round } from "@/classes/Enums";
+import { DanceConvention } from "@/classes/DanceConvention";
 
 export const appRouter = router({
     getUsers: publicProcedure
@@ -71,6 +72,26 @@ export const appRouter = router({
 
             return judges;
         }),
+    getDanceConventions: publicProcedure
+        .query(async() => {
+            var raw = await db`
+                SELECT *
+                FROM dance_conventions`;
+
+            var danceConventions = new Array<{Id: string, Name: string, Date: string}>();
+
+            raw.map((row) => {
+                var danceConvention = {
+                    Id: row["id"],
+                    Name: row["name"],
+                    Date: row["date"],
+                };
+
+                danceConventions.push(danceConvention);
+            });
+
+            return danceConventions;
+        }),
     getUserByName: publicProcedure
         .input(z.string()).query(async (opts) => {
             const { input } = opts;        
@@ -132,6 +153,17 @@ export const appRouter = router({
                 INSERT INTO judge_profiles(user_id)
                 SELECT newUser.id FROM newUser
                 RETURNING user_id`;
+                
+            return {success: true, id: response[0]["id"]};
+        }),
+    addDanceConvention: publicProcedure
+        .input(z.custom<DanceConvention>()).mutation(async (opts) => {
+            const { input } = opts;
+
+            var response = await db`
+                INSERT INTO dance_conventions (name, date)
+                VALUES (${input.Name}, ${input.Date})
+                RETURNING id`;
                 
             return {success: true, id: response[0]["id"]};
         }),

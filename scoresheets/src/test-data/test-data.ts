@@ -1,5 +1,5 @@
 import { FinalCompetition, PrelimCompetition } from '@/classes/Competition';
-import { DanceEvent } from '@/classes/DanceEvent';
+import { DanceConvention } from '@/classes/DanceConvention';
 import { CallbackScore, Division, Role, Round } from '@/classes/Enums';
 import { Competitor, Judge } from '@/classes/IPerson';
 import { FinalScore, PrelimScore } from '@/classes/IScore';
@@ -283,8 +283,8 @@ export class TestData {
         return comp;
     }
 
-    public static TestDanceEvent() : DanceEvent {
-        var danceEvent = new DanceEvent(
+    public static TestDanceEvent() : DanceConvention {
+        var danceEvent = new DanceConvention(
             "Swungalow Bungalow",
             new Date()
         );

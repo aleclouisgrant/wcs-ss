@@ -13,6 +13,7 @@ import { PrelimCompetition } from '@/classes/Competition';
 import { PrelimScore } from '@/classes/IScore';
 import { CompetitorsContext } from '@/context/CompetitorsContext';
 import { JudgesContext } from '@/context/JudgesContext';
+import { StringFromDate } from '@/classes/utils';
 
 export default function PrelimAdder(props: { handlePrelimCompetition: (prelimCompetition: PrelimCompetition) => void }) {
     const {value: competitorDb } = useContext(CompetitorsContext);
@@ -116,12 +117,6 @@ export default function PrelimAdder(props: { handlePrelimCompetition: (prelimCom
         var newJudges = judges;
         newJudges[index] = judge;
         setJudges(newJudges);
-    }
-
-    function StringFromDate(str: Date): string {
-        return new Date(date.getTime() - (date.getTimezoneOffset() * 60000))
-            .toISOString()
-            .split("T")[0];
     }
 
     function SetPromotedCompetitor(competitorIndex: number, value: boolean) {
