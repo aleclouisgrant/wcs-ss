@@ -38,6 +38,19 @@ export default function Uploader() {
         }
     },[competitorsData]);
 
+    useEffect(() => {
+        if (judgesData) {
+            setJudges(judgesData.map((judgeData) => {
+                var judge = new Judge(
+                    judgeData.FirstName, 
+                    judgeData.LastName);
+                judge.Id = new Uuid(judgeData.Id);
+
+                return judge;
+            }));
+        }
+    },[judgesData]);
+
     function AddCompetitor(e: FormEvent) {
         e.preventDefault();
         var newCompetitor = new Competitor(firstNameText, lastNameText, 0, +wsdcIdText);

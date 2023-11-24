@@ -35,25 +35,41 @@ export const appRouter = router({
                 FROM users
                 LEFT JOIN competitor_profiles ON users.id = competitor_profiles.user_id`;
 
-            var users = new Array<{Id: string, FirstName: string, LastName: string, WsdcId: number}>();
+            var competitors = new Array<{Id: string, FirstName: string, LastName: string, WsdcId: number}>();
 
             raw.map((row) => {
-                var user = {
+                var competitor = {
                     Id: row["id"],
                     FirstName: row["first_name"],
                     LastName: row["last_name"],
                     WsdcId: +row["wsdc_id"]
                 };
 
-                users.push(user);
+                competitors.push(competitor);
             });
 
-            return users;
+            return competitors;
         }),
     getJudges: publicProcedure 
         .query(async() => {
+            var raw = await db`
+                SELECT users.id, users.first_name, users.last_name
+                FROM users
+                LEFT JOIN judge_profiles ON users.id = judge_profiles.user_id`;
 
-            return new Array<Judge>();
+            var judges = new Array<{Id: string, FirstName: string, LastName: string}>();
+
+            raw.map((row) => {
+                var judge = {
+                    Id: row["id"],
+                    FirstName: row["first_name"],
+                    LastName: row["last_name"],
+                };
+
+                judges.push(judge);
+            });
+
+            return judges;
         }),
     getUserByName: publicProcedure
         .input(z.string()).query(async (opts) => {
@@ -113,10 +129,8 @@ export const appRouter = router({
                     VALUES (${input.FirstName}, ${input.LastName})
                     RETURNING id
                 )
-                INSERT INTO competitor_profiles(user_id) (
-                    SELECT id FROM newUser
-                )
-                
+                INSERT INTO judge_profiles(user_id)
+                SELECT newUser.id FROM newUser
                 RETURNING user_id`;
                 
             return {success: true, id: response[0]["id"]};
