@@ -1,7 +1,7 @@
 import { publicProcedure, router } from "./trpc";
 import { z } from "zod";
 import { db } from "../../db";
-import { Competitor } from "@/classes/IPerson";
+import { Competitor, Judge } from "@/classes/IPerson";
 import { PrelimCompetition, FinalCompetition } from "@/classes/Competition";
 import { UserDbModel } from "@/db/schema";
 import { Uuid } from "@/classes/Uuid";
@@ -20,14 +20,40 @@ export const appRouter = router({
                 var user = {
                     Id: row["id"],
                     FirstName: row["first_name"],
-                    LastName: row["last_name"],
-                    WsdcId: row["wsdc_id"],
+                    LastName: row["last_name"]
                 } as UserDbModel;
 
                 users.push(user);
             });
 
             return users;
+        }),
+    getCompetitors: publicProcedure 
+        .query(async() => {
+            var raw = await db`
+                SELECT users.id, users.first_name, users.last_name, competitor_profiles.wsdc_id
+                FROM users
+                LEFT JOIN competitor_profiles ON users.id = competitor_profiles.user_id`;
+
+            var users = new Array<{Id: string, FirstName: string, LastName: string, WsdcId: number}>();
+
+            raw.map((row) => {
+                var user = {
+                    Id: row["id"],
+                    FirstName: row["first_name"],
+                    LastName: row["last_name"],
+                    WsdcId: +row["wsdc_id"]
+                };
+
+                users.push(user);
+            });
+
+            return users;
+        }),
+    getJudges: publicProcedure 
+        .query(async() => {
+
+            return new Array<Judge>();
         }),
     getUserByName: publicProcedure
         .input(z.string()).query(async (opts) => {
@@ -43,7 +69,6 @@ export const appRouter = router({
                     Id: new Uuid(row["id"]),
                     FirstName: row["first_name"],
                     LastName: row["last_name"],
-                    WsdcId: row["wsdc_id"],
                 };
     
                 return {success: true, user: user};
@@ -55,8 +80,8 @@ export const appRouter = router({
             const { input } = opts;
 
             var response = await db`
-                INSERT INTO users(first_name, last_name, wsdc_id)
-                VALUES (${input.FirstName}, ${input.LastName}, ${input.WsdcId})
+                INSERT INTO users(first_name, last_name)
+                VALUES (${input.FirstName}, ${input.LastName})
                 RETURNING id;`;
 
             return {success: true, id: response[0]["id"]};
@@ -67,8 +92,25 @@ export const appRouter = router({
 
             var response = await db`
                 WITH newUser AS (
-                    INSERT INTO users (first_name, last_name, wsdc_id)
-                    VALUES (${input.FirstName}, ${input.LastName}, ${input.WsdcId})
+                    INSERT INTO users (first_name, last_name)
+                    VALUES (${input.FirstName}, ${input.LastName})
+                    RETURNING id
+                )
+                INSERT INTO competitor_profiles(user_id, wsdc_id)
+                SELECT newUser.id, ${input.WsdcId} 
+                FROM newUser
+                RETURNING user_id`;
+                
+            return {success: true, id: response[0]["id"]};
+        }),
+    addJudge: publicProcedure
+        .input(z.custom<Judge>()).mutation(async (opts) => {
+            const { input } = opts;
+
+            var response = await db`
+                WITH newUser AS (
+                    INSERT INTO users (first_name, last_name)
+                    VALUES (${input.FirstName}, ${input.LastName})
                     RETURNING id
                 )
                 INSERT INTO competitor_profiles(user_id) (

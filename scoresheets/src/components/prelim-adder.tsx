@@ -8,16 +8,15 @@ import { Competitor, Judge } from '@/classes/IPerson';
 import CallbackScoreViewer from '@/components/prelim-callback-score-viewer';
 import Selector from '@/components/person-selector';
 
-import { TestData } from '@/test-data/test-data';
 import { Util } from '@/classes/Util';
 import { PrelimCompetition } from '@/classes/Competition';
 import { PrelimScore } from '@/classes/IScore';
 import { CompetitorsContext } from '@/context/CompetitorsContext';
-
-let JudgeDb = TestData.TestJudgesDb();
+import { JudgesContext } from '@/context/JudgesContext';
 
 export default function PrelimAdder(props: { handlePrelimCompetition: (prelimCompetition: PrelimCompetition) => void }) {
     const {value: competitorDb } = useContext(CompetitorsContext);
+    const {value: judgeDb } = useContext(JudgesContext);
 
     const [competitorCount, setCompetitorCount] = useState(0);
     const [judgeCount, setJudgeCount] = useState(0);
@@ -255,7 +254,7 @@ export default function PrelimAdder(props: { handlePrelimCompetition: (prelimCom
         for (let i = 0; i < judgeCount; i++) {
             judgeHeaders.push(
                 <th key={i}>
-                    <Selector personDb={JudgeDb} selectedPerson={judges[i]}
+                    <Selector personDb={judgeDb} selectedPerson={judges[i]}
                         setSelectedPerson={(value: Judge | undefined) => SetJudge(value, i)} />
                     <button type='button' className='rounded-full bg-red-600 font-sans text-white text-xs w-4 h-4' onClick={() => RemoveJudge(i)}>x</button>
                 </th>);

@@ -1,13 +1,13 @@
 "use client";
 
 import { FormEvent, ReactNode, useContext, useEffect, useState } from "react";
-
 import { trpc } from "@/app/_trpc/client";
-import { Competitor } from "@/classes/IPerson";
-import { PrelimCompetition } from "@/classes/Competition";
-import PrelimAdder from "./prelim-adder";
-import { CompetitorsContext } from "@/context/CompetitorsContext";
 import { Uuid } from "@/classes/Uuid";
+import { Competitor, Judge } from "@/classes/IPerson";
+import { PrelimCompetition } from "@/classes/Competition";
+import { CompetitorsContext } from "@/context/CompetitorsContext";
+import { JudgesContext } from "@/context/JudgesContext";
+import PrelimAdder from "./prelim-adder";
 
 export default function Uploader() {
     const [firstNameText, setFirstNameText] = useState<string>("")
@@ -15,24 +15,28 @@ export default function Uploader() {
     const [wsdcIdText, setWsdcIdText] = useState<string>("")
 
     const { value: competitors, setValue: setCompetitors } = useContext(CompetitorsContext);
+    const { value: judges, setValue: setJudges } = useContext(JudgesContext);
 
-    const { data } = trpc.getUsers.useQuery();
+    const { data: competitorsData } = trpc.getCompetitors.useQuery();
+    const { data: judgesData } = trpc.getJudges.useQuery();
+
     const addCompetitor = trpc.addCompetitor.useMutation();
+    const addJudge = trpc.addJudge.useMutation();
 
     useEffect(() => {
-        if (data) {
-            setCompetitors(data.map((competitorData) => {
+        if (competitorsData) {
+            setCompetitors(competitorsData.map((competitorData) => {
                 var competitor = new Competitor(
                     competitorData.FirstName, 
                     competitorData.LastName,
                     undefined,
-                    undefined);
+                    competitorData.WsdcId);
                 competitor.Id = new Uuid(competitorData.Id);
 
                 return competitor;
             }));
         }
-    },[data]);
+    },[competitorsData]);
 
     function AddCompetitor(e: FormEvent) {
         e.preventDefault();
@@ -50,6 +54,22 @@ export default function Uploader() {
         }});
     }
 
+    function AddJudge(e: FormEvent) {
+        e.preventDefault();
+        var newJudge = new Judge(firstNameText, lastNameText);
+
+        addJudge.mutate(newJudge, {onSuccess(data) {
+            newJudge.Id = data.id;
+            var newJudges = [...judges];
+            newJudges.push(newJudge);
+            setJudges(newJudges);
+
+            setFirstNameText("");
+            setLastNameText("");
+            setWsdcIdText("");
+        }});
+    }
+
     function HandlePrelimCompetition(prelimCompetition: PrelimCompetition | undefined) {
         if (prelimCompetition != null) {
             prelimCompetition.Print();
@@ -59,7 +79,7 @@ export default function Uploader() {
     function Competitors(props: {competitors: Array<Competitor>}) {
         var nodes = Array<ReactNode>();
         props.competitors.forEach((competitor) => {
-            nodes.push(<div key={competitor.Id.toString()}>{competitor.FullName} {competitor.Id.toString()}</div>)
+            nodes.push(<div key={competitor.Id.toString()}>{competitor.Id.toString()} {competitor.FullName} ({competitor.WsdcId})</div>)
         })
 
         return (
@@ -86,11 +106,15 @@ export default function Uploader() {
                 </div>
                 <div>
                     <label className="block mb-2 text-sm font-medium text-black">WSDC Id</label>
-                    <input type="text"  value={wsdcIdText} onChange={(e) => setWsdcIdText(e.target.value)}
+                    <input type="text" value={wsdcIdText} onChange={(e) => setWsdcIdText(e.target.value)}
                         className="input-primary"/>
                     <button className="btn-primary m-1 inline-block" onClick={SearchForWsdcId}>?</button>
                 </div>
-                    <button type="submit" className="btn-primary m-2">Add</button>
+
+                <div>
+                    <button type="submit" className="btn-primary mr-2 mt-2">Add Competitor</button>
+                    <button type="submit" className="btn-primary ml-2" onClick={(e) => AddJudge(e)}>Add Judge</button>
+                </div>
             </form>
 
             <div className="m-4">

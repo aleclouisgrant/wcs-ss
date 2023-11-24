@@ -9,12 +9,12 @@ export interface UserDbModel {
     Id: string;
     FirstName: string;
     LastName: string;
-    WsdcId: number; 
 }
 
 export interface CompetitorProfileDbModel extends IDatabaseModel {
     UserId: Uuid;
-
+    WsdcId: number; 
+    
     LeaderDivision: Division;
     LeaderAllowedDivision: Division;
     LeaderNewcomerPoints: number;

@@ -42,8 +42,7 @@ CREATE TYPE tier_type AS ENUM (
 CREATE TABLE users (
     id UUID PRIMARY KEY NOT NULL DEFAULT uuid_generate_v4(),
     first_name TEXT,
-    last_name TEXT,
-    wsdc_id INT
+    last_name TEXT
 );
 
 CREATE TABLE dance_conventions (
@@ -75,6 +74,7 @@ CREATE TABLE competitions (
 CREATE TABLE competitor_profiles (
     id UUID PRIMARY KEY NOT NULL DEFAULT uuid_generate_v4(),
     user_id UUID NOT NULL,
+    wsdc_id INT,
     leader_division division_type,
     leader_allowed_division division_type,
     leader_newcomer_points SMALLINT,
