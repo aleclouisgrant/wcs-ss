@@ -1,8 +1,22 @@
 import { Uuid } from './Uuid';
 import { Competitor, Judge } from './IPerson';
-import { Round, Tier, Division, Role } from './Enums';
+import { Round, Tier, Division, Role, CompetitionType } from './Enums';
 import { Util } from './Util';
 import { FinalScore, PrelimScore } from './IScore';
+
+export class Competition {
+    public Id: Uuid;
+
+    public CompetitionType: CompetitionType;
+    public Division: Division;
+
+    constructor(competitionType?: CompetitionType, division?: Division, round?: Round) {
+        this.Id = Uuid.MakeNew();
+
+        this.CompetitionType = CompetitionType.JnJ;
+        this.Division = division ?? Division.Open;
+    }
+}
 
 export class PrelimCompetition {
     public Id: Uuid;
