@@ -8,19 +8,19 @@ export default function CallbackScoreViewer(props: {callbackScore : CallbackScor
 
     switch (props.callbackScore) {
         case CallbackScore.Yes:
-            col = '#34A56F';
+            col = '#6ABF73';
             break;
         case CallbackScore.Alternate1:
-            col = '#FFDF00';
+            col = '#FFD600';
             break;
         case CallbackScore.Alternate2:
-            col = '#FBE7A1';
+            col = '#FFE767';
             break;
         case CallbackScore.Alternate3:
-            col = '#FFFFC2';
+            col = '#FEF395';
             break;
         case CallbackScore.No:
-            col = '#98AFC7';
+            col = '#CFCDCD';
             break;
         default:
         case CallbackScore.Unscored:
@@ -29,7 +29,7 @@ export default function CallbackScoreViewer(props: {callbackScore : CallbackScor
     }
 
     return (
-        <div style={{backgroundColor: col, width: 22, height: 22, fontSize: 10, borderStyle: "solid", borderColor: "black", border: "2"}}>
+        <div className="flex justify-center items-center" style={{backgroundColor: col, width: 35, height: 22, fontSize: 10, fontWeight: 700, color: "white", borderRadius: 10}}>
             {Util.CallbackScoreShorthand(props.callbackScore)}
         </div>
     )

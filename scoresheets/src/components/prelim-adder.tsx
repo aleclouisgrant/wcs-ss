@@ -339,29 +339,26 @@ export default function PrelimAdder(props: { handlePrelimCompetition: (prelimCom
             </div>
 
             <div className='mx-2 inline-block'>
-                <button type="button" onClick={() => setCurrentCallbackScore(CallbackScore.Yes)} style={{ backgroundColor: "#34A56F", width: 30, height: 30 }}>
-                    {Util.CallbackScoreShorthand(CallbackScore.Yes)}
+                <button type="button" className='mr-1' onClick={() => setCurrentCallbackScore(CallbackScore.Yes)}>
+                    <CallbackScoreViewer callbackScore={CallbackScore.Yes}/>
                 </button>
-                <button type="button" onClick={() => setCurrentCallbackScore(CallbackScore.Alternate1)} style={{ backgroundColor: "#FFDF00", width: 30, height: 30 }}>
-                    {Util.CallbackScoreShorthand(CallbackScore.Alternate1)}
+                <button type="button" className='mr-1' onClick={() => setCurrentCallbackScore(CallbackScore.Alternate1)}>
+                    <CallbackScoreViewer callbackScore={CallbackScore.Alternate1}/>
                 </button>
-                <button type="button" onClick={() => setCurrentCallbackScore(CallbackScore.Alternate2)} style={{ backgroundColor: "#FBE7A1", width: 30, height: 30 }}>
-                    {Util.CallbackScoreShorthand(CallbackScore.Alternate2)}
+                <button type="button" className='mr-1'  onClick={() => setCurrentCallbackScore(CallbackScore.Alternate2)}>
+                    <CallbackScoreViewer callbackScore={CallbackScore.Alternate2}/>
                 </button>
-                <button type="button" onClick={() => setCurrentCallbackScore(CallbackScore.Alternate3)} style={{ backgroundColor: "#FFFFC2", width: 30, height: 30 }}>
-                    {Util.CallbackScoreShorthand(CallbackScore.Alternate3)}
+                <button type="button" className='mr-1' onClick={() => setCurrentCallbackScore(CallbackScore.Alternate3)}>
+                    <CallbackScoreViewer callbackScore={CallbackScore.Alternate3}/>
                 </button>
-                <button type="button" onClick={() => setCurrentCallbackScore(CallbackScore.No)} style={{ backgroundColor: "#98AFC7", width: 30, height: 30 }}>
-                    {Util.CallbackScoreShorthand(CallbackScore.No)}
-                </button>
-                <button type="button" onClick={() => setCurrentCallbackScore(CallbackScore.Unscored)} style={{ backgroundColor: "red", width: 30, height: 30 }}>
-                    {Util.CallbackScoreShorthand(CallbackScore.Unscored)}
+                <button type="button" className='mr-1' onClick={() => setCurrentCallbackScore(CallbackScore.No)}>
+                    <CallbackScoreViewer callbackScore={CallbackScore.No}/>
                 </button>
             </div>
 
             <div className='inline-block'>
-                <button type='button' className='btn-primary mx-2' onClick={AddCompetitor}>Add Competitor</button>
-                <button type='button' className='btn-primary mx-2' onClick={AddJudge}>Add Judge</button>
+                <button type='button' className='btn-primary mx-2' onClick={AddCompetitor}>+ Competitor</button>
+                <button type='button' className='btn-primary mx-2' onClick={AddJudge}>+ Judge</button>
                 <button type='button' className='btn-primary mx-2' onClick={UpdatePrelimCompetition}>Save</button>
                 <button type='button' className='btn-primary mx-2' onClick={Clear}>Clear</button>
             </div>
