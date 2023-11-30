@@ -14,6 +14,9 @@
 
 :root {
   --accent-color: #6590FF;
+  --promoted-color: #6ABF73;
+  --alternate-color: #FFD600;
+  --unselected-color: #D9D9D9;
 }
 
 .btn-primary {
@@ -69,4 +72,24 @@ h1 {
 .labeled-input-container input:focus {
   outline: none !important;
   border-color: #5F5D5D;
+}
+
+.promoted-checkbox-container {
+  cursor: pointer;
+}
+
+.promoted-checkbox-container .promoted-checkbox-checkmark {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  display: inline-block;
+  background-color: var(--unselected-color);
+}
+
+.promoted-checkbox-container input {
+  display: none;
+}
+
+.promoted-checkbox-container input:checked + .promoted-checkbox-checkmark {
+  background-color: var(--promoted-color);
 }

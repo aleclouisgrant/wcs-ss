@@ -206,6 +206,14 @@ export default function PrelimAdder(props: { handlePrelimCompetition: (prelimCom
 
             competitorRows.push(
                 <tr key={key}>
+                    <td>
+                        <label className="promoted-checkbox-container">&nbsp;
+                            <input type='checkbox' 
+                                onChange={(e) => SetPromotedCompetitor(i, e.target.checked)} 
+                                defaultChecked={IsCompetitorIndexPromoted(i)}/>
+                            <span className="promoted-checkbox-checkmark"/>
+                        </label>
+                    </td>
                     <td>{i + 1}</td>
                     <td><input type='text' 
                             value={bibNumbers[i]} 
@@ -220,9 +228,7 @@ export default function PrelimAdder(props: { handlePrelimCompetition: (prelimCom
                     </td>
                     <JudgeScores competitorIndex={i}/>
                     <td>{CompetitorScoreSum(i)}</td>
-                    <td><input type='checkbox' 
-                            onChange={(e) => SetPromotedCompetitor(i, e.target.checked)} 
-                            defaultChecked={IsCompetitorIndexPromoted(i)}/></td>
+                    
                 </tr>
             )
         }
@@ -366,12 +372,12 @@ export default function PrelimAdder(props: { handlePrelimCompetition: (prelimCom
             <table id='CompetitionTable'>
                 <tbody>
                     <tr>
+                        <th>Promoted</th>
                         <th>Count</th>
                         <th>Bib</th>
                         <th>Competitor</th>
                         <JudgesHeaders/>
                         <th>Sum</th>
-                        <th>Promoted</th>
                     </tr>
                     {CompetitorRows()}
                 </tbody>
