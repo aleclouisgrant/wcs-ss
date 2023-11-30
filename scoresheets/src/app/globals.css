@@ -3,10 +3,6 @@
 @import 'tailwindcss/utilities';
 
 @layer components {
-    .btn-primary {
-        @apply bg-blue-500 hover:bg-blue-700 text-white text-xs font-bold py-1.5 px-4 rounded-full h-7;
-    }
-    
     .input-primary {
         @apply bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-full focus:ring-blue-500 focus:border-blue-500 inline-block p-1 px-2 h-7;
     }
@@ -16,68 +12,61 @@
     }
 }
 
-/* Customize the label (the container) */
-.radio-container {
-    display: block;
-    position: relative;
-    padding-left: 35px;
-    margin-bottom: 12px;
-    cursor: pointer;
-    font-size: 22px;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-  }
-  
-  /* Hide the browser's default radio button */
-  .radio-container input {
-    position: absolute;
-    opacity: 0;
-    cursor: pointer;
-    height: 0;
-    width: 0;
-  }
-  
-  /* Create a custom radio button */
-  .checkmark {
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 14px;
-    width: 14px;
-    background-color: #eee;
-    border-radius: 50%;
-  }
-  
-  /* On mouse-over, add a grey background color */
-  .radio-container:hover input ~ .checkmark {
-    background-color: #ccc;
-  }
-  
-  /* When the radio button is checked, add a blue background */
-  .radio-container input:checked ~ .checkmark {
-    background-color: #2196F3;
-  }
-  
-  /* Create the indicator (the dot/circle - hidden when not checked) */
-  .checkmark:after {
-    content: "";
-    position: absolute;
-    display: none;
-  }
-  
-  /* Show the indicator (dot/circle) when checked */
-  .radio-container input:checked ~ .checkmark:after {
-    display: block;
-  }
-  
-  /* Style the indicator (dot/circle) */
-  .radio-container .checkmark:after {
-    top: 4px;
-    left: 4px;
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: white;
-  }
+:root {
+  --accent-color: #6590FF;
+}
+
+.btn-primary {
+  background-color: var(--accent-color);
+  color: white;
+  font-size: 16px;
+  line-height: 19px;
+  font-weight: 700;
+  padding: 6px 26px;
+  border-radius: 10px;
+}
+
+.btn-secondary {
+  background-color: white;
+  color: var(--accent-color);
+  font-size: 16px;
+  line-height: 19px;
+  font-weight: 700;
+  padding: 4px 26px;
+  border: solid 2px var(--accent-color);
+  border-radius: 10px; 
+}
+
+h1 {
+  font-size: 24px;
+  font-weight: bold;
+  color: black;
+  font-family: "Poppins", sans-serif;
+}
+
+.labeled-input-container {
+  display: block;
+}
+
+.labeled-input-container label {
+  display: block;
+  font-size: 16;
+  font-weight: 700;
+  color: black;
+  margin-left: 5px;
+}
+
+.labeled-input-container input {
+  background-color: #E3E1E1;
+  border: none;
+  border: solid 2px transparent;
+  border-radius: 10px;
+  padding: 4px 8px;
+  color: #5F5D5D;
+  font-weight: 500;
+}
+
+.labeled-input-container input:focus {
+  outline: none !important;
+  border-color: #5F5D5D;
+}
