@@ -3,10 +3,6 @@
 @import 'tailwindcss/utilities';
 
 @layer components {
-    .input-primary {
-        @apply bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-full focus:ring-blue-500 focus:border-blue-500 inline-block p-1 px-2 h-7;
-    }
-
     .select-primary {
         @apply bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-full focus:ring-blue-500 focus:border-blue-500 inline-block p-1 px-2 h-7;
     }
@@ -47,6 +43,14 @@ h1 {
   font-family: "Poppins", sans-serif;
 }
 
+h2 {
+  font-size: 20px;
+  font-weight: bold;
+  color: #565656;
+  font-family: "Poppins", sans-serif;
+}
+
+
 .labeled-input-container {
   display: block;
 }
@@ -64,9 +68,46 @@ h1 {
   border: none;
   border: solid 2px transparent;
   border-radius: 10px;
-  padding: 4px 8px;
+  padding: 0px 8px;
   color: #5F5D5D;
   font-weight: 500;
+  height: 23px;
+}
+
+input {
+  background-color: #E3E1E1;
+  border: none;
+  border: solid 2px transparent;
+  border-radius: 10px;
+  padding: 0px 8px;
+  color: #5F5D5D;
+  font-weight: 500;
+  height: 23px;
+  font-size: 10pt;
+}
+
+select {
+  background-color: #E3E1E1;
+  border: none;
+  border: solid 2px transparent;
+  border-radius: 10px;
+  padding: 0px 8px;
+  color: #5F5D5D;
+  font-weight: 500;
+  height: 23px;
+  font-size: 10pt;
+}
+
+.judge-select {
+  background-color: white;
+  border: none;
+  border: solid 2px transparent;
+  border-radius: 10px;
+  padding: 0px 8px;
+  color: black;
+  font-weight: 700;
+  height: 23px;
+  font-size: 10pt;
 }
 
 .labeled-input-container input:focus {
@@ -82,7 +123,6 @@ h1 {
   width: 14px;
   height: 14px;
   border-radius: 50%;
-  display: inline-block;
   background-color: var(--unselected-color);
 }
 
@@ -92,4 +132,8 @@ h1 {
 
 .promoted-checkbox-container input:checked + .promoted-checkbox-checkmark {
   background-color: var(--promoted-color);
+}
+
+.adder-table {
+  background-color: #D9D9D9;
 }

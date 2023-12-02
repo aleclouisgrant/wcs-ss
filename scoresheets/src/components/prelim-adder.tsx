@@ -207,18 +207,21 @@ export default function PrelimAdder(props: { handlePrelimCompetition: (prelimCom
             competitorRows.push(
                 <tr key={key}>
                     <td>
-                        <label className="promoted-checkbox-container">&nbsp;
-                            <input type='checkbox' 
+                        <label className="promoted-checkbox-container flex justify-center">
+                            <input type='checkbox'
                                 onChange={(e) => SetPromotedCompetitor(i, e.target.checked)} 
                                 defaultChecked={IsCompetitorIndexPromoted(i)}/>
-                            <span className="promoted-checkbox-checkmark"/>
+                            <span className="promoted-checkbox-checkmark m-auto"/>
                         </label>
                     </td>
-                    <td>{i + 1}</td>
+                    <td>
+                        <div className='justify-center flex font-bold'>
+                            {i + 1}
+                        </div>
+                    </td>
                     <td><input type='text' 
                             value={bibNumbers[i]} 
-                            onChange={(e) => SetBibNumber(i, e.target.value)}
-                            className='input-primary'/></td>
+                            onChange={(e) => SetBibNumber(i, e.target.value)}/></td>
                     <td>
                         <Selector 
                             personDb={competitorDb} 
@@ -310,74 +313,45 @@ export default function PrelimAdder(props: { handlePrelimCompetition: (prelimCom
 
     return (
         <div>
-            <div className='m-2'>
-                <label htmlFor='nameInput' className='mr-2'>Name</label>
-                <input id='nameInput' inputMode='text' onChange={(e) => setCompName(e.target.value)} value={compName}
-                    className='input-primary'/>
-
-                <label className='mx-2'>Date:</label>
-                <input id='dateInput' className='input-primary' type='date' onChange={(e) => setDate(new Date(e.target.value))} value={StringFromDate(date)} />
-
-                <label className='mx-2'>Role:</label>
-                <select id='roleInput' className='select-primary' onChange={(e) => setRole(Role[e.target.value as keyof typeof Role])} value={role}>
-                    <option value={Role.Leader}>{Role.Leader}</option>
-                    <option value={Role.Follower}>{Role.Follower}</option>
-                </select>
-
-                <label className='mx-2'>Division:</label>
-                <select name='divisionInput' className='select-primary' onChange={(e) => setDivision(Util.StringToDivision(e.target.value))} value={division}>
-                    <option value={Division.Newcomer}>{Division.Newcomer}</option>
-                    <option value={Division.Novice}>{Division.Novice}</option>
-                    <option value={Division.Intermediate}>{Division.Intermediate}</option>
-                    <option value={Division.Advanced}>{Division.Advanced}</option>
-                    <option value={Division.AllStar}>{Division.AllStar}</option>
-                    <option value={Division.Champion}>{Division.Champion}</option>
-                    <option value={Division.Open}>{Division.Open}</option>
-                </select>
-
-                <label className='mx-2'>Round:</label>
-                <select name='roundInput' className='select-primary' onChange={(e) => setRound(Round[e.target.value as keyof typeof Round])} value={round}>
-                    <option value={Round.Prelims}>{Round.Prelims}</option>
-                    <option value={Round.Quarterfinals}>{Round.Quarterfinals}</option>
-                    <option value={Round.Semifinals}>{Round.Semifinals}</option>
-                    <option value={Round.Finals}>{Round.Finals}</option>
-                </select>
-            </div>
-
-            <div className='mx-2 inline-block'>
-                <button type="button" className='mr-1' onClick={() => setCurrentCallbackScore(CallbackScore.Yes)}>
-                    <CallbackScoreViewer callbackScore={CallbackScore.Yes}/>
-                </button>
-                <button type="button" className='mr-1' onClick={() => setCurrentCallbackScore(CallbackScore.Alternate1)}>
-                    <CallbackScoreViewer callbackScore={CallbackScore.Alternate1}/>
-                </button>
-                <button type="button" className='mr-1'  onClick={() => setCurrentCallbackScore(CallbackScore.Alternate2)}>
-                    <CallbackScoreViewer callbackScore={CallbackScore.Alternate2}/>
-                </button>
-                <button type="button" className='mr-1' onClick={() => setCurrentCallbackScore(CallbackScore.Alternate3)}>
-                    <CallbackScoreViewer callbackScore={CallbackScore.Alternate3}/>
-                </button>
-                <button type="button" className='mr-1' onClick={() => setCurrentCallbackScore(CallbackScore.No)}>
-                    <CallbackScoreViewer callbackScore={CallbackScore.No}/>
-                </button>
-            </div>
-
             <div className='inline-block'>
-                <button type='button' className='btn-primary mx-2' onClick={AddCompetitor}>+ Competitor</button>
-                <button type='button' className='btn-primary mx-2' onClick={AddJudge}>+ Judge</button>
-                <button type='button' className='btn-primary mx-2' onClick={UpdatePrelimCompetition}>Save</button>
-                <button type='button' className='btn-primary mx-2' onClick={Clear}>Clear</button>
+                <div className='mx-2 inline-block'>
+                    <h2 className=''>{round} ({role})</h2>
+                </div>
+
+                <div className='mx-2 inline-block'>
+                    <button type="button" className='mr-1' onClick={() => setCurrentCallbackScore(CallbackScore.Yes)}>
+                        <CallbackScoreViewer callbackScore={CallbackScore.Yes}/>
+                    </button>
+                    <button type="button" className='mr-1' onClick={() => setCurrentCallbackScore(CallbackScore.Alternate1)}>
+                        <CallbackScoreViewer callbackScore={CallbackScore.Alternate1}/>
+                    </button>
+                    <button type="button" className='mr-1'  onClick={() => setCurrentCallbackScore(CallbackScore.Alternate2)}>
+                        <CallbackScoreViewer callbackScore={CallbackScore.Alternate2}/>
+                    </button>
+                    <button type="button" className='mr-1' onClick={() => setCurrentCallbackScore(CallbackScore.Alternate3)}>
+                        <CallbackScoreViewer callbackScore={CallbackScore.Alternate3}/>
+                    </button>
+                    <button type="button" className='mr-1' onClick={() => setCurrentCallbackScore(CallbackScore.No)}>
+                        <CallbackScoreViewer callbackScore={CallbackScore.No}/>
+                    </button>
+                </div>
+                <div className='inline-block'>
+                    <button type='button' className='btn-primary mx-2' onClick={AddCompetitor}>+ Competitor</button>
+                    <button type='button' className='btn-primary mx-2' onClick={AddJudge}>+ Judge</button>
+                    <button type='button' className='btn-primary mx-2' onClick={Clear}>Clear</button>
+                    <button type='button' className='btn-primary mx-2' onClick={UpdatePrelimCompetition}>Save</button>
+                </div>
             </div>
 
-            <table id='CompetitionTable'>
+            <table id='CompetitionTable' className='my-4 w-full'>
                 <tbody>
-                    <tr>
-                        <th>Promoted</th>
+                    <tr className="adder-table">
+                        <th className='rounded-l-xl pl-7 py-2'>Promoted</th>
                         <th>Count</th>
                         <th>Bib</th>
-                        <th>Competitor</th>
+                        <th>Competitor</th> 
                         <JudgesHeaders/>
-                        <th>Sum</th>
+                        <th className='rounded-r-xl pr-7'>Sum</th>
                     </tr>
                     {CompetitorRows()}
                 </tbody>
