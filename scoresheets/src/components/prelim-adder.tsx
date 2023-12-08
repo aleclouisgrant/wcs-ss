@@ -13,9 +13,14 @@ import { PrelimCompetition } from '@/classes/Competition';
 import { PrelimScore } from '@/classes/IScore';
 import { CompetitorsContext } from '@/context/CompetitorsContext';
 import { JudgesContext } from '@/context/JudgesContext';
-import { StringFromDate } from '@/classes/utils';
 
-export default function PrelimAdder(props: { handlePrelimCompetition: (prelimCompetition: PrelimCompetition) => void }) {
+export default function PrelimAdder(props: { 
+        handlePrelimCompetition: (prelimCompetition : PrelimCompetition) => void, 
+        round? : Round, 
+        role? : Role,
+        division? : Division,
+        date? : Date
+    }) {
     const {value: competitorDb } = useContext(CompetitorsContext);
     const {value: judgeDb } = useContext(JudgesContext);
 
@@ -27,19 +32,23 @@ export default function PrelimAdder(props: { handlePrelimCompetition: (prelimCom
 
     const [scores, setScores] = useState(new Array<Array<CallbackScore>>);
 
-    const [compName, setCompName] = useState("");
-    const [role, setRole] = useState(Role.Leader);
-    const [division, setDivision] = useState(Division.AllStar);
-    const [round, setRound] = useState(Round.Prelims);
-    const [date, setDate] = useState(new Date());
-
     const [promotedCompetitorIndexes, setPromotedCompetitorIndexes] = useState(new Array<number>());
     const [bibNumbers, setBibNumbers] = useState(new Array<string>());
 
     const [currentCallbackScore, setCurrentCallbackScore] = useState(CallbackScore.Unscored);
 
+    let role : Role;
+    let round : Round;
+    let division : Division;
+    let date : Date;
+
+    role = props.role ?? Role.Leader;
+    round = props.round ?? Round.Prelims;
+    division = props.division ?? Division.AllStar;
+    date = props.date ?? new Date();
+
     function UpdatePrelimCompetition() {
-        var competition = new PrelimCompetition(compName, date, division, round, role);
+        var competition = new PrelimCompetition(date, division, round, role);
 
         var competitorList = new Array<Competitor>();
         var judgeList = new Array<Judge>();
@@ -302,13 +311,13 @@ export default function PrelimAdder(props: { handlePrelimCompetition: (prelimCom
         setCompetitors(new Array<Competitor | undefined>());
         setJudges(new Array<Judge | undefined>());
         setScores(new Array<Array<CallbackScore>>);
-        setCompName("");
-        setRole(Role.Leader);
-        setDivision(Division.AllStar);
-        setRound(Round.Prelims);
-        setDate(new Date());
         setPromotedCompetitorIndexes(new Array<number>());
         setBibNumbers(new Array<string>());
+
+        role = Role.Leader;
+        division = Division.AllStar;
+        round = Round.Prelims;
+        date = new Date();
     }
 
     return (

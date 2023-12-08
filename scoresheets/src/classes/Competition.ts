@@ -24,7 +24,6 @@ export class PrelimCompetition {
 
     public Scores: Array<PrelimScore>;
 
-    public Name: string;
     public Division: Division;
     public Round: Round;
     public Role: Role;
@@ -34,10 +33,9 @@ export class PrelimCompetition {
 
     public Promoted: Array<Competitor>;
 
-    constructor(name?: string, date? : Date, division?: Division, round?: Round, role?: Role) {
+    constructor(date? : Date, division?: Division, round?: Round, role?: Role) {
         this.Id = Uuid.MakeNew();
 
-        this.Name = name ?? "";
         this._date = date ?? new Date();
         this.Division = division ?? Division.Open;
         this.Round = round ?? Round.Prelims;
@@ -53,7 +51,6 @@ export class PrelimCompetition {
     public Print() {
         var print = "";
 
-        print += "Name: " + this.Name + '\n';
         print += "Date: " + this._date + '\n';
         print += "Division: " + this.Division + '\n';
         print += "Role: " + this.Role + '\n';
@@ -164,40 +161,37 @@ export class FinalCompetition {
 
     private _leaders: Array<Competitor>;
     private _followers: Array<Competitor>;
-    private _judges: Array<Judge>;
-
-    public Name: string;
+    
+    public Judges: Array<Judge>;
     public Division: Division;
     public Round: Round;
 
     public Scores: Array<Array<FinalScore>>;
 
-    constructor(name: string, date?: Date, division?: Division) {
+    constructor(date?: Date, division?: Division) {
         this._id = Uuid.MakeNew();
         this.Round = Round.Finals;
 
         this._leaders = new Array<Competitor>();
         this._followers = new Array<Competitor>();
-        this._judges = new Array<Judge>();
+        this.Judges = new Array<Judge>();
         
         this.Scores = new Array<Array<FinalScore>>();
 
         this._date = date ?? new Date();
-        this.Name = name ?? "";
         this.Division = division ?? Division.Open;
     }
 
     public Print() {
         var print = "";
 
-        print += "Name: " + this.Name + '\n';
         print += "Date: " + this._date + '\n';
         print += "Division: " + this.Division + '\n';
         print += "Round: " + this.Round + '\n';
 
         print += "Judges: ";
         var judges = "";
-        this._judges.forEach((judge) => {
+        this.Judges.forEach((judge) => {
             judges += judge.FullName + ", ";
         })
         print += judges + '\n';
@@ -251,8 +245,8 @@ export class FinalCompetition {
                 }
 
                 if (value.Judge != null) {
-                    if (!this._judges.includes(value.Judge)) {
-                        this._judges.push(value.Judge);
+                    if (!this.Judges.includes(value.Judge)) {
+                        this.Judges.push(value.Judge);
                     }
                 }
             });
@@ -261,9 +255,5 @@ export class FinalCompetition {
 
     public get CoupleCount() : number {
         return this.Scores.length;
-    }
-
-    public get Judges() : Array<Judge> {
-        return this._judges;
     }
 }

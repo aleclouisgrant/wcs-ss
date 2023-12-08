@@ -2,7 +2,9 @@
 
 import { ReactNode, useState } from "react";
 import PrelimAdder from "./prelim-adder";
-import { CompetitionType, Division, Round } from "@/classes/Enums";
+import { CompetitionType, Division, Role, Round } from "@/classes/Enums";
+import { Util } from "@/classes/Util";
+import FinalsAdder from "./finals-adder";
 
 export default function DanceEventAdder() {
     const [useNewEvent, setUseNewEvent] = useState<boolean>(false);
@@ -22,19 +24,32 @@ export default function DanceEventAdder() {
     function AddCompetitionCards() {
         var cards = new Array<ReactNode>;
 
-        cards.push(
-            <div className="rounded-xl bg-white p-11 mt-3 flex flex-row justify-center items-center">
-                <div className="block">
-                    <div>
-                        <PrelimAdder handlePrelimCompetition={HandlePrelimCompetition} />
+        roundsCompetitionInfo?.forEach((value, index) => {
+
+            if (value != Round.Finals){
+                cards.push(
+                    <div key={index} className="rounded-xl bg-white p-11 mt-3 flex flex-row justify-center items-center">
+                        <div className="block">
+                            <div>
+                                <PrelimAdder handlePrelimCompetition={HandlePrelimCompetition} round={value} role={Role.Leader}/>
+                                <PrelimAdder handlePrelimCompetition={HandlePrelimCompetition} round={value} role={Role.Follower}/>
+                            </div>
+                        </div>
                     </div>
-                    <div className="grid grid-cols-2 mt-8">
-                        <button className="btn-secondary mr-2" type="button">Back</button>
-                        <button className="btn-primary" type="button">Next</button>
+                );
+            }
+            else {
+                cards.push(
+                    <div key={index} className="rounded-xl bg-white p-11 mt-3 flex flex-row justify-center items-center">
+                        <div className="block">
+                            <div>
+                                <FinalsAdder handleFinalsCompetition={HandlePrelimCompetition}/>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
-        );
+                );
+            }
+        });
 
         return cards;
     }
@@ -87,15 +102,33 @@ export default function DanceEventAdder() {
                         <div className="justify-center">
                             <div className="labeled-input-container">
                                 <label>Type</label>
-                                <input type="text" placeholder="Type" />
+                                <select name='typeInput'>
+                                    <option value={CompetitionType.JnJ}>{CompetitionType.JnJ}</option>
+                                </select>
                             </div>
                             <div className="labeled-input-container">
                                 <label>Division</label>
-                                <input type="text" placeholder="Division" />
+                                <select name='divisionInput' onChange={(e) => setDivisionCompetitionInfo(Util.StringToDivision(e.target.value))} value={divisionCompetitionInfo}>
+                                    <option value={Division.Newcomer}>{Division.Newcomer}</option>
+                                    <option value={Division.Novice}>{Division.Novice}</option>
+                                    <option value={Division.Intermediate}>{Division.Intermediate}</option>
+                                    <option value={Division.Advanced}>{Division.Advanced}</option>
+                                    <option value={Division.AllStar}>{Division.AllStar}</option>
+                                    <option value={Division.Champion}>{Division.Champion}</option>
+                                    <option value={Division.Open}>{Division.Open}</option>
+                                </select>
                             </div>
                             <div className="labeled-input-container">
                                 <label>Rounds</label>
-                                <input type="text" placeholder="Rounds" />
+                                <select name='roundInput' placeholder="Select Rounds" 
+                                    onChange={(e) => setRoundsCompetitionInfo([...e.target.options].filter(o => o.selected).map(o => Round[o.value as keyof typeof Round]))} 
+                                    value={roundsCompetitionInfo} 
+                                    multiple>
+                                    <option value={Round.Prelims}>{Round.Prelims}</option>
+                                    <option value={Round.Quarterfinals}>{Round.Quarterfinals}</option>
+                                    <option value={Round.Semifinals}>{Round.Semifinals}</option>
+                                    <option value={Round.Finals}>{Round.Finals}</option>
+                                </select>
                             </div>
                         </div>
                         <div className="grid grid-cols-2 mt-8">

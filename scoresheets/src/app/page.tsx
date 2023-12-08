@@ -1,3 +1,4 @@
+import FinalsAdder from "@/components/finals-adder";
 import FinalsScoresheet from "@/components/finals-competition-viewer";
 
 import { TestData } from "@/test-data/test-data";
@@ -5,7 +6,7 @@ import { TestData } from "@/test-data/test-data";
 function Home() {
   return (
     <div>
-      <FinalsScoresheet competition={TestData.TestFinalCompetition()}/>
+      <FinalsAdder/>
     </div>
   )
 }

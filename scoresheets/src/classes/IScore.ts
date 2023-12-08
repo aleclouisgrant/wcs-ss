@@ -11,7 +11,6 @@ export abstract class Score implements IScore {
     public Judge: Judge | null | undefined;
 
     constructor(competitor? : Competitor, judge? : Judge){
-
         this.Competitor = competitor;
         this.Judge = judge;
     }
@@ -36,13 +35,13 @@ export class PrelimScore extends Score {
 export class FinalScore {
     public Leader : Competitor;
     public Follower: Competitor;
-    public Judge: Judge;
+    Judge: Judge | null | undefined;
     public Score: number;
 
-    constructor (leader : Competitor, follower : Competitor, judge : Judge, score : number) {
+    constructor (leader : Competitor, follower : Competitor, judge? : Judge, score? : number) {
         this.Leader = leader;
         this.Follower = follower;
         this.Judge = judge;
-        this.Score = score;
+        this.Score = score ?? -1;
     }
 }
