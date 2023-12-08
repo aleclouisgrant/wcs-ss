@@ -21,6 +21,10 @@ export default function DanceEventAdder() {
 
     }
 
+    function HandleFinalCompetition() {
+
+    }
+
     function AddCompetitionCards() {
         var cards = new Array<ReactNode>;
 
@@ -43,7 +47,7 @@ export default function DanceEventAdder() {
                     <div key={index} className="rounded-xl bg-white p-11 mt-3 flex flex-row justify-center items-center">
                         <div className="block">
                             <div>
-                                <FinalsAdder handleFinalsCompetition={HandlePrelimCompetition}/>
+                                <FinalsAdder handleFinalsCompetition={HandleFinalCompetition}/>
                             </div>
                         </div>
                     </div>
