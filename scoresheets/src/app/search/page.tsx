@@ -21,7 +21,7 @@ export default function Page() {
         data?.user?.FirstName ?? "", 
         data?.user?.LastName ?? "",
         0,
-        data?.user?.WsdcId ?? 0);
+        0);
   
         newCompetitor.Id = new Uuid(idData);
   

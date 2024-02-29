@@ -1,42 +1,42 @@
-CREATE TYPE role_type AS ENUM (
+CREATE TYPE role AS ENUM (
     'leader',
     'follower'
 );
 
-CREATE TYPE callbackscore_type AS ENUM (
-    'unscored',
+CREATE TYPE callback_score AS ENUM (
     'yes',
-    'alternate_one',
-    'alternate_two',
-    'alternate_three',
-    'no'
+    'alt1',
+    'alt2',
+    'alt3',
+    'no',
+    'unscored'
 );
 
-CREATE TYPE division_type AS ENUM (
-    'open',
+CREATE TYPE division AS ENUM (
     'newcomer',
     'novice',
     'intermediate',
     'advanced',
-    'allstar',
-    'champion'
+    'all_star',
+    'champion',
+    'open'
 );
 
-CREATE TYPE round_type AS ENUM (
+CREATE TYPE round AS ENUM (
     'prelims',
     'quarterfinals',
     'semifinals',
     'finals'
 );
 
-CREATE TYPE tier_type AS ENUM (
+CREATE TYPE tier AS ENUM (
     'no_tier',
-    'tier_one',
-    'tier_two',
-    'tier_three',
-    'tier_four',
-    'tier_five',
-    'tier_six'
+    'tier1',
+    'tier2',
+    'tier3',
+    'tier4',
+    'tier5',
+    'tier6'
 );
 
 CREATE TABLE users (
@@ -60,36 +60,23 @@ CREATE TABLE judge_profiles (
         ON UPDATE CASCADE
 );
 
-CREATE TABLE competitions (
-    id UUID PRIMARY KEY NOT NULL DEFAULT uuid_generate_v4(),
-    dance_convention_id UUID NOT NULL,
-    division division_type,
-    leader_tier tier_type,
-    follower_tier tier_type,
-    FOREIGN KEY (dance_convention_id) REFERENCES dance_conventions (id)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE
-);
-
 CREATE TABLE competitor_profiles (
     id UUID PRIMARY KEY NOT NULL DEFAULT uuid_generate_v4(),
     user_id UUID NOT NULL,
     wsdc_id INT,
-    leader_division division_type,
-    leader_allowed_division division_type,
+    leader_rating SMALLINT,
+    follower_rating SMALLINT,
     leader_newcomer_points SMALLINT,
     leader_novice_points SMALLINT,
     leader_intermediate_points SMALLINT,
     leader_advanced_points SMALLINT,
-    leader_allstar_points SMALLINT,
+    leader_all_star_points SMALLINT,
     leader_champion_points SMALLINT,
-    follower_division division_type,
-    follower_allowed_division division_type,
     follower_newcomer_points SMALLINT,
     follower_novice_points SMALLINT,
     follower_intermediate_points SMALLINT,
     follower_advanced_points SMALLINT,
-    follower_allstar_points SMALLINT,
+    follower_all_star_points SMALLINT,
     follower_champion_points SMALLINT,
     UNIQUE (user_id),
     FOREIGN KEY (user_id) REFERENCES users (id)
@@ -97,7 +84,7 @@ CREATE TABLE competitor_profiles (
         ON UPDATE CASCADE
 );
 
-CREATE TABLE competitor_records (
+CREATE TABLE competitor_registrations (
     id UUID PRIMARY KEY NOT NULL DEFAULT uuid_generate_v4(),
     competitor_profile_id UUID,
     dance_convention_id UUID NOT NULL,
@@ -110,25 +97,60 @@ CREATE TABLE competitor_records (
         ON UPDATE CASCADE
 );
 
-CREATE TABLE prelim_competitions (
+CREATE TABLE competitor_records (
     id UUID PRIMARY KEY NOT NULL DEFAULT uuid_generate_v4(),
     competition_id UUID NOT NULL,
-    datetime TIMESTAMP,
-    role role_type NOT NULL,
-    round round_type NOT NULL,
-    promoted_competitors UUID[] NOT NULL,
-    competitors_ranking UUID[] NOT NULL,
+    competitor_registration_id UUID NOT NULL,
+    placement SMALLINT,
+    points_earned SMALLINT,
+    pre_rating SMALLINT,
+    post_rating SMALLINT,
     FOREIGN KEY (competition_id) REFERENCES competitions (id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+    FOREIGN KEY (competitor_registration_id) REFERENCES competitor_registrations (id)
         ON DELETE CASCADE
         ON UPDATE CASCADE
 );
 
-CREATE TABLE final_competitions (
+CREATE TABLE competitions (
+    id UUID PRIMARY KEY NOT NULL DEFAULT uuid_generate_v4(),
+    dance_convention_id UUID NOT NULL,
+    division division,
+    leader_tier tier,
+    follower_tier tier,
+    FOREIGN KEY (dance_convention_id) REFERENCES dance_conventions (id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+);
+
+CREATE TABLE prelim_competitions (
     id UUID PRIMARY KEY NOT NULL DEFAULT uuid_generate_v4(),
     competition_id UUID NOT NULL,
-    datetime TIMESTAMP,
-    placements UUID[] NOT NULL,
+    date_time TIMESTAMP,
+    role role NOT NULL,
+    round round NOT NULL,
+    alternate1_id uuid,
+    alternate2_id uuid,
     FOREIGN KEY (competition_id) REFERENCES competitions (id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+    FOREIGN KEY (alternate1_id) REFERENCES competitor_profiles (id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+    FOREIGN KEY (alternate2_id) REFERENCES competitor_profiles (id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+);
+
+CREATE TABLE promoted_competitors (
+    id UUID PRIMARY KEY NOT NULL DEFAULT uuid_generate_v4(),
+    prelim_competition_id UUID NOT NULL,
+    competitor_id UUID NOT NULL,
+    FOREIGN KEY (prelim_competition_id) REFERENCES prelim_competitions (id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+    FOREIGN KEY (competitor_id) REFERENCES competitor_profiles (id)
         ON DELETE CASCADE
         ON UPDATE CASCADE
 );
@@ -136,37 +158,63 @@ CREATE TABLE final_competitions (
 CREATE TABLE prelim_scores (
     id UUID PRIMARY KEY NOT NULL DEFAULT uuid_generate_v4(),
     prelim_competition_id UUID NOT NULL,
-    judge_id UUID NOT NULL,
-    competitor_id UUID NOT NULL,
-    callbackscore callbackscore_type NOT NULL,
+    judge_id UUID,
+    competitor_id UUID,
+    callback_score callback_score NOT NULL,
     FOREIGN KEY (prelim_competition_id) REFERENCES prelim_competitions (id)
         ON DELETE CASCADE
         ON UPDATE CASCADE,
     FOREIGN KEY (judge_id) REFERENCES judge_profiles (id)
+        ON DELETE SET NULL
+        ON UPDATE CASCADE,
+    FOREIGN KEY (competitor_id) REFERENCES competitor_profiles (id)
+        ON DELETE SET NULL
+        ON UPDATE CASCADE
+);
+
+CREATE TABLE final_competitions (
+    id UUID PRIMARY KEY NOT NULL DEFAULT uuid_generate_v4(),
+    competition_id UUID NOT NULL,
+    date_time TIMESTAMP,
+    FOREIGN KEY (competition_id) REFERENCES competitions (id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+);
+
+CREATE TABLE placements (
+    id UUID PRIMARY KEY NOT NULL DEFAULT uuid_generate_v4(),
+    final_competition_id UUID NOT NULL,
+    leader_id UUID,
+    follower_id UUID,
+    placement SMALLINT NOT NULL,
+    FOREIGN KEY (final_competition_id) REFERENCES final_competitions (id)
         ON DELETE CASCADE
         ON UPDATE CASCADE,
-    FOREIGN KEY (competitor_id) REFERENCES competitor_records (id)
-        ON DELETE CASCADE
+    FOREIGN KEY (leader_id) REFERENCES competitor_profiles (id)
+        ON DELETE SET NULL
+        ON UPDATE CASCADE,
+    FOREIGN KEY (follower_id) REFERENCES competitor_profiles (id)
+        ON DELETE SET NULL
         ON UPDATE CASCADE
 );
 
 CREATE TABLE final_scores (
     id UUID PRIMARY KEY NOT NULL DEFAULT uuid_generate_v4(),
     final_competition_id UUID NOT NULL,
-    judge_id UUID NOT NULL,
-    leader_id UUID NOT NULL,
-    follower_id UUID NOT NULL,
+    judge_id UUID,
+    leader_id UUID,
+    follower_id UUID,
     score SMALLINT NOT NULL,
     FOREIGN KEY (final_competition_id) REFERENCES final_competitions (id)
         ON DELETE CASCADE
         ON UPDATE CASCADE,
     FOREIGN KEY (judge_id) REFERENCES judge_profiles (id)
-        ON DELETE CASCADE
+        ON DELETE SET NULL
         ON UPDATE CASCADE,
-    FOREIGN KEY (leader_id) REFERENCES competitor_records (id)
-        ON DELETE CASCADE
+    FOREIGN KEY (leader_id) REFERENCES competitor_profiles (id)
+        ON DELETE SET NULL
         ON UPDATE CASCADE,
-    FOREIGN KEY (follower_id) REFERENCES competitor_records (id)
-        ON DELETE CASCADE
+    FOREIGN KEY (follower_id) REFERENCES competitor_profiles (id)
+        ON DELETE SET NULL
         ON UPDATE CASCADE
 );

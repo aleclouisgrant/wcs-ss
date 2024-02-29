@@ -25,6 +25,10 @@ export default function DanceEventAdder() {
 
     }
 
+    function Upload() {
+
+    }
+
     function AddCompetitionCards() {
         var cards = new Array<ReactNode>;
 
@@ -59,26 +63,27 @@ export default function DanceEventAdder() {
     }
 
     return (
+        <form onSubmit={Upload}>
         <div className="h-screen flex items-center justify-center">
             <div className="block w-4/5">
                 <div className="mb-2 flex justify-center">
                     <button type="button" className="mr-auto btn-secondary">Back</button>
                     <h1>Add Dance Event</h1>
-                    <button type="button" className="btn-primary ml-auto">Upload</button>
+                    <button type="submit" className="btn-primary ml-auto">Upload</button>
                 </div>
                 <div className="rounded-xl bg-white p-11 flex flex-row justify-center items-center">
                     <div className="block">
                         <div className="align-middle grid grid-cols-2">
                             <div className="align-middle">
                                 <div className="radio-container">
-                                    <input type="radio" radioGroup="choose-dance-radio" />
+                                    <input type="radio" name="group1" radioGroup="choose-dance-radio" />
                                     <label>Choose Existing</label>
                                 </div>
                                 <select className="select-primary" />
                             </div>
                             <div className="justify-center">
                                 <div className="radio-container">
-                                    <input type="radio" radioGroup="choose-dance-radio" />
+                                    <input type="radio" name="group1" radioGroup="choose-dance-radio" />
                                     <label>Add New Event</label>
                                 </div>
                                 <div className="ml-4 mt-2">
@@ -145,5 +150,6 @@ export default function DanceEventAdder() {
                 {AddCompetitionCards()}
             </div>
         </div>
+       </form>
     )
 }
