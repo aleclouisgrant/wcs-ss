@@ -2,10 +2,11 @@
 
 import { FormEvent, ReactNode, useContext, useEffect, useState } from "react";
 import { trpc } from "@/app/_trpc/client";
-import { Uuid } from "@/classes/Uuid";
-import { Competitor, Judge } from "@/classes/IPerson";
+import { Uuid } from "wcs-ss-lib";
 import { CompetitorsContext } from "@/context/CompetitorsContext";
 import { JudgesContext } from "@/context/JudgesContext";
+import { Competitor } from "@/classes/Competitor";
+import { Judge } from "@/classes/Judge";
 
 export default function PersonAdder() {
     const [firstNameText, setFirstNameText] = useState<string>("")

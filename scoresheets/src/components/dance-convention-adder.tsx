@@ -2,7 +2,7 @@
 
 import { FormEvent, useContext, useEffect, useState } from "react";
 import { trpc } from "@/app/_trpc/client";
-import { Uuid } from "@/classes/Uuid";
+import { Uuid } from "wcs-ss-lib";
 import { DanceConvention } from "@/classes/DanceConvention";
 import { DanceConventionsContext } from "@/context/DanceConventionsContext";
 import { StringFromDate } from "@/classes/utils";

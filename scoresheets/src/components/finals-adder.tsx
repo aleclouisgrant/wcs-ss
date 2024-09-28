@@ -2,16 +2,15 @@
 
 import { useContext, useState } from 'react';
 
-import { Division, Round } from '@/classes/Enums';
-import { Competitor, Judge } from '@/classes/IPerson';
-
 import Selector from '@/components/person-selector';
 
-import { Util } from '@/classes/Util';
-import { FinalCompetition } from '@/classes/Competition';
-import { FinalScore } from '@/classes/IScore';
+import { FinalCompetition } from '@/classes/FinalCompetition';
+import { FinalScore } from '@/classes/FinalScore';
 import { CompetitorsContext } from '@/context/CompetitorsContext';
 import { JudgesContext } from '@/context/JudgesContext';
+import { Division, Round } from 'wcs-ss-lib';
+import { Competitor } from '@/classes/Competitor';
+import { Judge } from '@/classes/Judge';
 
 export default function FinalsAdder(props: { 
         handleFinalsCompetition?: (finalsCompetition : FinalCompetition) => void, 

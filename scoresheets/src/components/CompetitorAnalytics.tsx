@@ -1,11 +1,11 @@
 "use client";
 
-import { Competitor } from "@/classes/IPerson";
 import { JSX } from "react";
+import { CallbackScore, Role } from "wcs-ss-lib";
+import { Competitor } from "@/classes/Competitor";
 
 import { TestData } from '@/test-data/test-data';
 import { DanceConvention } from "@/classes/DanceConvention";
-import { CallbackScore, Role } from "@/classes/Enums";
 import { CompetitorFinalScoreViewer, CompetitorPrelimScoreViewer, FinalScoreViewerProps, PrelimScoreViewerProps } from "./competitor-score-viewer";
 
 const danceEvent = TestData.TestDanceEvent();
@@ -19,21 +19,31 @@ export default function CompetitorAnalytics(props: {competitor: Competitor | und
   }
 
   const CompetitionScores = (person: Competitor, danceEvent : DanceConvention, role : Role) => {
+    var competition = danceEvent.Competitions[0];
+    
+    var prelimCompetitions = 
+      [ competition.PairedPrelimCompetitions[0].LeaderPrelimCompetition,
+      competition.PairedPrelimCompetitions[0].FollowerPrelimCompetition ];
 
-    var prelimCompetitions = danceEvent.PrelimCompetitions;
-    var finalCompetition = danceEvent.FinalCompetitions[0];
+    var finalCompetition = competition.FinalCompetition;
 
     var prelimCompetitionScoreViewers: JSX.Element[] = [];
     var finalCompetitionScoreViewer;
 
     if (prelimCompetitions != null) {
       prelimCompetitions.forEach((prelimCompetition, index) => {
+        const i = prelimCompetition?.Competitors.indexOf(person);
+        var rank = 0;
+
+        if (i != undefined)
+          rank = i + 1;
+
         var prelimProps : PrelimScoreViewerProps = {
-          round: prelimCompetition.Round,
-          callbackScore:  prelimCompetition.IsCompetitorPromoted(person) ? CallbackScore.Yes : CallbackScore.No,
-          rank: prelimCompetition.Competitors.indexOf(person) + 1,
-          totalCompetitors: prelimCompetition.GetCompetitorCount(),
-          prelimScores: prelimCompetition.ScoresByCompetitor(person)
+          round: prelimCompetition?.Round,
+          callbackScore:  prelimCompetition?.IsCompetitorPromoted(person) ? CallbackScore.Yes : CallbackScore.No,
+          rank: rank,
+          totalCompetitors: prelimCompetition?.GetCompetitorCount(),
+          prelimScores: prelimCompetition?.ScoresByCompetitor(person)
         };
         prelimCompetitionScoreViewers.push(<div key={index}>{CompetitorPrelimScoreViewer(prelimProps)}</div>);
       })
@@ -41,9 +51,9 @@ export default function CompetitorAnalytics(props: {competitor: Competitor | und
 
     if (finalCompetition != null && finalCompetition?.GetPlacement(person) != 0) {
       var placement = finalCompetition.GetPlacement(person);
-      var partner : Competitor;
+      var partner : Competitor | undefined;
 
-      if (finalCompetition.Scores[placement - 1][0].Leader == person){
+      if (finalCompetition.Scores[placement - 1][0].Leader == person) {
         partner = finalCompetition.Scores[placement - 1][0].Follower;
       } 
       else {

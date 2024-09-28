@@ -2,17 +2,17 @@
 
 import { useContext, useState } from 'react';
 
-import { CallbackScore, Division, Role, Round } from '@/classes/Enums';
-import { Competitor, Judge } from '@/classes/IPerson';
 
 import CallbackScoreViewer from '@/components/prelim-callback-score-viewer';
 import Selector from '@/components/person-selector';
 
-import { Util } from '@/classes/Util';
-import { PrelimCompetition } from '@/classes/Competition';
-import { PrelimScore } from '@/classes/IScore';
+import { PrelimCompetition } from '@/classes/PrelimCompetition';
+import { PrelimScore } from '@/classes/PrelimScore';
 import { CompetitorsContext } from '@/context/CompetitorsContext';
 import { JudgesContext } from '@/context/JudgesContext';
+import { CallbackScore, Division, Role, Round, WcsUtil } from 'wcs-ss-lib';
+import { Competitor } from '@/classes/Competitor';
+import { Judge } from '@/classes/Judge';
 
 export default function PrelimAdder(props: { 
         handlePrelimCompetition: (prelimCompetition : PrelimCompetition) => void, 
@@ -160,7 +160,7 @@ export default function PrelimAdder(props: {
         var sum = 0;
 
         for (let judgeIndex = 0; judgeIndex < judgeCount; judgeIndex++) {
-            sum = sum + Util.GetCallbackScoreNumber(scores[competitorIndex][judgeIndex]);
+            sum = sum + WcsUtil.GetCallbackScoreNumber(scores[competitorIndex][judgeIndex]);
         }
 
         return sum;

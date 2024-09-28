@@ -1,4 +1,4 @@
-import { Competitor } from '@/classes/IPerson';
+import { Competitor } from '@/classes/Competitor';
 import { useState, createContext } from 'react';
 import { ContextProviderProps, ContextType } from './ContextType';
 

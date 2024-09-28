@@ -1,8 +1,14 @@
-import { FinalCompetition, PrelimCompetition } from '@/classes/Competition';
+import { PrelimCompetition } from '@/classes/PrelimCompetition';
+import { FinalCompetition } from '@/classes/FinalCompetition';
 import { DanceConvention } from '@/classes/DanceConvention';
-import { CallbackScore, Division, Role, Round } from '@/classes/Enums';
-import { Competitor, Judge } from '@/classes/IPerson';
-import { FinalScore, PrelimScore } from '@/classes/IScore';
+import { CallbackScore, CompetitionType, Division, Role, Round } from 'wcs-ss-lib';
+import { Competitor } from '@/classes/Competitor';
+import { Judge } from '@/classes/Judge';
+import { PrelimScore } from '@/classes/PrelimScore';
+import { FinalScore } from '@/classes/FinalScore';
+import { Competition } from '@/classes/Competition';
+import { PairedPrelimCompetition } from '@/classes/PairedPrelimCompetition';
+
 
 var brandon = new Competitor("Brandon", "Rasmussen", 301);
 var stan = new Competitor("Stanislav", "Ivanov", 313);
@@ -246,7 +252,6 @@ var finalScores = [
 export class TestData {
     public static TestPrelimCompetitionLeaders() : PrelimCompetition {
         var comp = new PrelimCompetition(
-            "Swungalow Bungalow",
             new Date(),
             Division.AllStar,
             Round.Prelims,
@@ -260,7 +265,6 @@ export class TestData {
 
     public static TestPrelimCompetitionFollowers() : PrelimCompetition {
         var comp = new PrelimCompetition(
-            "Swungalow Bungalow",
             new Date(),
             Division.AllStar,
             Round.Prelims,
@@ -274,7 +278,6 @@ export class TestData {
 
     public static TestFinalCompetition() : FinalCompetition {
         var comp = new FinalCompetition(
-            "Swungalow Bungalow",
             new Date(),
             Division.AllStar
         );
@@ -284,14 +287,21 @@ export class TestData {
     }
 
     public static TestDanceEvent() : DanceConvention {
+        var competition = new Competition(CompetitionType.JnJ, Division.AllStar);
+
+        var ppc = new PairedPrelimCompetition(Round.Prelims);
+        ppc.LeaderPrelimCompetition = this.TestPrelimCompetitionLeaders();
+        ppc.FollowerPrelimCompetition = this.TestPrelimCompetitionFollowers();
+
+        competition.PairedPrelimCompetitions.push(ppc);
+        competition.FinalCompetition = this.TestFinalCompetition();
+
         var danceEvent = new DanceConvention(
             "Swungalow Bungalow",
             new Date()
         );
-        danceEvent.PrelimCompetitions.push(this.TestPrelimCompetitionLeaders());
-        danceEvent.PrelimCompetitions.push(this.TestPrelimCompetitionFollowers());
-        danceEvent.FinalCompetitions.push(this.TestFinalCompetition());
 
+        danceEvent.Competitions.push(competition);
         return danceEvent;
     }
 

@@ -1,4 +1,4 @@
-import { Judge } from '@/classes/IPerson';
+import { Judge } from '@/classes/Judge';
 import { useState, createContext } from 'react';
 import { ContextProviderProps, ContextType } from './ContextType';
 

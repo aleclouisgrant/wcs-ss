@@ -2,18 +2,17 @@
 
 import { useContext, useState } from 'react';
 
-import { CallbackScore, Division, Role, Round } from '@/classes/Enums';
-import { Competitor, Judge } from '@/classes/IPerson';
-
 import CallbackScoreViewer from '@/components/prelim-callback-score-viewer';
 import Selector from '@/components/person-selector';
 
-import { Util } from '@/classes/Util';
-import { PrelimCompetition } from '@/classes/Competition';
-import { PrelimScore } from '@/classes/IScore';
+import { PrelimCompetition } from '@/classes/PrelimCompetition';
+import { PrelimScore } from '@/classes/PrelimScore';
 import { CompetitorsContext } from '@/context/CompetitorsContext';
 import { JudgesContext } from '@/context/JudgesContext';
 import { StringFromDate } from '@/classes/utils';
+import { Competitor } from '@/classes/Competitor';
+import { Judge } from '@/classes/Judge';
+import { CallbackScore, Division, Role, Round, WcsUtil } from 'wcs-ss-lib';
 
 export default function PrelimAdder(props: { handlePrelimCompetition: (prelimCompetition: PrelimCompetition) => void }) {
     const {value: competitorDb } = useContext(CompetitorsContext);
@@ -27,7 +26,6 @@ export default function PrelimAdder(props: { handlePrelimCompetition: (prelimCom
 
     const [scores, setScores] = useState(new Array<Array<CallbackScore>>);
 
-    const [compName, setCompName] = useState("");
     const [role, setRole] = useState(Role.Leader);
     const [division, setDivision] = useState(Division.AllStar);
     const [round, setRound] = useState(Round.Prelims);
@@ -39,7 +37,7 @@ export default function PrelimAdder(props: { handlePrelimCompetition: (prelimCom
     const [currentCallbackScore, setCurrentCallbackScore] = useState(CallbackScore.Unscored);
 
     function UpdatePrelimCompetition() {
-        var competition = new PrelimCompetition(compName, date, division, round, role);
+        var competition = new PrelimCompetition(date, division, round, role);
 
         var competitorList = new Array<Competitor>();
         var judgeList = new Array<Judge>();
@@ -151,7 +149,7 @@ export default function PrelimAdder(props: { handlePrelimCompetition: (prelimCom
         var sum = 0;
 
         for (let judgeIndex = 0; judgeIndex < judgeCount; judgeIndex++) {
-            sum = sum + Util.GetCallbackScoreNumber(scores[competitorIndex][judgeIndex]);
+            sum = sum + WcsUtil.GetCallbackScoreNumber(scores[competitorIndex][judgeIndex]);
         }
 
         return sum;
@@ -302,7 +300,6 @@ export default function PrelimAdder(props: { handlePrelimCompetition: (prelimCom
         setCompetitors(new Array<Competitor | undefined>());
         setJudges(new Array<Judge | undefined>());
         setScores(new Array<Array<CallbackScore>>);
-        setCompName("");
         setRole(Role.Leader);
         setDivision(Division.AllStar);
         setRound(Round.Prelims);
@@ -314,9 +311,6 @@ export default function PrelimAdder(props: { handlePrelimCompetition: (prelimCom
     return (
         <div>
             <div className='m-2'>
-                <label htmlFor='nameInput' className='mr-2'>Name</label>
-                <input id='nameInput' inputMode='text' onChange={(e) => setCompName(e.target.value)} value={compName}/>
-
                 <label className='mx-2'>Date:</label>
                 <input id='dateInput' type='date' onChange={(e) => setDate(new Date(e.target.value))} value={StringFromDate(date)} />
 
@@ -327,7 +321,7 @@ export default function PrelimAdder(props: { handlePrelimCompetition: (prelimCom
                 </select>
 
                 <label className='mx-2'>Division:</label>
-                <select name='divisionInput' onChange={(e) => setDivision(Util.StringToDivision(e.target.value))} value={division}>
+                <select name='divisionInput' onChange={(e) => setDivision(WcsUtil.StringToDivision(e.target.value))} value={division}>
                     <option value={Division.Newcomer}>{Division.Newcomer}</option>
                     <option value={Division.Novice}>{Division.Novice}</option>
                     <option value={Division.Intermediate}>{Division.Intermediate}</option>

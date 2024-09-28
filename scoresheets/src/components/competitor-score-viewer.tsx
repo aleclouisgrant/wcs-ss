@@ -1,31 +1,31 @@
-import { Competitor } from "@/classes/IPerson";
+import { Competitor } from "@/classes/Competitor";
+import { FinalScore } from "@/classes/FinalScore";
+import { PrelimScore } from "@/classes/PrelimScore";
 import { JSX } from "react";
 
-import { CallbackScore, Round } from "@/classes/Enums";
-import { Util } from "@/classes/Util";
-import { FinalScore, PrelimScore } from "@/classes/IScore";
+import { CallbackScore, Round, WcsUtil } from "wcs-ss-lib";
 
 export interface PrelimScoreViewerProps {
-  round: Round;
-  callbackScore: CallbackScore;
-  rank: number;
-  totalCompetitors: number;
-  prelimScores: Array<PrelimScore>;
+  round: Round | undefined;
+  callbackScore: CallbackScore | undefined;
+  rank: number | undefined;
+  totalCompetitors: number | undefined;
+  prelimScores: Array<PrelimScore> | undefined;
 }
 
 export function CompetitorPrelimScoreViewer(props: PrelimScoreViewerProps ) {
   var judgeHeaders: JSX.Element[] = [];
   var scoreRows: JSX.Element[] = [];
 
-  props.prelimScores.forEach((score, index) => {
+  props.prelimScores?.forEach((score, index) => {
     judgeHeaders.push(<th key={index}>{score.Judge?.FullName}</th>);
-    scoreRows.push(<td key={index}>{Util.CallbackScoreShorthand(score.CallbackScore)}</td>);
+    scoreRows.push(<td key={index}>{WcsUtil.CallbackScoreShorthand(score.CallbackScore)}</td>);
   });
 
   return (
     <div>
       <h3>{props.round}</h3>
-      <h3>{Util.CallbackScoreShorthand(props.callbackScore)} ({props.rank}/{props.totalCompetitors})</h3>
+      <h3>{WcsUtil.CallbackScoreShorthand(props.callbackScore)} ({props.rank}/{props.totalCompetitors})</h3>
       <table>
         <tbody>
           <tr>
@@ -42,7 +42,7 @@ export function CompetitorPrelimScoreViewer(props: PrelimScoreViewerProps ) {
 
 export interface FinalScoreViewerProps {
   placement: number;
-  partner: Competitor;
+  partner: Competitor | undefined;
   totalCompetitors: number;
   finalScores: Array<FinalScore>;
 }

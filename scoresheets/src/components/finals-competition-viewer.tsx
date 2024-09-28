@@ -1,6 +1,7 @@
-import { FinalCompetition } from '@/classes/Competition';
-import { Judge } from '@/classes/IPerson';
-import { FinalScore } from '@/classes/IScore';
+import { FinalCompetition } from "@/classes/FinalCompetition";
+import { FinalScore } from "@/classes/FinalScore";
+import { Judge } from "@/classes/Judge";
+
 
 export default async function FinalsScoresheet(props: {competition : FinalCompetition}) {
     var comp = props.competition;
@@ -18,7 +19,7 @@ export default async function FinalsScoresheet(props: {competition : FinalCompet
                     <td className='p-2'>{i + 1}</td>
                     <td className='p-2'>{leader?.FullName + " & " + follower?.FullName}</td>
                     {coupleScores.map((score: FinalScore) => (
-                        <td key={score.Judge.FullName} className='p-2'>{score.Score}</td>
+                        <td key={score.Judge?.FullName} className='p-2'>{score.Score}</td>
                         ))}
                 </tr>
             )

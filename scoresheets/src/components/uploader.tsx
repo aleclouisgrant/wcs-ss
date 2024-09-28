@@ -1,6 +1,6 @@
 "use client";
 
-import { PrelimCompetition } from "@/classes/Competition";
+import { PrelimCompetition } from "@/classes/PrelimCompetition";
 import PrelimAdder from "./prelim-adder";
 import PersonAdder from "./person-adder";
 import DanceConventionAdder from "./dance-convention-adder";

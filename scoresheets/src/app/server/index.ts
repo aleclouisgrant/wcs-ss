@@ -1,11 +1,12 @@
 import { publicProcedure, router } from "./trpc";
 import { z } from "zod";
 import { db } from "../../db";
-import { Competitor, Judge } from "@/classes/IPerson";
-import { PrelimCompetition, FinalCompetition } from "@/classes/Competition";
+import { Competitor } from "@/classes/Competitor";
+import { Judge } from "@/classes/Judge";
+import { PrelimCompetition } from "@/classes/PrelimCompetition";
+import { FinalCompetition } from "@/classes/FinalCompetition";
 import { UserDbModel } from "@/db/schema";
-import { Uuid } from "@/classes/Uuid";
-import { Role, Round } from "@/classes/Enums";
+import { Uuid, Role, Round  } from "wcs-ss-lib";
 import { DanceConvention } from "@/classes/DanceConvention";
 
 export const appRouter = router({

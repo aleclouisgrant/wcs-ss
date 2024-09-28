@@ -1,6 +1,6 @@
 'use client';
 
-import { IPerson } from "@/classes/IPerson";
+import { IPerson } from "wcs-ss-lib";
 import React, { ChangeEvent, Component } from "react";
 
 type SelectorProps<T extends IPerson> = {

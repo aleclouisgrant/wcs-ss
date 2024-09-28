@@ -1,5 +1,4 @@
-import { CallbackScore, Division, Role, Round, Tier } from "@/classes/Enums";
-import { Uuid } from "@/classes/Uuid";
+import { Uuid, CallbackScore, Division, Role, Round, Tier } from "wcs-ss-lib";
 
 export interface IDatabaseModel {
     Id: Uuid;

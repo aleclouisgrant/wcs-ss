@@ -1,7 +1,7 @@
 'use client';
 
-import { CallbackScore } from "@/classes/Enums";
-import { Util } from "@/classes/Util";
+import { CallbackScore } from "wcs-ss-lib";
+import { WcsUtil } from "wcs-ss-lib";
 
 export default function CallbackScoreViewer(props: {callbackScore : CallbackScore}) {
     let col = 'red';
@@ -30,7 +30,7 @@ export default function CallbackScoreViewer(props: {callbackScore : CallbackScor
 
     return (
         <div className="flex justify-center items-center" style={{backgroundColor: col, width: 35, height: 22, fontSize: 10, fontWeight: 700, color: "white", borderRadius: 10}}>
-            {Util.CallbackScoreShorthand(props.callbackScore)}
+            {WcsUtil.CallbackScoreShorthand(props.callbackScore)}
         </div>
     )
 }

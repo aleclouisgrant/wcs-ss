@@ -2,10 +2,10 @@
 
 import { trpc } from "../_trpc/client";
 import { FormEvent, useEffect, useState } from "react";
-import { Competitor } from "@/classes/IPerson";
+import { Competitor } from "@/classes/Competitor";
 
 import CompetitorAnalytics from "@/components/CompetitorAnalytics"
-import { Uuid } from "@/classes/Uuid";
+import { Uuid } from "wcs-ss-lib";
 
 export default function Page() {
   const [searchText, setSearchText] = useState<string>("")

@@ -2,8 +2,7 @@
 
 import { ReactNode, useState } from "react";
 import PrelimAdder from "./prelim-adder";
-import { CompetitionType, Division, Role, Round } from "@/classes/Enums";
-import { Util } from "@/classes/Util";
+import { CompetitionType, Division, Role, Round, WcsUtil } from "wcs-ss-lib";
 import FinalsAdder from "./finals-adder";
 
 export default function DanceEventAdder() {
@@ -117,7 +116,7 @@ export default function DanceEventAdder() {
                             </div>
                             <div className="labeled-input-container">
                                 <label>Division</label>
-                                <select name='divisionInput' onChange={(e) => setDivisionCompetitionInfo(Util.StringToDivision(e.target.value))} value={divisionCompetitionInfo}>
+                                <select name='divisionInput' onChange={(e) => setDivisionCompetitionInfo(WcsUtil.StringToDivision(e.target.value))} value={divisionCompetitionInfo}>
                                     <option value={Division.Newcomer}>{Division.Newcomer}</option>
                                     <option value={Division.Novice}>{Division.Novice}</option>
                                     <option value={Division.Intermediate}>{Division.Intermediate}</option>

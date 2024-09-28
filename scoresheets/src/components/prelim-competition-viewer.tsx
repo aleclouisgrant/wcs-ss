@@ -1,9 +1,8 @@
-import { PrelimCompetition } from '@/classes/Competition';
-import { Judge } from '@/classes/IPerson';
-import { PrelimScore } from '@/classes/IScore';
-import { Util } from '@/classes/Util';
-
 import CallbackScoreViewer from '@/components/prelim-callback-score-viewer';
+import { WcsUtil } from 'wcs-ss-lib';
+import { PrelimScore } from '@/classes/PrelimScore';
+import { Judge } from '@/classes/Judge';
+import { PrelimCompetition } from '@/classes/PrelimCompetition';
 
 function IsPromoted(promoted : boolean) : string {
     if (promoted) {
@@ -14,7 +13,10 @@ function IsPromoted(promoted : boolean) : string {
     }
 }
 
-export default function PrelimsScoresheet(props: {competition : PrelimCompetition}) {
+export default function PrelimsScoresheet(props: {competition : PrelimCompetition | undefined}) {
+    if (props.competition == undefined) {
+        return;
+    }
     var comp = props.competition;
 
     const CompetitorRows = () => {
@@ -57,7 +59,7 @@ export default function PrelimsScoresheet(props: {competition : PrelimCompetitio
 
     return (
         <div>
-            <h3>{comp.Role}s (Tier {Util.TierNumberFromTier(comp.Tier)}: {comp.GetCompetitorCount()} competitors):</h3>
+            <h3>{comp.Role}s (Tier {WcsUtil.TierNumberFromTier(comp.Tier)}: {comp.GetCompetitorCount()} competitors):</h3>
             <table className="table-auto">
                 <tbody className="even:bg-gray-500 odd:bg-white">
                     <tr>
