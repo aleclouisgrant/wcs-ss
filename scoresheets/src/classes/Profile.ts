@@ -1,5 +1,4 @@
-import { Division } from "./Enums";
-import { Uuid } from "./Uuid";
+import { Uuid, Division } from "wcs-ss-lib";
 
 export interface ICompetitorProfile {
     Id: Uuid;
