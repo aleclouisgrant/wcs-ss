@@ -7,9 +7,6 @@ export class FinalCompetition implements IFinalCompetition {
     private _id: Uuid;
     private _date: Date;
 
-    private _leaders: Array<Competitor>;
-    private _followers: Array<Competitor>;
-    
     public Judges: Array<Judge>;
     public Division: Division;
     public Round: Round;
@@ -20,8 +17,6 @@ export class FinalCompetition implements IFinalCompetition {
         this._id = Uuid.MakeNew();
         this.Round = Round.Finals;
 
-        this._leaders = new Array<Competitor>();
-        this._followers = new Array<Competitor>();
         this.Judges = new Array<Judge>();
         
         this.Scores = new Array<Array<FinalScore>>();
@@ -73,32 +68,6 @@ export class FinalCompetition implements IFinalCompetition {
         });
 
         return placement;
-    }
-
-    public SetScores(scores: Array<Array<FinalScore>>) {
-        this.Scores = scores;
-
-        this.Scores.forEach((coupleScores, place) => {
-            coupleScores.forEach((value) => {
-                if (value.Leader != null) {
-                    if (!this._leaders.includes(value.Leader)) {
-                        this._leaders.push(value.Leader);
-                    }
-                }
-                
-                if (value.Follower != null) {
-                    if (!this._followers.includes(value.Follower)) {
-                        this._followers.push(value.Follower);
-                    }
-                }
-
-                if (value.Judge != null) {
-                    if (!this.Judges.includes(value.Judge)) {
-                        this.Judges.push(value.Judge);
-                    }
-                }
-            });
-        });
     }
 
     public get CoupleCount() : number {

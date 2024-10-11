@@ -128,7 +128,7 @@ export default function DanceEventAdder() {
                             </div>
                             <div className="labeled-input-container">
                                 <label>Rounds</label>
-                                <select name='roundInput' placeholder="Select Rounds" 
+                                <select name='roundInput' aria-placeholder="Select Rounds" 
                                     onChange={(e) => setRoundsCompetitionInfo([...e.target.options].filter(o => o.selected).map(o => Round[o.value as keyof typeof Round]))} 
                                     value={roundsCompetitionInfo} 
                                     multiple>

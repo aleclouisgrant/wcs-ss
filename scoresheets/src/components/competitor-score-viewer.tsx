@@ -19,13 +19,13 @@ export function CompetitorPrelimScoreViewer(props: PrelimScoreViewerProps ) {
 
   props.prelimScores?.forEach((score, index) => {
     judgeHeaders.push(<th key={index}>{score.Judge?.FullName}</th>);
-    scoreRows.push(<td key={index}>{WcsUtil.CallbackScoreShorthand(score.CallbackScore)}</td>);
+    scoreRows.push(<td key={index}>{WcsUtil.GetCallbackScoreShorthand(score.CallbackScore)}</td>);
   });
 
   return (
     <div>
       <h3>{props.round}</h3>
-      <h3>{WcsUtil.CallbackScoreShorthand(props.callbackScore)} ({props.rank}/{props.totalCompetitors})</h3>
+      <h3>{WcsUtil.GetCallbackScoreShorthand(props.callbackScore)} ({props.rank}/{props.totalCompetitors})</h3>
       <table>
         <tbody>
           <tr>

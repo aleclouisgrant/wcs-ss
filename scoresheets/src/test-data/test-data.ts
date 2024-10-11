@@ -281,8 +281,8 @@ export class TestData {
             new Date(),
             Division.AllStar
         );
-        comp.SetScores(finalScores);
-        
+        comp.Scores = finalScores;
+    
         return comp;
     }
 

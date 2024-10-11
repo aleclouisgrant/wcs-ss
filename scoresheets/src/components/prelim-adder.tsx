@@ -160,7 +160,7 @@ export default function PrelimAdder(props: {
         var sum = 0;
 
         for (let judgeIndex = 0; judgeIndex < judgeCount; judgeIndex++) {
-            sum = sum + WcsUtil.GetCallbackScoreNumber(scores[competitorIndex][judgeIndex]);
+            sum = sum + WcsUtil.GetCallbackScoreValue(scores[competitorIndex][judgeIndex]);
         }
 
         return sum;

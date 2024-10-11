@@ -2,8 +2,7 @@ import { FinalCompetition } from "@/classes/FinalCompetition";
 import { FinalScore } from "@/classes/FinalScore";
 import { Judge } from "@/classes/Judge";
 
-
-export default async function FinalsScoresheet(props: {competition : FinalCompetition}) {
+export default function FinalsScoresheet(props: {competition : FinalCompetition}) {
     var comp = props.competition;
 
     const CompetitorRows = () => {
