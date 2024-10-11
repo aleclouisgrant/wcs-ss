@@ -30,7 +30,7 @@ export default function CallbackScoreViewer(props: {callbackScore : CallbackScor
 
     return (
         <div className="flex justify-center items-center" style={{backgroundColor: col, width: 35, height: 22, fontSize: 10, fontWeight: 700, color: "white", borderRadius: 10}}>
-            {WcsUtil.CallbackScoreShorthand(props.callbackScore)}
+            {WcsUtil.GetCallbackScoreShorthand(props.callbackScore)}
         </div>
     )
 }

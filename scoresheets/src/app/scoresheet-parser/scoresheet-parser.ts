@@ -1,3 +1,4 @@
+import { Division } from "wcs-ss-lib";
 import { ParseEEProScoreSheet } from "./eepro-parser";
 import { Competition } from "@/classes/Competition";
 
@@ -13,18 +14,17 @@ function DetermineScoresheetSource(htmlString: string) : ScoresheetSource {
     return ScoresheetSource.EEPro;
 }
 
-export function ParseScoreSheet(htmlString: string | undefined) : Competition | undefined {
-    if (htmlString == undefined)
+export function ParseScoreSheet(htmlString: string | undefined, searchDivision: Division) : Competition | undefined {
+    if (htmlString == undefined) {
         return;
+    }
     
+    let comp: Competition | undefined;
     switch (DetermineScoresheetSource(htmlString)) {
         case ScoresheetSource.EEPro:
-            ParseEEProScoreSheet(htmlString);
+            comp = ParseEEProScoreSheet(htmlString, searchDivision);
             break;
         }
         
-    var comp = new Competition();
-        
     return comp;
 }
-

@@ -61,7 +61,7 @@ export class PrelimCompetition implements IPrelimCompetition {
             judgeScores += competitor.FullName + ": ";
 
             this.ScoresByCompetitor(competitor).map((score) => {
-                judgeScores += WcsUtil.CallbackScoreShorthand(score.CallbackScore) + " ";
+                judgeScores += WcsUtil.GetCallbackScoreShorthand(score.CallbackScore) + " ";
             })
             print += judgeScores + '\n';
         });
@@ -115,7 +115,7 @@ export class PrelimCompetition implements IPrelimCompetition {
         var sum = 0;
 
         scores.forEach((score) => {
-            var value = WcsUtil.GetCallbackScoreNumber(score.CallbackScore);
+            var value = WcsUtil.GetCallbackScoreValue(score.CallbackScore);
             if (value == -1) {
                 // unscored score
             }
