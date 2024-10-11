@@ -7,6 +7,7 @@ import FinalsScoresheet from "@/components/finals-competition-viewer";
 import { PrelimCompetition } from "@/classes/PrelimCompetition";
 import { Division, Round, WcsUtil } from "wcs-ss-lib";
 import { FinalCompetition } from "@/classes/FinalCompetition";
+import { ConvertCompetitionToJson } from "./json-converter";
 
 export default function Page() {  
   const [file, setFile] = useState<File | undefined>();
@@ -31,6 +32,10 @@ export default function Page() {
       case Round.Finals: {
         let competition = ParseFinalScoreSheet(htmlString, Division.AllStar);
         setFinalComp(competition?.FinalCompetition);
+
+        if (competition != undefined)
+          console.log(ConvertCompetitionToJson(competition))
+
         return;
       }
       default:
@@ -39,6 +44,10 @@ export default function Page() {
         let competition = ParsePrelimScoreSheet(htmlString, Division.AllStar);
         setLeaderComp(competition?.PairedPrelimCompetitions[0]?.LeaderPrelimCompetition);
         setFollowerComp(competition?.PairedPrelimCompetitions[0]?.FollowerPrelimCompetition);
+
+        if (competition != undefined)
+          console.log(ConvertCompetitionToJson(competition))
+
         return;
     }
   }
@@ -79,7 +88,7 @@ export default function Page() {
       </div>
       
       <label htmlFor="round-selector">Round:</label>
-      <select name="round-selector" onChange={changeRound} value={round}>
+      <select id="round-selector" onChange={changeRound} value={round}>
         <option value={Round.Prelims}>Prelims</option>
         <option value={Round.Semifinals}>Semis</option>
         <option value={Round.Finals}>Finals</option>

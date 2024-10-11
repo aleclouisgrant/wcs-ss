@@ -7,10 +7,37 @@ enum ScoresheetSource {
     WorldDanceRegistry,
     DanceConvention,
     StepRightSolutions,
-    ScoringDotDance
+    ScoringDotDance,
+    Other
+}
+
+function GetSubString(s: string, from: string, to: string) : string {
+    if (s == null || s == "") {
+        return "";
+    }
+
+    const fromIndex = s.indexOf(from) + from.length;
+    const choppedString = s.substring(fromIndex, s.length - fromIndex);
+    const toIndex = choppedString.indexOf(to) + fromIndex;
+
+    var sub = "";
+    sub = s.substring(fromIndex, toIndex - fromIndex);
+
+    return sub;
 }
 
 function DetermineScoresheetSource(htmlString: string) : ScoresheetSource {
+    // var parserString = GetSubString(htmlString, "<!-- saved from", " -->");
+
+    // if (parserString.includes("worlddanceregistry"))
+    //     return ScoresheetSource.WorldDanceRegistry;
+    // else if (parserString.includes("steprightsolutions"))
+    //     return ScoresheetSource.StepRightSolutions;
+    // else if (parserString.includes("eepro"))
+    //     return ScoresheetSource.EEPro;
+    // else
+    //     return ScoresheetSource.Other;
+
     return ScoresheetSource.EEPro;
 }
 
@@ -32,6 +59,6 @@ export function ParseFinalScoreSheet(htmlString: string, searchDivision: Divisio
             comp = ParseEEProFinalScoreSheet(htmlString, searchDivision);
             break;
         }
-        
+    
     return comp;
 }

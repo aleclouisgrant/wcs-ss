@@ -45,8 +45,8 @@ export default function PrelimsScoresheet(props: {competition : PrelimCompetitio
                     <td>{count}</td>
                     <td>{competitor.BibNumber}</td>
                     <td>{competitor.FullName}</td>
-                    {comp.ScoresByCompetitor(competitor).map((score: PrelimScore) => (
-                        <td key={competitor.BibNumber + i}><CallbackScoreViewer callbackScore={score.CallbackScore}/></td>
+                    {comp.ScoresByCompetitor(competitor).map((score: PrelimScore, index: number) => (
+                        <td key={competitor.BibNumber + index}><CallbackScoreViewer callbackScore={score.CallbackScore}/></td>
                         ))}
                     <td>{sum}</td>
                     <td>{IsPromoted(comp.IsCompetitorPromoted(competitor))}</td>
@@ -66,8 +66,8 @@ export default function PrelimsScoresheet(props: {competition : PrelimCompetitio
                         <th>Count</th>
                         <th>Bib</th>
                         <th>Competitor</th>
-                        {comp.Judges.map((judge: Judge) => (
-                            <th key={judge.FullName}>{judge.FullName}</th>
+                        {comp.Judges.map((judge: Judge, index: number) => (
+                            <th key={judge.Initials + index}>{judge.FullName}</th>
                             ))}
                         <th>Sum</th>
                         <th>Promoted</th>

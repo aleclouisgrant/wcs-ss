@@ -17,8 +17,8 @@ export default function FinalsScoresheet(props: {competition : FinalCompetition}
                 <tr key={i} className="">
                     <td className='p-2'>{i + 1}</td>
                     <td className='p-2'>{leader?.FullName + " & " + follower?.FullName}</td>
-                    {coupleScores.map((score: FinalScore) => (
-                        <td key={score.Judge?.FullName} className='p-2'>{score.Score}</td>
+                    {coupleScores.map((score: FinalScore, index: number) => (
+                        <td key={index} className='p-2'>{score.Score}</td>
                         ))}
                 </tr>
             )
@@ -34,8 +34,8 @@ export default function FinalsScoresheet(props: {competition : FinalCompetition}
                     <tr className="bg-gray-500 p-4 px-12" >
                         <th className='p-2 rounded-l-full'>PLACE</th>
                         <th className='p-2'>COMPETITORS</th>
-                        {comp.Judges.map((judge: Judge) => (
-                            <th className='p-2'>{judge.Initials}</th>
+                        {comp.Judges.map((judge: Judge, index: number) => (
+                            <th key={judge.Initials + index} className='p-2'>{judge.Initials}</th>
                             ))}
                     </tr>
                     {CompetitorRows()}

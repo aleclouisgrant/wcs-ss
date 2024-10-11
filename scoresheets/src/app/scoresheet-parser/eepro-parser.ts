@@ -48,6 +48,7 @@ function GetSubStringN(s: string, from: string, to: string, n: number) : string 
 
 export function ParseEEProPrelimScoreSheet(htmlString: string, searchDivision: Division) : Competition | undefined {
     var comp = new Competition();
+    comp.Division = searchDivision;
     comp.PairedPrelimCompetitions.push(new PairedPrelimCompetition(Round.Prelims));
 
     const doc = new DOMParser().parseFromString(htmlString, "text/html");
@@ -113,9 +114,18 @@ export function ParseEEProPrelimScoreSheet(htmlString: string, searchDivision: D
             const competitor = new Competitor(firstName, lastName, Number(nodes[2 + judges.length].innerText));
             prelimComp.Competitors.push(competitor);
             
-            // if they have an X for promoted but nothing in the ALT column, they are a finalist
-            if (nodes[5 + judges.length].innerText == "X" && nodes[6 + judges.length].innerText == "")
-                prelimComp.AddPromotedCompetitor(competitor);
+            if (nodes[5 + judges.length].innerText == "X") {
+                // if they have an X for promoted but nothing in the ALT column, they are a finalist
+                if (nodes[6 + judges.length].innerText == "") {
+                    prelimComp.AddPromotedCompetitor(competitor);
+                }
+                else if (nodes[6 + judges.length].innerText == "ALT1") {
+                    prelimComp.Alternate1 = competitor;
+                }
+                else if (nodes[6 + judges.length].innerText == "ALT2") {
+                    prelimComp.Alternate2 = competitor;
+                }
+            }
 
             let offset = 2;
             for (let scoreIndex = offset; scoreIndex < judges.length + offset; scoreIndex++) {
