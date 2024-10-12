@@ -41,10 +41,10 @@ export class FinalCompetition implements IFinalCompetition {
 
         print += "Scores: " + '\n';
         
-        this.Scores.forEach((coupleScores, place) => {
+        this.Scores.forEach((coupleScores, index) => {
             var leader = coupleScores[0]?.Leader;
             var follower = coupleScores[0]?.Follower;
-            print += place + " ";
+            print += index + 1 + " ";
             print += leader?.FullName + "(" + leader?.BibNumber + ")";
             print += follower?.FullName + "(" + follower?.BibNumber + ")";
 

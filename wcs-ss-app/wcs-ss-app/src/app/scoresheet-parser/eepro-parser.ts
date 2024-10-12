@@ -162,7 +162,7 @@ export function ParseEEProFinalScoreSheet(htmlString: string, searchDivision: Di
         if (division != searchDivision)
             continue;
         
-        comp.FinalCompetition = new FinalCompetition();
+        comp.FinalCompetition = new FinalCompetition(date, searchDivision);
         
         const tdElements = trElements[1].getElementsByTagName("td");
 
