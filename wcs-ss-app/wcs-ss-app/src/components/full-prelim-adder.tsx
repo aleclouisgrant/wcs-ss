@@ -1,6 +1,6 @@
 "use client";
 
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 
 import CallbackScoreViewer from '@/components/prelim-callback-score-viewer';
 import Selector from '@/components/person-selector';
@@ -14,7 +14,16 @@ import { Competitor } from '@/classes/Competitor';
 import { Judge } from '@/classes/Judge';
 import { CallbackScore, Division, Role, Round, WcsUtil } from 'wcs-ss-lib';
 
-export default function PrelimAdder(props: { handlePrelimCompetition: (prelimCompetition: PrelimCompetition) => void }) {
+export interface PrelimAdderProps {
+    handlePrelimCompetition: (prelimCompetition : PrelimCompetition) => void,
+    competition? : PrelimCompetition,
+    round? : Round, 
+    role? : Role,
+    division? : Division,
+    date? : Date
+}
+
+export default function PrelimAdder(props: PrelimAdderProps) {
     const {value: competitorDb } = useContext(CompetitorsContext);
     const {value: judgeDb } = useContext(JudgesContext);
 
@@ -26,15 +35,77 @@ export default function PrelimAdder(props: { handlePrelimCompetition: (prelimCom
 
     const [scores, setScores] = useState(new Array<Array<CallbackScore>>);
 
-    const [role, setRole] = useState(Role.Leader);
-    const [division, setDivision] = useState(Division.AllStar);
-    const [round, setRound] = useState(Round.Prelims);
-    const [date, setDate] = useState(new Date());
+    const [role, setRole] = useState(props.role ?? Role.Leader);
+    const [division, setDivision] = useState(props.division ?? Division.AllStar);
+    const [round, setRound] = useState(props.round ?? Round.Prelims);
+    const [date, setDate] = useState(props.date ?? new Date());
 
     const [promotedCompetitorIndexes, setPromotedCompetitorIndexes] = useState(new Array<number>());
     const [bibNumbers, setBibNumbers] = useState(new Array<string>());
 
     const [currentCallbackScore, setCurrentCallbackScore] = useState(CallbackScore.Unscored);
+
+    useEffect(() => {
+        Populate(props.competition);
+      }, []);
+
+    function Populate(competition: PrelimCompetition | undefined) {
+        Clear(); 
+
+        if (competition == undefined)
+            return;
+
+        let newScores = new Array<Array<CallbackScore>>;
+        let newJudges = new Array<Judge | undefined>();
+        let newJudgeCount = 0;
+
+        competition.Judges.forEach((judge: Judge, index: number) => {
+            for (let competitorIndex = 0; competitorIndex < competitorCount; competitorIndex++) {
+                newScores[competitorIndex].push(CallbackScore.Unscored);
+            }
+            
+            newJudgeCount++;
+            newJudges.push(judge);
+        });
+        
+        let newBibNumbers = new Array<string>();
+        let newCompetitors = new Array<Competitor | undefined>();
+        let newCompetitorCount = 0;
+        let newPromotedCompetitorIndexes = new Array<number>();
+
+        competition.Competitors.forEach((competitor: Competitor, index: number) => {
+            let competitorScores = competition?.ScoresByCompetitor(competitor);
+            
+            if (competition.IsCompetitorPromoted(competitor)) {
+                newPromotedCompetitorIndexes.push(index);
+            }
+
+            if (competitorScores == undefined) {
+                newScores.push(new Array<CallbackScore>(judgeCount).fill(CallbackScore.Unscored))
+            }
+            else {
+                let competitorCallbackScores = new Array<CallbackScore>(); 
+                
+                competitorScores.forEach((score) => {
+                    competitorCallbackScores.push(score.CallbackScore);
+                });
+                
+                newScores.push(competitorCallbackScores);
+            }
+            
+            newBibNumbers.push("");
+            newCompetitors.push(competitor);
+            newCompetitorCount++;
+        });
+        
+        setJudges(newJudges);
+        setJudgeCount(newJudgeCount);
+        setCompetitors(newCompetitors);
+        setBibNumbers(newBibNumbers)
+        setPromotedCompetitorIndexes(newPromotedCompetitorIndexes);
+        setCompetitorCount(newCompetitorCount);
+        setScores(newScores);
+    }
 
     function UpdatePrelimCompetition() {
         var competition = new PrelimCompetition(date, division, round, role);
@@ -80,9 +151,21 @@ export default function PrelimAdder(props: { handlePrelimCompetition: (prelimCom
         props.handlePrelimCompetition(competition);
     }
 
-    function AddCompetitor() {
+    function AddCompetitor(competitorScores: Array<PrelimScore> | undefined) {
         let newScores = [...scores];
-        newScores.push(new Array<CallbackScore>(judgeCount).fill(CallbackScore.Unscored))
+
+        if (competitorScores == undefined) {
+            newScores.push(new Array<CallbackScore>(judgeCount).fill(CallbackScore.Unscored))
+        }
+        else {
+            let competitorCallbackScores = new Array<CallbackScore>(); 
+
+            competitorScores.forEach((score) => {
+                competitorCallbackScores.push(score.CallbackScore);
+            });
+
+            newScores.push(competitorCallbackScores);
+        }
         setScores(newScores);
 
         let newBibNumbers = [...bibNumbers];
@@ -195,7 +278,7 @@ export default function PrelimAdder(props: { handlePrelimCompetition: (prelimCom
             let key = "";
             var name = competitors[i]?.FullName ?? "";
 
-            if (competitors[i]?.FullName){
+            if (competitors[i]?.FullName) {
                 key += name;
             } 
             else {
@@ -217,7 +300,7 @@ export default function PrelimAdder(props: { handlePrelimCompetition: (prelimCom
                             {i + 1}
                         </div>
                     </td>
-                    <td><input type='text' 
+                    <td><input type='text' className='w-11'
                             value={bibNumbers[i]} 
                             onChange={(e) => SetBibNumber(i, e.target.value)}/></td>
                     <td>
@@ -229,7 +312,6 @@ export default function PrelimAdder(props: { handlePrelimCompetition: (prelimCom
                     </td>
                     <JudgeScores competitorIndex={i}/>
                     <td>{CompetitorScoreSum(i)}</td>
-                    
                 </tr>
             )
         }
@@ -359,10 +441,11 @@ export default function PrelimAdder(props: { handlePrelimCompetition: (prelimCom
             </div>
 
             <div className='inline-block'>
-                <button type='button' className='btn-primary mx-2' onClick={AddCompetitor}>+ Competitor</button>
+                <button type='button' className='btn-primary mx-2' onClick={() => AddCompetitor(undefined)}>+ Competitor</button>
                 <button type='button' className='btn-primary mx-2' onClick={AddJudge}>+ Judge</button>
                 <button type='button' className='btn-primary mx-2' onClick={UpdatePrelimCompetition}>Save</button>
                 <button type='button' className='btn-primary mx-2' onClick={Clear}>Clear</button>
+                <button type='button' className='btn-primary mx-2' onClick={() => Populate(props.competition)}>Reset</button>
             </div>
 
             <table id='CompetitionTable'>

@@ -3,14 +3,20 @@ import { WcsUtil } from 'wcs-ss-lib';
 import { PrelimScore } from '@/classes/PrelimScore';
 import { Judge } from '@/classes/Judge';
 import { PrelimCompetition } from '@/classes/PrelimCompetition';
+import { Competitor } from '@/classes/Competitor';
 
-function IsPromoted(promoted : boolean) : string {
-    if (promoted) {
-        return "!";
+function IsPromoted(competition: PrelimCompetition, competitor: Competitor) : string {
+    if (competition.IsCompetitorPromoted(competitor)) {
+        return "Y"
+    };
+    if (competition.Alternate1?.Id === competitor?.Id) {
+        return "A1";
     }
-    else {
-        return "";
+    if (competition.Alternate2?.Id === competitor?.Id) {
+        return "A2";
     }
+
+    return "";
 }
 
 export default function PrelimsScoresheet(props: {competition : PrelimCompetition | undefined}) {
@@ -49,7 +55,7 @@ export default function PrelimsScoresheet(props: {competition : PrelimCompetitio
                         <td key={competitor.BibNumber + index}><CallbackScoreViewer callbackScore={score.CallbackScore}/></td>
                         ))}
                     <td>{sum}</td>
-                    <td>{IsPromoted(comp.IsCompetitorPromoted(competitor))}</td>
+                    <td>{IsPromoted(comp, competitor)}</td>
                 </tr>
             )
         }

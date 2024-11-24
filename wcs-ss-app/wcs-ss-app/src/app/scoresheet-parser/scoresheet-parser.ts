@@ -1,7 +1,8 @@
 import { Division } from "wcs-ss-lib";
-import { ParseEEProPrelimScoreSheet, ParseEEProFinalScoreSheet } from "./eepro-parser";
 import { Competition } from "@/classes/Competition";
+import { ParseEEProPrelimScoreSheet, ParseEEProFinalScoreSheet } from "./eepro-parser";
 import { ParseWorldDanceRegistryFinalScoreSheet, ParseWorldDanceRegistryPrelimScoreSheet } from "./worlddanceregistry-parser";
+import { ParseStepRightSolutionsFinalScoreSheet, ParseStepRightSolutionsPrelimScoreSheet } from "./steprightsolutions-parser";
 
 enum ScoresheetSource {
     EEPro,
@@ -34,6 +35,9 @@ export function ParsePrelimScoreSheet(htmlString: string, searchDivision: Divisi
         case ScoresheetSource.WorldDanceRegistry:
             comp = ParseWorldDanceRegistryPrelimScoreSheet(htmlString, searchDivision);
             break;
+        case ScoresheetSource.StepRightSolutions:
+            comp = ParseStepRightSolutionsPrelimScoreSheet(htmlString, searchDivision);
+            break;
         }
         
     return comp;
@@ -47,6 +51,9 @@ export function ParseFinalScoreSheet(htmlString: string, searchDivision: Divisio
             break;
         case ScoresheetSource.WorldDanceRegistry:
             comp = ParseWorldDanceRegistryFinalScoreSheet(htmlString, searchDivision);
+            break;
+        case ScoresheetSource.StepRightSolutions:
+            comp = ParseStepRightSolutionsFinalScoreSheet(htmlString, searchDivision);
             break;
         }
     

@@ -6,7 +6,8 @@ const PORT = 3000;
 app.use(cors());
 
 const competitorRoutes = require('./src/competitor/routes');
-const competitionRoutes = require('./src/competitions/routes');
+const judgeRoutes = require('./src/judge/routes');
+const competitionRoutes = require('./src/competition/routes');
 
 app.use(express.json());
 
@@ -15,6 +16,7 @@ app.get("/", (req, res) => {
 });
 
 app.use('/api/v0/competitors', competitorRoutes);
+app.use('/api/v0/judges', judgeRoutes);
 app.use('/api/v0/competitions', competitionRoutes);
 
 app.listen(PORT, () => console.log(`app listening on port ${PORT}`));

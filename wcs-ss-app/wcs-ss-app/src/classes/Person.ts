@@ -5,11 +5,11 @@ export abstract class Person implements IPerson {
     public FirstName: string;
     public LastName: string;
 
-    constructor(firstName: string, lastName: string) {
+    constructor(firstName: string, lastName: string, id?: Uuid) {
         this.FirstName = firstName;
         this.LastName = lastName;
 
-        this.Id = Uuid.MakeNew();
+        this.Id = id ?? Uuid.MakeNew();
     }
 
     get FullName() : string {

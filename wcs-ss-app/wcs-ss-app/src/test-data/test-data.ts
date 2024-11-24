@@ -9,7 +9,6 @@ import { FinalScore } from '@/classes/FinalScore';
 import { Competition } from '@/classes/Competition';
 import { PairedPrelimCompetition } from '@/classes/PairedPrelimCompetition';
 
-
 var brandon = new Competitor("Brandon", "Rasmussen", 301);
 var stan = new Competitor("Stanislav", "Ivanov", 313);
 var glen = new Competitor("Glen", "Acheampong", 735);
@@ -38,7 +37,6 @@ var erica = new Judge("Erica", "Smith");
 var festa = new Judge("John", "Festa");
 var markus = new Judge("Markus", "Smith");
 var tren = new Judge("Tren", "Veal");
-
 var flore = new Judge("Flore", "Berne");
 
 var score1 = new PrelimScore(brandon, arjay, CallbackScore.Yes);
