@@ -4,6 +4,7 @@ import { ContextProviderProps, ContextType } from './ContextType';
 import { Competitor } from '@/classes/Competitor';
 import { Uuid } from 'wcs-ss-lib';
 import { trpc } from '@/app/_trpc/client';
+import { TestData } from '@/test-data/test-data';
 
 export const CompetitorsContext = createContext<ContextType<Array<Competitor>>>(
         {
@@ -35,7 +36,10 @@ export const CompetitorsContextProvider = ({ children } : ContextProviderProps) 
 
             setCompetitors(newCompetitors);
         })
-        .catch(error => console.error(error));
+        .catch(error => {
+            console.error(error);
+            setCompetitors(TestData.TestCompetitorsDb());
+        });
     }, []);
 
     // const { data, refetch } = trpc.getCompetitors.useQuery();
