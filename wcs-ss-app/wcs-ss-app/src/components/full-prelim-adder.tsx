@@ -93,17 +93,17 @@ export default function PrelimAdder(props: PrelimAdderProps) {
                 newScores.push(competitorCallbackScores);
             }
             
-            newBibNumbers.push("");
+            newBibNumbers.push(competitor.BibNumber.toString());
             newCompetitors.push(competitor);
             newCompetitorCount++;
         });
         
-        setJudges(newJudges);
+        setCompetitorCount(newCompetitorCount);
         setJudgeCount(newJudgeCount);
+        setJudges(newJudges);
         setCompetitors(newCompetitors);
         setBibNumbers(newBibNumbers)
         setPromotedCompetitorIndexes(newPromotedCompetitorIndexes);
-        setCompetitorCount(newCompetitorCount);
         setScores(newScores);
     }
 
@@ -304,7 +304,7 @@ export default function PrelimAdder(props: PrelimAdderProps) {
                             value={bibNumbers[i]} 
                             onChange={(e) => SetBibNumber(i, e.target.value)}/></td>
                     <td>
-                        <Selector 
+                        <Selector
                             personDb={competitorDb} 
                             selectedPerson={competitors[i]}
                             setSelectedPerson={(value: Competitor | undefined) => SetCompetitor(value, i)}/>
@@ -338,9 +338,11 @@ export default function PrelimAdder(props: PrelimAdderProps) {
         for (let i = 0; i < judgeCount; i++) {
             judgeHeaders.push(
                 <th key={i}>
-                    <Selector personDb={judgeDb} selectedPerson={judges[i]}
-                        setSelectedPerson={(value: Judge | undefined) => SetJudge(value, i)} />
-                    <button type='button' className='rounded-full bg-red-600 font-sans text-white text-xs w-4 h-4' onClick={() => RemoveJudge(i)}>x</button>
+                    <div>
+                        <Selector personDb={judgeDb} selectedPerson={judges[i]}
+                            setSelectedPerson={(value: Judge | undefined) => SetJudge(value, i)} />
+                        <button type='button' className='rounded-full bg-red-600 font-sans text-white text-xs w-4 h-4' onClick={() => RemoveJudge(i)}>x</button>
+                    </div>
                 </th>);
         }
 

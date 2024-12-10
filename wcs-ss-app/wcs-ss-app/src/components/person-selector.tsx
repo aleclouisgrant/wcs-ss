@@ -50,7 +50,7 @@ export default class Selector<T extends IPerson> extends Component<SelectorProps
         }
 
         return (
-        <select value={personIndex} onChange={this.handleChange}>
+        <select value={personIndex} onChange={this.handleChange} className="w-40">
             <option key={-1} value={-1}></option>
             {this.props.personDb.map((person, index) => 
             <option key={index} value={index}>{person.FullName}</option>

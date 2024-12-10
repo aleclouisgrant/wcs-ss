@@ -182,7 +182,7 @@ export default function FinalsAdder(props: {
                             onChange={(e) => SetBibNumber(i, e.target.value)}/>
                         <Selector 
                             personDb={competitorDb} 
-                            selectedPerson={leaders[i]}
+                            selectedPerson={followers[i]}
                             setSelectedPerson={(value: Competitor | undefined) => SetCompetitor(value, i)}/>
                         <button type='button' className='m-2 rounded-full bg-red-600 font-sans text-white text-xs w-4 h-4' onClick={() => RemoveCompetitor(i)}>x</button>
                     </td>
