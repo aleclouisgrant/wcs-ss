@@ -1,4 +1,4 @@
-import { Competitor } from "./IPerson";
+import { Competitor } from "./Competitor";
 
 export interface ICouple {
     Leader : Competitor;
