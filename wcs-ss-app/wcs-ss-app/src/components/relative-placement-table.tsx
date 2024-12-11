@@ -1,9 +1,10 @@
 "use client";
 
+import { CalculateRelativePlacements, UnbreakableTieError } from '@/app/relative-placement/relative-placement-service';
 import { useState } from 'react';
 
 export default function RelativePlacementTable() {
-    enum OrderBy {
+    enum OrderMethod {
         Order,
         Place
     }
@@ -16,7 +17,7 @@ export default function RelativePlacementTable() {
     const [scores, setScores] = useState(new Array<Array<number>>);
     const [placements, setPlacements] = useState(new Array<number>);
 
-    const [orderBy, setOrderBy] = useState(OrderBy.Order);
+    const [orderMethod, setOrderMethod] = useState(OrderMethod.Order);
 
     function AddCouple() {
         let newScores = [...scores];
@@ -173,82 +174,30 @@ export default function RelativePlacementTable() {
     }
 
     function CalculatePlacements() {
-        var newPlacements = [competitorCount];
-
-        for (let rpScore = 1; rpScore <= competitorCount; rpScore++) {
-            var majorityCompetitorIndex = -1;
-            var majoritiesArray = new Array<number>();
-            var countArray = [competitorCount];
-            var sumArray = [competitorCount];
-            for (let competitorIndex = 0; competitorIndex < competitorCount; competitorIndex++) {
-                if (newPlacements.includes(competitorIndex))
-                    continue;
-
-                var count = 0;
-                var sum = 0;
-                for (let scoreIndex = 0; scoreIndex < judgeCount; scoreIndex++) {
-                    var score = scores[competitorIndex][scoreIndex];
-                    sum = sum + score;
-
-                    if (score <= rpScore)
-                        count++;
-                } 
-                countArray[competitorIndex] = count;
-                sumArray[competitorIndex] = sum;
-
-                if (count > judgeCount / 2) { //we have a majority
-                    majoritiesArray.push(competitorIndex);
-                    majorityCompetitorIndex = competitorIndex;
-                } 
+        try {
+            var rp = CalculateRelativePlacements(scores);
+            if (rp.UnbreakableTies.length > 0) {
+                //TODO: alert need head judge scores
             }
-
-            if (majoritiesArray.length > 1) { //must compare counts first
-                var tiedArray = new Array<number>();
-                var largestCount = 0;
-                var largestCountCompetitorIndex = -1;
-                majoritiesArray.forEach((competitorIndex) => {
-                    if (countArray[competitorIndex] > largestCount) { //todo: not finished yet with this logic
-                        largestCount = countArray[competitorIndex];
-                        largestCountCompetitorIndex = competitorIndex;
-                    }
-                    else if (countArray[competitorIndex] == largestCount) {
-                        tiedArray.push(competitorIndex);
-                    }
-                })
-
-                if (tiedArray.length <= 1) {
-                    newPlacements[rpScore - 1] = largestCountCompetitorIndex;
-                }
-                else {
-                    // if not must compare sums
-                    var smallestSumCompetitorIndex = -1;
-                    var smallestSum = Number.MAX_VALUE;
-                    majoritiesArray.forEach((competitorIndex) => {
-                        if (sumArray[competitorIndex] < smallestSum){
-                            smallestSum = sumArray[competitorIndex];
-                            smallestSumCompetitorIndex = competitorIndex;
-                        }
-    
-                        //TODO: if sums equal, check next scores
-                        //TODO: if sums and next scores are all equal, then run as individual competition amongst tied competitors
-                    })
-    
-                    newPlacements[rpScore - 1] = smallestSumCompetitorIndex;
-                }
-            } 
             else {
-                newPlacements[rpScore - 1] = majorityCompetitorIndex;
+                setError(false);
+                setPlacements(rp.Placements);
             }
         }
+        catch (e) {
+            if (e instanceof UnbreakableTieError) {
+                //TODO: alert need head judge scores
+            }
 
-        setPlacements(newPlacements);
+            setError(true);
+        }
     }
 
     function ToggleOrderBy() {
-        if (orderBy == OrderBy.Order)
-            setOrderBy(OrderBy.Place);
-        else if (orderBy == OrderBy.Place)
-            setOrderBy(OrderBy.Order);
+        if (orderMethod == OrderMethod.Order)
+            setOrderMethod(OrderMethod.Place);
+        else if (orderMethod == OrderMethod.Place)
+            setOrderMethod(OrderMethod.Order);
     }
 
     function Clear() {
@@ -264,7 +213,7 @@ export default function RelativePlacementTable() {
                     <button type='button' className='btn-primary mx-2' onClick={AddCouple}>+ Couple</button>
                     <button type='button' className='btn-primary mx-2' onClick={AddJudge}>+ Judge</button>
                     <button type='button' className='btn-primary mx-2' onClick={Clear}>Clear</button>
-                    <button type='button' className='btn-primary mx-2' onClick={ToggleOrderBy}>Order By {orderBy == OrderBy.Order ? "Place" : "Order"}</button>
+                    <button type='button' className='btn-primary mx-2' onClick={ToggleOrderBy}>Sort By {orderMethod == OrderMethod.Order ? "Place" : "Order"}</button>
                 </div>
             </div>
 
