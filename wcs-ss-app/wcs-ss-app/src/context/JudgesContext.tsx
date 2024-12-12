@@ -3,6 +3,7 @@ import { ContextProviderProps, ContextType } from './ContextType';
 
 import { Judge } from '@/classes/Judge';
 import { Uuid } from 'wcs-ss-lib';
+import { TestData } from '@/test-data/test-data';
 
 export const JudgesContext = createContext<ContextType<Array<Judge>>>(
         {
@@ -32,7 +33,10 @@ export const JudgesContextProvider = ({ children } : ContextProviderProps) => {
 
             setJudges(newJudges);
         })
-        .catch(error => console.error(error));
+        .catch(error => {
+            console.error(error);
+            setJudges(TestData.TestJudgesDb());
+    });
     }, []);
 
     return (
