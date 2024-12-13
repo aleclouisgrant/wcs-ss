@@ -9,13 +9,15 @@ export default function RelativePlacementTable() {
         Place
     }
 
-    const [error, setError] = useState(false);
+    const [error, setError] = useState(true);
 
     const [competitorCount, setCompetitorCount] = useState(0);
     const [judgeCount, setJudgeCount] = useState(0);
 
-    const [scores, setScores] = useState(new Array<Array<number>>);
+    const [scores, setScores] = useState(new Array<number>(competitorCount).fill(0).map(() => new Array<number>(judgeCount).fill(0)));
     const [placements, setPlacements] = useState(new Array<number>);
+    const [counts, setCounts] = useState(new Array<number>(competitorCount).fill(0).map(() => new Array<number>(competitorCount).fill(0)));
+    const [sums, setSums] = useState(new Array<number>(competitorCount).fill(0).map(() => new Array<number>(competitorCount).fill(0)));
 
     const [orderMethod, setOrderMethod] = useState(OrderMethod.Order);
 
@@ -109,11 +111,6 @@ export default function RelativePlacementTable() {
     function JudgeScores(props: { competitorIndex: number }) {
         var judgeScores = [];
         for (let judgeIndex = 0; judgeIndex < judgeCount; judgeIndex++) {
-            var score = -1;
-            if (scores[props.competitorIndex][judgeIndex] != null) {
-                score = scores[props.competitorIndex][judgeIndex];
-            }
-
             var options = [];
             for (let i = 1; i <= competitorCount; i++) {
                 options.push(<option key={i} value={i}>{i}</option>);
@@ -143,31 +140,21 @@ export default function RelativePlacementTable() {
 
     function RelativePlacementScores(props: { competitorIndex: number }) {        
         var rpScores = [];
-        var competitorScores = new Array<number>();
 
-        if (error) { //show all relative placement scores as "-" if there's an error
-            for (let judgeIndex = 0; judgeIndex < judgeCount; judgeIndex++) {
-                rpScores.push(<td key={judgeIndex}>-</td>);    
+        if (error) { 
+            //show all relative placement scores as "-" if there's an error
+            for (let i = 0; i < competitorCount; i++) {                
+                rpScores.push(<td key={i}>-</td>);    
             }
-
+            
             return rpScores;
         }
 
-        for (let judgeIndex = 0; judgeIndex < judgeCount; judgeIndex++) {
-            if (scores[props.competitorIndex][judgeIndex] != null) {
-                competitorScores.push(scores[props.competitorIndex][judgeIndex]);
-            }
-        }
-        
-        for (let i = 1; i <= competitorCount; i++) {
-            var count = 0;
-            competitorScores.forEach((score) => {
-                if (score <= i) {
-                    count++;
-                }
-            });
+        for (let i = 0; i < competitorCount; i++) {
+            var count = counts[props.competitorIndex][i];
+            var sum = sums[props.competitorIndex][i];
 
-            rpScores.push(<td key={i}>{count.toString()}</td>);
+            rpScores.push(<td key={i}>{count.toString()}({sum.toString()})</td>);
         }
 
         return rpScores;
@@ -181,6 +168,8 @@ export default function RelativePlacementTable() {
             }
             else {
                 setError(false);
+                setCounts(rp.Counts);
+                setSums(rp.Sums);
                 setPlacements(rp.Placements);
             }
         }
@@ -204,6 +193,9 @@ export default function RelativePlacementTable() {
         setCompetitorCount(0);
         setJudgeCount(0);
         setScores(new Array<Array<number>>);
+        setCounts(new Array<number>(competitorCount).fill(0).map(() => new Array<number>(competitorCount).fill(0)));
+        setSums(new Array<number>(competitorCount).fill(0).map(() => new Array<number>(competitorCount).fill(0)))
+        setPlacements(new Array<number>)
     }
 
     return (
