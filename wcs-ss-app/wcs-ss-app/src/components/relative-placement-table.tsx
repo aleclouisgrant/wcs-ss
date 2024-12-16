@@ -1,6 +1,6 @@
 "use client";
 
-import { CalculateRelativePlacements, UnbreakableTieError } from '@/app/relative-placement/relative-placement-service';
+import { CalculateRelativePlacements, CheckScores, DuplicateScoreError, ImpossibleScoreError, MissingScoreError, UnbreakableTieError } from '@/app/relative-placement/relative-placement-service';
 import { useState } from 'react';
 
 export default function RelativePlacementTable() {
@@ -14,7 +14,7 @@ export default function RelativePlacementTable() {
     const [competitorCount, setCompetitorCount] = useState(0);
     const [judgeCount, setJudgeCount] = useState(0);
 
-    const [scores, setScores] = useState(new Array<number>(competitorCount).fill(0).map(() => new Array<number>(judgeCount).fill(0)));
+    const [scores, setScores] = useState(new Array<number>(competitorCount).fill(1).map(() => new Array<number>(judgeCount).fill(1)));
     const [placements, setPlacements] = useState(new Array<number>);
     const [counts, setCounts] = useState(new Array<number>(competitorCount).fill(0).map(() => new Array<number>(competitorCount).fill(0)));
     const [sums, setSums] = useState(new Array<number>(competitorCount).fill(0).map(() => new Array<number>(competitorCount).fill(0)));
@@ -23,7 +23,7 @@ export default function RelativePlacementTable() {
 
     function AddCouple() {
         let newScores = [...scores];
-        newScores.push(new Array<number>(judgeCount).fill(-1));
+        newScores.push(new Array<number>(judgeCount).fill(1));
         setScores(newScores);
 
         setCompetitorCount((prevCount) => prevCount + 1);
@@ -32,7 +32,7 @@ export default function RelativePlacementTable() {
     function AddJudge() {
         let newScores = [...scores];
         for (let competitorIndex = 0; competitorIndex < competitorCount; competitorIndex++) {
-            newScores[competitorIndex].push(-1);
+            newScores[competitorIndex].push(1);
         }
         setScores(newScores);
         setJudgeCount((prevCount) => prevCount + 1);
@@ -51,13 +51,14 @@ export default function RelativePlacementTable() {
         newScores[competitorIndex][judgeIndex] = newScore;
         setScores(newScores);
 
-        CalculatePlacements();
+        if (CheckScoresArray())
+            CalculatePlacements();
     }
 
     function CompetitorRows() {
-        var competitorRows = [];
+        let competitorRows = [];
         for (let i = 0; i < competitorCount; i++) {
-            var placementText = "-";
+            let placementText = "-";
 
             placements.forEach((competitorIndex, placement) => {
                 if(competitorIndex == i) {
@@ -96,7 +97,7 @@ export default function RelativePlacementTable() {
             setJudgeCount((prevCount) => prevCount - 1);
         }
 
-        var judgeHeaders = [];
+        let judgeHeaders = [];
         for (let i = 1; i <= judgeCount; i++) {
             judgeHeaders.push(
                 <th key={i}>
@@ -109,9 +110,9 @@ export default function RelativePlacementTable() {
     }
 
     function JudgeScores(props: { competitorIndex: number }) {
-        var judgeScores = [];
+        let judgeScores = [];
         for (let judgeIndex = 0; judgeIndex < judgeCount; judgeIndex++) {
-            var options = [];
+            let options = [];
             for (let i = 1; i <= competitorCount; i++) {
                 options.push(<option key={i} value={i}>{i}</option>);
             }
@@ -129,7 +130,7 @@ export default function RelativePlacementTable() {
     }
 
     function RelativePlacementHeaders() {
-        var rpHeaders = [];
+        let rpHeaders = [];
         for (let i = 1; i <= competitorCount; i++) {
             rpHeaders.push(
                 <th key={i}>1-{i}</th>);
@@ -139,7 +140,7 @@ export default function RelativePlacementTable() {
     }
 
     function RelativePlacementScores(props: { competitorIndex: number }) {        
-        var rpScores = [];
+        let rpScores = [];
 
         if (error) { 
             //show all relative placement scores as "-" if there's an error
@@ -151,8 +152,8 @@ export default function RelativePlacementTable() {
         }
 
         for (let i = 0; i < competitorCount; i++) {
-            var count = counts[props.competitorIndex][i];
-            var sum = sums[props.competitorIndex][i];
+            let count = counts[props.competitorIndex][i];
+            let sum = sums[props.competitorIndex][i];
 
             rpScores.push(<td key={i}>{count.toString()}({sum.toString()})</td>);
         }
@@ -160,9 +161,34 @@ export default function RelativePlacementTable() {
         return rpScores;
     }
 
+    function CheckScoresArray() : boolean {
+        try {
+            CheckScores(scores);
+
+            setError(false);
+            return true;
+        }
+        catch (e) {
+            if (e instanceof DuplicateScoreError) {
+                setError(true);
+                console.log(e.message);
+            }
+            else if (e instanceof ImpossibleScoreError) {
+                setError(true);
+                console.log(e.message);
+            }
+            else if (e instanceof MissingScoreError) {
+                setError(true);
+                console.log(e.message);
+            }
+
+            return false;
+        }
+    }
+
     function CalculatePlacements() {
         try {
-            var rp = CalculateRelativePlacements(scores);
+            let rp = CalculateRelativePlacements(scores);
             if (rp.UnbreakableTies.length > 0) {
                 //TODO: alert need head judge scores
             }
@@ -192,7 +218,7 @@ export default function RelativePlacementTable() {
     function Clear() {
         setCompetitorCount(0);
         setJudgeCount(0);
-        setScores(new Array<Array<number>>);
+        setScores(new Array<number>(competitorCount).fill(1).map(() => new Array<number>(judgeCount).fill(1)));
         setCounts(new Array<number>(competitorCount).fill(0).map(() => new Array<number>(competitorCount).fill(0)));
         setSums(new Array<number>(competitorCount).fill(0).map(() => new Array<number>(competitorCount).fill(0)))
         setPlacements(new Array<number>)

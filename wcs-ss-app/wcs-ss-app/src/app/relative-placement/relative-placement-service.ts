@@ -1,5 +1,9 @@
 export class UnbreakableTieError extends Error {}
 
+export class DuplicateScoreError extends Error {}
+export class ImpossibleScoreError extends Error {}
+export class MissingScoreError extends Error {}
+
 /**
  * 
  * @property Placements: Array of numbers corresponding to the competitors' index from the 
@@ -48,26 +52,26 @@ export function CalculateRelativePlacements(scores: number[][],
         }
     }
     
-    var competitorCount = scores.length;
-    var judgeCount = scores[0].length;
+    let competitorCount = scores.length;
+    let judgeCount = scores[0].length;
 
     const countArray: number[][] = new Array<number>(competitorCount).fill(0).map(() => 
         new Array<number>(competitorCount).fill(0));
     const sumArray: number[][] = new Array<number>(competitorCount).fill(0).map(() => 
         new Array<number>(competitorCount).fill(0));
 
-    var placements = new Array<number>(competitorCount);
-    var unbreakableTies = new Array<UnbreakableTie>();
+    let placements = new Array<number>(competitorCount);
+    let unbreakableTies = new Array<UnbreakableTie>();
 
-    var placementIndex = 0;
+    let placementIndex = 0;
 
     // populate the count and sum arrays
     for (let competitorIndex = 0; competitorIndex < competitorCount; competitorIndex++) {
-        var count = 0;
-        var sum = 0;
+        let count = 0;
+        let sum = 0;
         for (let rpScore = 1; rpScore <= competitorCount; rpScore++) {
             for (let scoreIndex = 0; scoreIndex < judgeCount; scoreIndex++) {
-                var score = scores[competitorIndex][scoreIndex];
+                let score = scores[competitorIndex][scoreIndex];
                 sum = sum + score;
 
                 if (score <= rpScore)
@@ -80,16 +84,16 @@ export function CalculateRelativePlacements(scores: number[][],
 
     // calculate placements
     for (let rpScore = 1; rpScore <= competitorCount; rpScore++) {
-        var majoritiesArray = new Array<number>();
-        var largestCount = -1;
-        var largestCountTies = new Array<number>();
+        let majoritiesArray = new Array<number>();
+        let largestCount = -1;
+        let largestCountTies = new Array<number>();
 
         for (let competitorIndex = 0; competitorIndex < competitorCount; competitorIndex++) {
             // skip already placed competitors
             if (placements.includes(competitorIndex))
                 continue;
 
-            var count = countArray[competitorIndex][rpScore];
+            let count = countArray[competitorIndex][rpScore];
 
             // check if competitor received a majority at this score
             if (count > judgeCount / 2) {
@@ -120,11 +124,11 @@ export function CalculateRelativePlacements(scores: number[][],
             }
             // if there are ties for largest count, use sums to break tie
             else if (largestCountTies.length > 1) {
-                var smallestSum = Number.MAX_SAFE_INTEGER;
-                var smallestSumTies = new Array<number>();
+                let smallestSum = Number.MAX_SAFE_INTEGER;
+                let smallestSumTies = new Array<number>();
                 
                 largestCountTies.forEach((cIndex) => {
-                    var sum = sumArray[cIndex][rpScore];
+                    let sum = sumArray[cIndex][rpScore];
 
                     if (sum < smallestSum) {
                         smallestSum = sum;
@@ -142,11 +146,11 @@ export function CalculateRelativePlacements(scores: number[][],
                 }
                 else if (smallestSumTies.length > 1) {
                     // if there are ties for smallest sum, use next scores to break tie
-                    var largestNextScoreCount = -1;
-                    var largestNextScoreCountTies = new Array<number>();
+                    let largestNextScoreCount = -1;
+                    let largestNextScoreCountTies = new Array<number>();
 
                     smallestSumTies.forEach((cIndex) => {
-                        var nextScoreCount = countArray[cIndex][rpScore + 1];
+                        let nextScoreCount = countArray[cIndex][rpScore + 1];
                         
                         if (nextScoreCount > largestNextScoreCount) {
                             largestNextScoreCount = nextScoreCount;
@@ -164,16 +168,16 @@ export function CalculateRelativePlacements(scores: number[][],
                     }
                     else if (largestNextScoreCountTies.length > 1 && !headToHead) {
                         // break tie by running head to head comp
-                        var newCompetitorCount = largestNextScoreCountTies.length;
-                        var newScores: number[][] = new Array<number>(newCompetitorCount).fill(0)
+                        let newCompetitorCount = largestNextScoreCountTies.length;
+                        let newScores: number[][] = new Array<number>(newCompetitorCount).fill(0)
                             .map(() => new Array<number>(judgeCount).fill(0));
                          
                         for (let judgeIndex = 0; judgeIndex < judgeCount; judgeIndex++) {
-                            var competitors = [...largestNextScoreCountTies];
-                            var newPlacement = 1;
+                            let competitors = [...largestNextScoreCountTies];
+                            let newPlacement = 1;
 
                             while (competitors.length > 1) {
-                                var cIndex =  getIndexOfSmallestValue(scores, 
+                                let cIndex =  getIndexOfSmallestValue(scores, 
                                     competitors, judgeIndex);
                                 
                                 
@@ -182,7 +186,7 @@ export function CalculateRelativePlacements(scores: number[][],
                             }
                             
 
-                            var results = CalculateRelativePlacements(newScores, undefined, true);
+                            let results = CalculateRelativePlacements(newScores, undefined, true);
                             //TODO assign results to placements array
                         }
                     }
@@ -207,6 +211,47 @@ export function CalculateRelativePlacements(scores: number[][],
         placements, sumArray, countArray, unbreakableTies);
 }
 
+/**
+ * Checks that the scores array contains compatible data for relative placement scoring system
+ *
+ * @param scores The array of scores. Column for each judge, row for each competitor.
+ */
+export function CheckScores(scores: number[][]) {
+    let competitorCount = scores.length;
+    let judgeCount = scores[0].length;
+
+    for (let judgeIndex = 0; judgeIndex < judgeCount; judgeIndex++) {
+        let options = new Array<boolean>(competitorCount).fill(false);
+        for (let competitorIndex = 0; competitorIndex < competitorCount; competitorIndex++) {
+            if (scores[competitorIndex][judgeIndex] > options.length) { //score is larger than number of competitors
+                throw new ImpossibleScoreError(
+                    "Impossible Score Detected: score[" + competitorIndex + "][" + judgeIndex + "] = '" 
+                    + scores[competitorIndex][judgeIndex] + "' is larger than number of competitors (" 
+                    + competitorCount + ").");
+            }
+            if (scores[competitorIndex][judgeIndex] < 1) { //score is smaller than 1
+                throw new ImpossibleScoreError(
+                    "Impossible Score Detected: score[" + competitorIndex + "][" + judgeIndex + "] = '" 
+                    + scores[competitorIndex][judgeIndex] + "' is smaller than 1.");
+            }
+
+            if (options[scores[competitorIndex][judgeIndex] - 1]) { //duplicate scores
+                throw new DuplicateScoreError(
+                    "Duplicate Score Detected: score[" + competitorIndex + "][" + judgeIndex + "] = '" 
+                    + scores[competitorIndex][judgeIndex] + "' already seen.");
+            }
+            else {
+                options[scores[competitorIndex][judgeIndex] - 1] = true;
+            }
+        }
+
+        if (options.includes(false)) { //missing a score value
+            throw new MissingScoreError(
+                "Missing Score Detected: Judge column '" + judgeIndex + "' is missing a score value.");
+        }
+    }
+}
+
 function clearArray<T>(arr: T[]) {
     while (arr.length > 0) {
         arr.pop();
@@ -214,7 +259,7 @@ function clearArray<T>(arr: T[]) {
 }
 
 function removeValueFromArray<T>(arr: T[], val: T) {
-    var index = -1;
+    let index = -1;
     arr.map((value, arrayIndex) => {
         if (value == val) {
             index = arrayIndex;
@@ -226,11 +271,11 @@ function removeValueFromArray<T>(arr: T[], val: T) {
 }
 
 function getIndexOfSmallestValue(array: number[][], indexes: number[], column: number) : number {
-    var smallestIndex = -1;
-    var smallestValue = -1;
+    let smallestIndex = -1;
+    let smallestValue = -1;
     
     indexes.forEach((index) => {
-        var value = array[index][column];
+        let value = array[index][column];
         if (smallestValue < value) {
             smallestIndex = index;
             smallestValue = value;
