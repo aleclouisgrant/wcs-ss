@@ -67,18 +67,19 @@ export function CalculateRelativePlacements(scores: number[][],
 
     // populate the count and sum arrays
     for (let competitorIndex = 0; competitorIndex < competitorCount; competitorIndex++) {
-        let count = 0;
-        let sum = 0;
         for (let rpScore = 1; rpScore <= competitorCount; rpScore++) {
+            let count = 0;
+            let sum = 0;
             for (let scoreIndex = 0; scoreIndex < judgeCount; scoreIndex++) {
                 let score = scores[competitorIndex][scoreIndex];
-                sum = sum + score;
-
-                if (score <= rpScore)
+                
+                if (score <= rpScore) {
                     count++;
+                    sum = sum + score;
+                }
             } 
-            countArray[competitorIndex][rpScore] = count;
-            sumArray[competitorIndex][rpScore] = sum;
+            countArray[competitorIndex][rpScore - 1] = count;
+            sumArray[competitorIndex][rpScore - 1] = sum;
         }
     }
 
@@ -93,7 +94,7 @@ export function CalculateRelativePlacements(scores: number[][],
             if (placements.includes(competitorIndex))
                 continue;
 
-            let count = countArray[competitorIndex][rpScore];
+            let count = countArray[competitorIndex][rpScore - 1];
 
             // check if competitor received a majority at this score
             if (count > judgeCount / 2) {
@@ -128,7 +129,7 @@ export function CalculateRelativePlacements(scores: number[][],
                 let smallestSumTies = new Array<number>();
                 
                 largestCountTies.forEach((cIndex) => {
-                    let sum = sumArray[cIndex][rpScore];
+                    let sum = sumArray[cIndex][rpScore - 1];
 
                     if (sum < smallestSum) {
                         smallestSum = sum;
@@ -150,7 +151,7 @@ export function CalculateRelativePlacements(scores: number[][],
                     let largestNextScoreCountTies = new Array<number>();
 
                     smallestSumTies.forEach((cIndex) => {
-                        let nextScoreCount = countArray[cIndex][rpScore + 1];
+                        let nextScoreCount = countArray[cIndex][rpScore];
                         
                         if (nextScoreCount > largestNextScoreCount) {
                             largestNextScoreCount = nextScoreCount;
@@ -208,7 +209,7 @@ export function CalculateRelativePlacements(scores: number[][],
     }
 
     return new RelativePlacementReturnImplementation(
-        placements, sumArray, countArray, unbreakableTies);
+        placements, countArray, sumArray, unbreakableTies);
 }
 
 /**
