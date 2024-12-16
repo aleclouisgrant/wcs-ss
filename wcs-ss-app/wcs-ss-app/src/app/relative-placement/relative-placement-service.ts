@@ -3,6 +3,7 @@ export class UnbreakableTieError extends Error {}
 export class DuplicateScoreError extends Error {}
 export class ImpossibleScoreError extends Error {}
 export class MissingScoreError extends Error {}
+export class InsufficientPeopleError extends Error {}
 
 /**
  * 
@@ -220,6 +221,12 @@ export function CalculateRelativePlacements(scores: number[][],
 export function CheckScores(scores: number[][]) {
     let competitorCount = scores.length;
     let judgeCount = scores[0].length;
+
+    if (judgeCount < 1 || competitorCount < 1) { //if there are 0 judges or competitors, nothing to calculate
+        throw new InsufficientPeopleError(
+            "Insufficient People Detected: Competitor count = '" + competitorCount 
+            + "', Judge count = '" + judgeCount + " '.");
+    }
 
     for (let judgeIndex = 0; judgeIndex < judgeCount; judgeIndex++) {
         let options = new Array<boolean>(competitorCount).fill(false);

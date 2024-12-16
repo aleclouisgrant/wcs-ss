@@ -1,6 +1,6 @@
 "use client";
 
-import { CalculateRelativePlacements, CheckScores, DuplicateScoreError, ImpossibleScoreError, MissingScoreError, UnbreakableTieError } from '@/app/relative-placement/relative-placement-service';
+import { CalculateRelativePlacements, CheckScores, DuplicateScoreError, ImpossibleScoreError, InsufficientPeopleError, MissingScoreError, UnbreakableTieError } from '@/app/relative-placement/relative-placement-service';
 import { useState } from 'react';
 
 export default function RelativePlacementTable() {
@@ -24,9 +24,9 @@ export default function RelativePlacementTable() {
     function AddCouple() {
         let newScores = [...scores];
         newScores.push(new Array<number>(judgeCount).fill(1));
-        setScores(newScores);
 
         setCompetitorCount((prevCount) => prevCount + 1);
+        UpdateScores(newScores);
     }
 
     function AddJudge() {
@@ -34,7 +34,8 @@ export default function RelativePlacementTable() {
         for (let competitorIndex = 0; competitorIndex < competitorCount; competitorIndex++) {
             newScores[competitorIndex].push(1);
         }
-        setScores(newScores);
+
+        UpdateScores(newScores);
         setJudgeCount((prevCount) => prevCount + 1);
     }
     
@@ -42,15 +43,18 @@ export default function RelativePlacementTable() {
         let newScores = [...scores];
         newScores.splice(competitorIndex, 1);
         
-        setScores(newScores);
+        UpdateScores(newScores);
         setCompetitorCount((prevCount) => prevCount - 1);
     }
 
     function UpdateScore(newScore: number, competitorIndex: number, judgeIndex: number) {
         let newScores = [...scores];
         newScores[competitorIndex][judgeIndex] = newScore;
-        setScores(newScores);
+        UpdateScores(newScores);
+    }
 
+    function UpdateScores(newScores: number[][]) {
+        setScores(newScores);
         if (CheckScoresArray())
             CalculatePlacements();
     }
@@ -75,7 +79,7 @@ export default function RelativePlacementTable() {
                     </td>
                     <td>
                         <input type='text'/>
-                        <button type='button' className='m-2 rounded-full bg-red-600 font-sans text-white text-xs w-4 h-4' onClick={() => RemoveCompetitor(i)}>x</button>
+                        <button type='button' className='m-2 rounded-full bg-red-600 font-sans text-white text-xs w-4 h-4' onClick={() => RemoveCompetitor(i)}>-</button>
                     </td>
                     <JudgeScores competitorIndex={i}/>
                     <td>{placementText}</td>
@@ -102,7 +106,7 @@ export default function RelativePlacementTable() {
             judgeHeaders.push(
                 <th key={i}>
                     <a>J{i}</a>
-                    <button type='button' className='rounded-full bg-red-600 font-sans text-white text-xs w-4 h-4' onClick={() => RemoveJudge(i-1)}>x</button>
+                    <button type='button' className='rounded-full bg-red-600 font-sans text-white text-xs w-4 h-4' onClick={() => RemoveJudge(i-1)}>-</button>
                 </th>);
         }
 
@@ -181,6 +185,10 @@ export default function RelativePlacementTable() {
                 setError(true);
                 console.log(e.message);
             }
+            else if (e instanceof InsufficientPeopleError) {
+                setError(true);
+                console.log(e.message);
+            }
 
             return false;
         }
@@ -216,11 +224,12 @@ export default function RelativePlacementTable() {
     }
 
     function Clear() {
+        setError(true);
         setCompetitorCount(0);
         setJudgeCount(0);
-        setScores(new Array<number>(competitorCount).fill(1).map(() => new Array<number>(judgeCount).fill(1)));
-        setCounts(new Array<number>(competitorCount).fill(0).map(() => new Array<number>(competitorCount).fill(0)));
-        setSums(new Array<number>(competitorCount).fill(0).map(() => new Array<number>(competitorCount).fill(0)))
+        setScores(new Array<number>(0).fill(1).map(() => new Array<number>(0).fill(1)));
+        setCounts(new Array<number>(0).fill(0).map(() => new Array<number>(0).fill(0)));
+        setSums(new Array<number>(0).fill(0).map(() => new Array<number>(0).fill(0)))
         setPlacements(new Array<number>)
     }
 
