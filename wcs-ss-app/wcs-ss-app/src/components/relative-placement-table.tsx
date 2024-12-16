@@ -78,7 +78,7 @@ export default function RelativePlacementTable() {
                         </div>
                     </td>
                     <td>
-                        <input type='text'/>
+                        <input name="competitor-name" type='text'/>
                         <button type='button' className='m-2 rounded-full bg-red-600 font-sans text-white text-xs w-4 h-4' onClick={() => RemoveCompetitor(i)}>-</button>
                     </td>
                     <JudgeScores competitorIndex={i}/>
@@ -123,7 +123,7 @@ export default function RelativePlacementTable() {
 
             judgeScores.push(
                 <td key={judgeIndex}>
-                    <select value={scores[props.competitorIndex][judgeIndex]} 
+                    <select name="judge-score" value={scores[props.competitorIndex][judgeIndex]} 
                         onChange={e => UpdateScore(parseInt(e.target.value), props.competitorIndex, judgeIndex)}>
                         {options}
                     </select>

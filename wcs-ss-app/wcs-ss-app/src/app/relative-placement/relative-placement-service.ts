@@ -225,7 +225,7 @@ export function CheckScores(scores: number[][]) {
     if (judgeCount < 1 || competitorCount < 1) { //if there are 0 judges or competitors, nothing to calculate
         throw new InsufficientPeopleError(
             "Insufficient People Detected: Competitor count = '" + competitorCount 
-            + "', Judge count = '" + judgeCount + " '.");
+            + "', Judge count = '" + judgeCount + "'.");
     }
 
     for (let judgeIndex = 0; judgeIndex < judgeCount; judgeIndex++) {
