@@ -4,7 +4,9 @@ import RelativePlacementTable from "@/components/relative-placement-table";
 
 function Home() {
   return (
-    <RelativePlacementTable></RelativePlacementTable>
+    <div className="m-2">
+      <RelativePlacementTable/>
+    </div>
   )
 }
 

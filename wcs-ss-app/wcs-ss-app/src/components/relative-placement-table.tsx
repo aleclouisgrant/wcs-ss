@@ -82,7 +82,7 @@ export default function RelativePlacementTable() {
                         <button type='button' className='m-2 rounded-full bg-red-600 font-sans text-white text-xs w-4 h-4' onClick={() => RemoveCompetitor(i)}>-</button>
                     </td>
                     <JudgeScores competitorIndex={i}/>
-                    <td>{placementText}</td>
+                    <td className='text-center'>{placementText}</td>
                     <RelativePlacementScores competitorIndex={i}/>             
                 </tr>
             )
@@ -122,7 +122,7 @@ export default function RelativePlacementTable() {
             }
 
             judgeScores.push(
-                <td key={judgeIndex}>
+                <td key={judgeIndex} className='text-center'>
                     <select name="judge-score" value={scores[props.competitorIndex][judgeIndex]} 
                         onChange={e => UpdateScore(parseInt(e.target.value), props.competitorIndex, judgeIndex)}>
                         {options}
@@ -148,8 +148,8 @@ export default function RelativePlacementTable() {
 
         if (error) { 
             //show all relative placement scores as "-" if there's an error
-            for (let i = 0; i < competitorCount; i++) {                
-                rpScores.push(<td key={i}>-</td>);    
+            for (let i = 0; i < competitorCount; i++) {
+                rpScores.push(<td key={i} className='text-center'>-</td>);    
             }
             
             return rpScores;
@@ -159,7 +159,7 @@ export default function RelativePlacementTable() {
             let count = counts[props.competitorIndex][i];
             let sum = sums[props.competitorIndex][i];
 
-            rpScores.push(<td key={i}>{count.toString()}({sum.toString()})</td>);
+            rpScores.push(<td key={i} className='text-center'>{count.toString()}({sum.toString()})</td>);
         }
 
         return rpScores;
@@ -248,7 +248,7 @@ export default function RelativePlacementTable() {
                 <tbody>
                     <tr className="adder-table">
                         <th className='rounded-l-xl pl-7 py-2'>Order</th>
-                        <th>Couples</th>
+                        <th className='text-left'>Couples</th>
                         <JudgesHeaders/>
                         <th>Place</th>
                         <RelativePlacementHeaders/>
