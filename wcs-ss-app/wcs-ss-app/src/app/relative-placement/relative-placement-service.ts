@@ -2,30 +2,45 @@ export class UnbreakableTieError extends Error {}
 
 /**
  * 
- * @property Placements: Array of numbers corresponding to the competitors' index from the original scores parameter in order of placement
+ * @property Placements: Array of numbers corresponding to the competitors' index from the 
+ *                       original scores parameter in order of placement
  * @property UnbreakableTies: TODO
  */
 export interface RelativePlacementReturn {
     Placements: number[],
     Counts: number[][],
     Sums: number[][],
-    UnbreakableTies: number[]
+    UnbreakableTies: UnbreakableTie[]
+}
+
+export class UnbreakableTie {
+    Placement: number;
+    CompetitorIndexes: number[];
+
+    constructor (placement: number, competitorIndexes: number[]) {
+        this.Placement = placement;
+        this.CompetitorIndexes = competitorIndexes;
+    }
 }
 
 /** 
  * Returns interface with an array of the placements and an array of the unbreakable ties.
  * 
  * @param scores The array of scores. Column for each judge, row for each competitor.
- * @param headJudgeScores An array of the head judge's scores. Should be in same order as competitor order in the scores parameter.
+ * @param headJudgeScores An array of the head judge's scores. Should be in same order 
+ *                        as competitor order in the scores parameter.
  */
-export function CalculateRelativePlacements(scores: number[][], headJudgeScores?: number[]) : RelativePlacementReturn {
+export function CalculateRelativePlacements(scores: number[][], 
+                                            headJudgeScores?: number[], 
+                                            headToHead?: boolean) : RelativePlacementReturn {
     class RelativePlacementReturnImplementation implements RelativePlacementReturn {
         public Placements: number[];
         Counts: number[][];
         Sums: number[][];
-        public UnbreakableTies: number[];
+        public UnbreakableTies: UnbreakableTie[];
     
-        constructor (placements: number[], counts: number[][], sums: number[][], unbreakableTies: number[]) {
+        constructor (placements: number[], counts: number[][], sums: number[][], 
+                     unbreakableTies: UnbreakableTie[]) {
             this.Placements = placements;
             this.Counts = counts;
             this.Sums = sums;
@@ -36,11 +51,13 @@ export function CalculateRelativePlacements(scores: number[][], headJudgeScores?
     var competitorCount = scores.length;
     var judgeCount = scores[0].length;
 
-    const countArray: number[][] = new Array<number>(competitorCount).fill(0).map(() => new Array<number>(competitorCount).fill(0));
-    const sumArray: number[][] = new Array<number>(competitorCount).fill(0).map(() => new Array<number>(competitorCount).fill(0));
+    const countArray: number[][] = new Array<number>(competitorCount).fill(0).map(() => 
+        new Array<number>(competitorCount).fill(0));
+    const sumArray: number[][] = new Array<number>(competitorCount).fill(0).map(() => 
+        new Array<number>(competitorCount).fill(0));
 
     var placements = new Array<number>(competitorCount);
-    var unbreakableTies = new Array<number>();
+    var unbreakableTies = new Array<UnbreakableTie>();
 
     var placementIndex = 0;
 
@@ -106,16 +123,16 @@ export function CalculateRelativePlacements(scores: number[][], headJudgeScores?
                 var smallestSum = Number.MAX_SAFE_INTEGER;
                 var smallestSumTies = new Array<number>();
                 
-                largestCountTies.forEach((competitorIndex1) => {
-                    var sum = sumArray[competitorIndex1][rpScore];
+                largestCountTies.forEach((cIndex) => {
+                    var sum = sumArray[cIndex][rpScore];
 
                     if (sum < smallestSum) {
                         smallestSum = sum;
                         clearArray(smallestSumTies);
-                        smallestSumTies.push(competitorIndex1);
+                        smallestSumTies.push(cIndex);
                     }
                     else if (sum == smallestSum) {
-                        smallestSumTies.push(competitorIndex1);
+                        smallestSumTies.push(cIndex);
                     }
                 })
 
@@ -128,16 +145,16 @@ export function CalculateRelativePlacements(scores: number[][], headJudgeScores?
                     var largestNextScoreCount = -1;
                     var largestNextScoreCountTies = new Array<number>();
 
-                    smallestSumTies.forEach((competitorIndex2) => {
-                        var nextScoreCount = countArray[competitorIndex2][rpScore + 1];
+                    smallestSumTies.forEach((cIndex) => {
+                        var nextScoreCount = countArray[cIndex][rpScore + 1];
                         
                         if (nextScoreCount > largestNextScoreCount) {
                             largestNextScoreCount = nextScoreCount;
                             clearArray(largestNextScoreCountTies);
-                            largestNextScoreCountTies.push(competitorIndex2);
+                            largestNextScoreCountTies.push(cIndex);
                         }
                         else if (nextScoreCount == largestNextScoreCount) {
-                            largestNextScoreCountTies.push(competitorIndex2);
+                            largestNextScoreCountTies.push(cIndex);
                         }
                     })
 
@@ -145,15 +162,36 @@ export function CalculateRelativePlacements(scores: number[][], headJudgeScores?
                         placements[placementIndex] = smallestSumTies[0];
                         placementIndex++;
                     }
-                    else if (largestNextScoreCountTies.length > 1) {
+                    else if (largestNextScoreCountTies.length > 1 && !headToHead) {
                         // break tie by running head to head comp
-                        // TODO
+                        var newCompetitorCount = largestNextScoreCountTies.length;
+                        var newScores: number[][] = new Array<number>(newCompetitorCount).fill(0)
+                            .map(() => new Array<number>(judgeCount).fill(0));
+                         
+                        for (let judgeIndex = 0; judgeIndex < judgeCount; judgeIndex++) {
+                            var competitors = [...largestNextScoreCountTies];
+                            var newPlacement = 1;
 
+                            while (competitors.length > 1) {
+                                var cIndex =  getIndexOfSmallestValue(scores, 
+                                    competitors, judgeIndex);
+                                
+                                
+                                newScores[cIndex][judgeCount] = newPlacement;
+                                newPlacement++;
+                            }
+                            
 
+                            var results = CalculateRelativePlacements(newScores, undefined, true);
+                            //TODO assign results to placements array
+                        }
+                    }
+                    else if (largestNextScoreCountTies.length > 1 && headToHead) {
                         // if there is still a tie, ie if scores are exactly equal
                         if (headJudgeScores == undefined) {
                             //don't have enough data at this point to break a tie
-                            throw new UnbreakableTieError("Head judge scores required to break tie");
+                            throw new UnbreakableTieError
+                                ("Head judge scores required to break tie");
                         }
                         else {
                             // break tie with head judges scores
@@ -165,7 +203,8 @@ export function CalculateRelativePlacements(scores: number[][], headJudgeScores?
         }
     }
 
-    return new RelativePlacementReturnImplementation(placements, sumArray, countArray, unbreakableTies);
+    return new RelativePlacementReturnImplementation(
+        placements, sumArray, countArray, unbreakableTies);
 }
 
 function clearArray<T>(arr: T[]) {
@@ -184,4 +223,19 @@ function removeValueFromArray<T>(arr: T[], val: T) {
     if (index != -1) {
         arr.splice(index, 1);
     }
+}
+
+function getIndexOfSmallestValue(array: number[][], indexes: number[], column: number) : number {
+    var smallestIndex = -1;
+    var smallestValue = -1;
+    
+    indexes.forEach((index) => {
+        var value = array[index][column];
+        if (smallestValue < value) {
+            smallestIndex = index;
+            smallestValue = value;
+        }
+    })
+
+    return smallestIndex;
 }
