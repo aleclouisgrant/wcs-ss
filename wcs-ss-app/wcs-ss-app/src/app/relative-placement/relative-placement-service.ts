@@ -1,9 +1,38 @@
-export class UnbreakableTieError extends Error {}
+export class UnbreakableTieError extends Error {
+    constructor() {
+        super("Head judge scores are required to break tie.");
+    }
+}
 
-export class DuplicateScoreError extends Error {}
-export class ImpossibleScoreError extends Error {}
-export class MissingScoreError extends Error {}
-export class InsufficientPeopleError extends Error {}
+export class DuplicateScoreError extends Error {
+    constructor(competitorIndex: number, judgeIndex: number, score: number) {
+        super("Duplicate Score Detected: score[" + competitorIndex + "][" + judgeIndex + "] = '" 
+            + score + "' already seen.");
+    }
+}
+export class ImpossiblySmallScoreError extends Error {
+    constructor(competitorIndex: number, judgeIndex: number, score: number) {
+        super("Impossible Score Detected: score[" + competitorIndex + "][" + judgeIndex + "] = '" 
+            + score + "' is smaller than 1.");
+    }
+}
+export class ImpossiblyLargeScoreError extends Error {
+    constructor(competitorIndex: number, judgeIndex: number, score: number, competitorCount: number) {
+        super("Impossible Score Detected: score[" + competitorIndex + "][" + judgeIndex + "] = '" 
+            + score + "' is larger than number of competitors (" + competitorCount + ").");
+    }
+}
+export class MissingScoreError extends Error {
+    constructor(judgeIndex: number) {
+        super("Missing Score Detected: Judge column '" + judgeIndex + "' is missing a score value.");
+    }
+}
+export class InsufficientPeopleError extends Error {
+    constructor(competitorCount: number, judgeCount: number) {
+        super("Insufficient People Detected: Competitor count = '" + competitorCount 
+            + "', Judge count = '" + judgeCount + "'.");
+    }
+}
 
 /**
  * 
@@ -147,6 +176,17 @@ export function CalculateRelativePlacements(scores: number[][],
                     placementIndex++;
                 }
                 else if (smallestSumTies.length > 1) {
+                    if (rpScore >= countArray[0].length) { //we've run out of next scores
+
+                        //TODO: is it possible to hit here without identical scores?
+                        // if we can hit here with nonidentical scores, we run head to head comp
+                        // otherwise, we break tie on head judge scores
+
+                        if (headJudgeScores == undefined) {
+                            throw new UnbreakableTieError();
+                        }
+                    }
+
                     // if there are ties for smallest sum, use next scores to break tie
                     let largestNextScoreCount = -1;
                     let largestNextScoreCountTies = new Array<number>();
@@ -192,11 +232,10 @@ export function CalculateRelativePlacements(scores: number[][],
                         }
                     }
                     else if (largestNextScoreCountTies.length > 1 && headToHead) {
-                        // if there is still a tie, ie if scores are exactly equal
+                        // if there is still a tie, scores are exactly equal
                         if (headJudgeScores == undefined) {
-                            //don't have enough data at this point to break a tie
-                            throw new UnbreakableTieError
-                                ("Head judge scores required to break tie");
+                            //without head judge scores, we don't have enough data to break a tie
+                            throw new UnbreakableTieError();
                         }
                         else {
                             // break tie with head judges scores
@@ -222,30 +261,21 @@ export function CheckScores(scores: number[][]) {
     let judgeCount = scores[0].length;
 
     if (judgeCount < 1 || competitorCount < 1) { //if there are 0 judges or competitors, nothing to calculate
-        throw new InsufficientPeopleError(
-            "Insufficient People Detected: Competitor count = '" + competitorCount 
-            + "', Judge count = '" + judgeCount + "'.");
+        throw new InsufficientPeopleError(competitorCount, judgeCount);
     }
 
     for (let judgeIndex = 0; judgeIndex < judgeCount; judgeIndex++) {
         let options = new Array<boolean>(competitorCount).fill(false);
         for (let competitorIndex = 0; competitorIndex < competitorCount; competitorIndex++) {
             if (scores[competitorIndex][judgeIndex] > options.length) { //score is larger than number of competitors
-                throw new ImpossibleScoreError(
-                    "Impossible Score Detected: score[" + competitorIndex + "][" + judgeIndex + "] = '" 
-                    + scores[competitorIndex][judgeIndex] + "' is larger than number of competitors (" 
-                    + competitorCount + ").");
+                throw new ImpossiblyLargeScoreError(competitorIndex, judgeIndex, scores[competitorIndex][judgeIndex], competitorCount);
             }
             if (scores[competitorIndex][judgeIndex] < 1) { //score is smaller than 1
-                throw new ImpossibleScoreError(
-                    "Impossible Score Detected: score[" + competitorIndex + "][" + judgeIndex + "] = '" 
-                    + scores[competitorIndex][judgeIndex] + "' is smaller than 1.");
+                throw new ImpossiblySmallScoreError(competitorIndex, judgeIndex, scores[competitorIndex][judgeIndex]);
             }
 
             if (options[scores[competitorIndex][judgeIndex] - 1]) { //duplicate scores
-                throw new DuplicateScoreError(
-                    "Duplicate Score Detected: score[" + competitorIndex + "][" + judgeIndex + "] = '" 
-                    + scores[competitorIndex][judgeIndex] + "' already seen.");
+                throw new DuplicateScoreError(competitorIndex, judgeIndex, scores[competitorIndex][judgeIndex]);
             }
             else {
                 options[scores[competitorIndex][judgeIndex] - 1] = true;
@@ -253,8 +283,7 @@ export function CheckScores(scores: number[][]) {
         }
 
         if (options.includes(false)) { //missing a score value
-            throw new MissingScoreError(
-                "Missing Score Detected: Judge column '" + judgeIndex + "' is missing a score value.");
+            throw new MissingScoreError(judgeIndex);
         }
     }
 }

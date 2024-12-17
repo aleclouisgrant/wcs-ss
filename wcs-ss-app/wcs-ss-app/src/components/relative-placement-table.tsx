@@ -1,6 +1,6 @@
 "use client";
 
-import { CalculateRelativePlacements, CheckScores, DuplicateScoreError, ImpossibleScoreError, InsufficientPeopleError, MissingScoreError, UnbreakableTieError } from '@/app/relative-placement/relative-placement-service';
+import { CalculateRelativePlacements, CheckScores, DuplicateScoreError, ImpossiblyLargeScoreError, ImpossiblySmallScoreError, InsufficientPeopleError, MissingScoreError, UnbreakableTieError } from '@/app/relative-placement/relative-placement-service';
 import { useState } from 'react';
 
 export default function RelativePlacementTable() {
@@ -78,7 +78,7 @@ export default function RelativePlacementTable() {
             
             let competitorIndex = i;
             if (!error && orderMethod == OrderMethod.Place) {
-                
+                //TODO: sort
             }
             
             let placementText = "-";
@@ -196,8 +196,13 @@ export default function RelativePlacementTable() {
             if (e instanceof DuplicateScoreError) {
                 setError(true);
                 console.log(e.message);
+
             }
-            else if (e instanceof ImpossibleScoreError) {
+            else if (e instanceof ImpossiblySmallScoreError) {
+                setError(true);
+                console.log(e.message);
+            }
+            else if (e instanceof ImpossiblyLargeScoreError) {
                 setError(true);
                 console.log(e.message);
             }
@@ -230,6 +235,7 @@ export default function RelativePlacementTable() {
         catch (e) {
             if (e instanceof UnbreakableTieError) {
                 //TODO: alert need head judge scores
+                console.log(e.message);
             }
 
             setError(true);
