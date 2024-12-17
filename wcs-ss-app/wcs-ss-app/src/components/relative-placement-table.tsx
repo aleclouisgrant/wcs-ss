@@ -9,12 +9,14 @@ export default function RelativePlacementTable() {
         Place
     }
 
+    const UNSELECTED_VALUE = 0;
+
     const [error, setError] = useState(true);
 
     const [competitorCount, setCompetitorCount] = useState(0);
     const [judgeCount, setJudgeCount] = useState(0);
 
-    const [scores, setScores] = useState(new Array<number>(competitorCount).fill(1).map(() => new Array<number>(judgeCount).fill(1)));
+    const [scores, setScores] = useState(new Array<number>(competitorCount).fill(UNSELECTED_VALUE).map(() => new Array<number>(judgeCount).fill(UNSELECTED_VALUE)));
     const [placements, setPlacements] = useState(new Array<number>);
     const [counts, setCounts] = useState(new Array<number>(competitorCount).fill(0).map(() => new Array<number>(competitorCount).fill(0)));
     const [sums, setSums] = useState(new Array<number>(competitorCount).fill(0).map(() => new Array<number>(competitorCount).fill(0)));
@@ -23,7 +25,7 @@ export default function RelativePlacementTable() {
 
     function AddCouple() {
         let newScores = [...scores];
-        newScores.push(new Array<number>(judgeCount).fill(1));
+        newScores.push(new Array<number>(judgeCount).fill(UNSELECTED_VALUE));
 
         setCompetitorCount((prevCount) => prevCount + 1);
         UpdateScores(newScores);
@@ -32,21 +34,13 @@ export default function RelativePlacementTable() {
     function AddJudge() {
         let newScores = [...scores];
         for (let competitorIndex = 0; competitorIndex < competitorCount; competitorIndex++) {
-            newScores[competitorIndex].push(1);
+            newScores[competitorIndex].push(UNSELECTED_VALUE);
         }
 
         UpdateScores(newScores);
         setJudgeCount((prevCount) => prevCount + 1);
     }
     
-    function RemoveCompetitor(competitorIndex: number) {
-        let newScores = [...scores];
-        newScores.splice(competitorIndex, 1);
-        
-        UpdateScores(newScores);
-        setCompetitorCount((prevCount) => prevCount - 1);
-    }
-
     function UpdateScore(newScore: number, competitorIndex: number, judgeIndex: number) {
         let newScores = [...scores];
         newScores[competitorIndex][judgeIndex] = newScore;
@@ -54,16 +48,35 @@ export default function RelativePlacementTable() {
     }
 
     function UpdateScores(newScores: number[][]) {
+        setPlacements([]);
         setScores(newScores);
         if (CheckScoresArray())
             CalculatePlacements();
     }
 
     function CompetitorRows() {
+        function RemoveCompetitor(competitorIndex: number) {
+            let newScores = [...scores];
+            newScores.splice(competitorIndex, 1);
+
+            var newCompetitorCount = competitorCount - 1;
+            newScores.forEach((competitorScores) => {
+                competitorScores.forEach((score, index, arr) => {
+                    if (score > newCompetitorCount)
+                        arr[index] = 0;
+                })
+            })
+            
+            console.log(newScores);
+            
+            setCompetitorCount((prevCount) => prevCount - 1);
+            UpdateScores(newScores);
+        }
+
         let competitorRows = [];
         for (let i = 0; i < competitorCount; i++) {
             let placementText = "-";
-
+            
             placements.forEach((competitorIndex, placement) => {
                 if(competitorIndex == i) {
                     placementText = (placement + 1).toString();
@@ -97,8 +110,9 @@ export default function RelativePlacementTable() {
             for (let competitorIndex = 0; competitorIndex < competitorCount; competitorIndex++) {
                 newScores[competitorIndex].splice(judgeIndex, 1);
             }
-            setScores(newScores);
+
             setJudgeCount((prevCount) => prevCount - 1);
+            UpdateScores(newScores);
         }
 
         let judgeHeaders = [];
@@ -117,6 +131,7 @@ export default function RelativePlacementTable() {
         let judgeScores = [];
         for (let judgeIndex = 0; judgeIndex < judgeCount; judgeIndex++) {
             let options = [];
+            options.push(<option key={0} value={0}>-</option>);
             for (let i = 1; i <= competitorCount; i++) {
                 options.push(<option key={i} value={i}>{i}</option>);
             }
@@ -227,7 +242,7 @@ export default function RelativePlacementTable() {
         setError(true);
         setCompetitorCount(0);
         setJudgeCount(0);
-        setScores(new Array<number>(0).fill(1).map(() => new Array<number>(0).fill(1)));
+        setScores(new Array<number>(0).fill(UNSELECTED_VALUE).map(() => new Array<number>(0).fill(UNSELECTED_VALUE)));
         setCounts(new Array<number>(0).fill(0).map(() => new Array<number>(0).fill(0)));
         setSums(new Array<number>(0).fill(0).map(() => new Array<number>(0).fill(0)))
         setPlacements(new Array<number>)
