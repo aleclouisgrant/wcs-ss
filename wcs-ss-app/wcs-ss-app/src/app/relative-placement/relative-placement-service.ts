@@ -187,7 +187,6 @@ export function CalculateRelativePlacements(scores: number[][],
                                 newPlacement++;
                             }
                             
-
                             let results = CalculateRelativePlacements(newScores, undefined, true);
                             //TODO assign results to placements array
                         }

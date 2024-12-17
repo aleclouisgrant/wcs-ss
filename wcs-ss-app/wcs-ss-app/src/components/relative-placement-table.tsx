@@ -48,9 +48,11 @@ export default function RelativePlacementTable() {
     }
 
     function UpdateScores(newScores: number[][]) {
+        setError(true);
         setPlacements([]);
         setScores(newScores);
-        if (CheckScoresArray())
+
+        if (CheckScoresArray(newScores))
             CalculatePlacements();
     }
 
@@ -66,19 +68,22 @@ export default function RelativePlacementTable() {
                         arr[index] = 0;
                 })
             })
-            
-            console.log(newScores);
-            
+                        
             setCompetitorCount((prevCount) => prevCount - 1);
             UpdateScores(newScores);
         }
 
         let competitorRows = [];
         for (let i = 0; i < competitorCount; i++) {
-            let placementText = "-";
             
-            placements.forEach((competitorIndex, placement) => {
-                if(competitorIndex == i) {
+            let competitorIndex = i;
+            if (!error && orderMethod == OrderMethod.Place) {
+                
+            }
+            
+            let placementText = "-";
+            placements.forEach((cIndex, placement) => {
+                if (cIndex == i) {
                     placementText = (placement + 1).toString();
                 }
             })
@@ -94,9 +99,9 @@ export default function RelativePlacementTable() {
                         <input name="competitor-name" type='text'/>
                         <button type='button' className='m-2 rounded-full bg-red-600 font-sans text-white text-xs w-4 h-4' onClick={() => RemoveCompetitor(i)}>-</button>
                     </td>
-                    <JudgeScores competitorIndex={i}/>
+                    <JudgeScores competitorIndex={competitorIndex}/>
                     <td className='text-center'>{placementText}</td>
-                    <RelativePlacementScores competitorIndex={i}/>             
+                    <RelativePlacementScores competitorIndex={competitorIndex}/>             
                 </tr>
             )
         }
@@ -180,7 +185,7 @@ export default function RelativePlacementTable() {
         return rpScores;
     }
 
-    function CheckScoresArray() : boolean {
+    function CheckScoresArray(scores: number[][]) : boolean {
         try {
             CheckScores(scores);
 
@@ -230,7 +235,7 @@ export default function RelativePlacementTable() {
             setError(true);
         }
     }
-
+    
     function ToggleOrderBy() {
         if (orderMethod == OrderMethod.Order)
             setOrderMethod(OrderMethod.Place);
@@ -240,6 +245,7 @@ export default function RelativePlacementTable() {
 
     function Clear() {
         setError(true);
+        setOrderMethod(OrderMethod.Order);
         setCompetitorCount(0);
         setJudgeCount(0);
         setScores(new Array<number>(0).fill(UNSELECTED_VALUE).map(() => new Array<number>(0).fill(UNSELECTED_VALUE)));
@@ -255,7 +261,7 @@ export default function RelativePlacementTable() {
                     <button type='button' className='btn-primary mx-2' onClick={AddCouple}>+ Couple</button>
                     <button type='button' className='btn-primary mx-2' onClick={AddJudge}>+ Judge</button>
                     <button type='button' className='btn-primary mx-2' onClick={Clear}>Clear</button>
-                    <button type='button' className='btn-primary mx-2' onClick={ToggleOrderBy}>Sort By {orderMethod == OrderMethod.Order ? "Place" : "Order"}</button>
+                    <button type='button' disabled={error} className='btn-primary mx-2' onClick={ToggleOrderBy}>Sort By {orderMethod == OrderMethod.Order ? "Place" : "Order"}</button>
                 </div>
             </div>
 

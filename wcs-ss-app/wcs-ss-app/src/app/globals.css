@@ -25,6 +25,17 @@
   border-radius: 10px;
 }
 
+.btn-primary:disabled {
+  background-color: white;
+  color: var(--accent-color);
+  font-size: 16px;
+  line-height: 19px;
+  font-weight: 700;
+  padding: 4px 26px;
+  border: solid 2px var(--accent-color);
+  border-radius: 10px; 
+}
+
 .btn-secondary {
   background-color: white;
   color: var(--accent-color);
