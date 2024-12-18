@@ -68,7 +68,7 @@ export default function RelativePlacementTable() {
                         arr[index] = 0;
                 })
             })
-                        
+            
             setCompetitorCount((prevCount) => prevCount - 1);
             UpdateScores(newScores);
         }
@@ -171,7 +171,6 @@ export default function RelativePlacementTable() {
             for (let i = 0; i < competitorCount; i++) {
                 rpScores.push(<td key={i} className='text-center'>-</td>);    
             }
-            
             return rpScores;
         }
 
@@ -193,28 +192,14 @@ export default function RelativePlacementTable() {
             return true;
         }
         catch (e) {
-            if (e instanceof DuplicateScoreError) {
-                setError(true);
-                console.log(e.message);
-
-            }
-            else if (e instanceof ImpossiblySmallScoreError) {
-                setError(true);
-                console.log(e.message);
-            }
-            else if (e instanceof ImpossiblyLargeScoreError) {
+            if (e instanceof DuplicateScoreError ||
+                e instanceof ImpossiblySmallScoreError ||
+                e instanceof ImpossiblyLargeScoreError ||
+                e instanceof MissingScoreError ||
+                e instanceof InsufficientPeopleError) {
                 setError(true);
                 console.log(e.message);
             }
-            else if (e instanceof MissingScoreError) {
-                setError(true);
-                console.log(e.message);
-            }
-            else if (e instanceof InsufficientPeopleError) {
-                setError(true);
-                console.log(e.message);
-            }
-
             return false;
         }
     }
